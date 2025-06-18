@@ -14,49 +14,53 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// model User {
-//   id       String   @id @default(uuid())
-//   email    String   @unique
-//   password String
-//   role     Role     @default(CUSTOMER)
-//   cart     Cart?
-// }
+model User {
+  id       String   @id @default(uuid())
+  email    String   @unique
+  password String
+  role     Role     @default(CUSTOMER)
+  cart     Cart?
 
-// model Product {
-//   id          String   @id @default(uuid())
-//   name        String
-//   description String
-//   price       Float
-//   imageUrl    String
-//   stockQty    Int
-// }
+  PasswordResetToken PasswordResetToken[]
+}
 
-// model Cart {
-//   id      String      @id @default(uuid())
-//   user    User        @relation(fields: [userId], references: [id])
-//   userId  String      @unique
-//   items   CartItem[]
-// }
+model Product {
+  id          String   @id @default(uuid())
+  name        String
+  description String
+  price       Float
+  imageUrl    String
+  stockQty    Int
 
-// model CartItem {
-//   id        String   @id @default(uuid())
-//   cart      Cart     @relation(fields: [cartId], references: [id])
-//   cartId    String
-//   product   Product  @relation(fields: [productId], references: [id])
-//   productId String
-//   quantity  Int
-// }
+  CartItem CartItem[]
+}
 
-// model PasswordResetToken {
-//   id        String   @id @default(uuid())
-//   user      User     @relation(fields: [userId], references: [id])
-//   userId    String
-//   token     String   @unique
-//   expiresAt DateTime
-// }
+model Cart {
+  id      String      @id @default(uuid())
+  user    User        @relation(fields: [userId], references: [id])
+  userId  String      @unique
+  items   CartItem[]
+}
 
-// enum Role {
-//   ADMIN
-//   CUSTOMER
-// }
+model CartItem {
+  id        String   @id @default(uuid())
+  cart      Cart     @relation(fields: [cartId], references: [id])
+  cartId    String
+  product   Product  @relation(fields: [productId], references: [id])
+  productId String
+  quantity  Int
+}
+
+model PasswordResetToken {
+  id        String   @id @default(uuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+}
+
+enum Role {
+  ADMIN
+  CUSTOMER
+}
 
