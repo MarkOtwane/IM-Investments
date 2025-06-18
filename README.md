@@ -1,0 +1,1 @@
+Shopie is a full-stack e-commerce platform using Angular (frontend) and NestJS (backend). Customers can browse, search, and shop. Admins manage products. Includes authentication, cart system, and dynamic stock management.
