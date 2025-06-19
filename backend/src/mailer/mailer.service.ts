@@ -1,40 +1,59 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as nodemailer from 'nodemailer';
-import { sendEmailDto } from './dto/mailer.dto';
+import { MailOptions } from './interface/mail-options.interface'; // should refer to mailOptions in the mailer folder
+import { getPasswordResetTemplate } from './templates/password-reset.template';
 
 @Injectable()
 export class MailerService {
-  constructor(private readonly configService: ConfigService) {}
+  private transporter: nodemailer.Transporter;
 
-  emailTransport() {
-    const transporter = nodemailer.createTransport({
-      host: this.configService.get<string>('EMAIL_HOST'),
-      port: Number(this.configService.get<string>('PORT')),
-      secure: false,
+  constructor(private configService: ConfigService) {
+    this.transporter = nodemailer.createTransport({
+      host: this.configService.get<string>('SMTP_HOST'),
+      port: this.configService.get<number>('SMTP_PORT'),
+      secure: false, // Use TLS
       auth: {
-        user: this.configService.get<string>('EMAIL_USER'),
-        pass: this.configService.get<string>('EMAIL_PASSWORD'),
+        user: this.configService.get<string>('SMTP_USER'),
+        pass: this.configService.get<string>('SMTP_PASS'),
       },
     });
-    return transporter;
   }
-  async sendEmail(dto: sendEmailDto) {
-    const { recipient, subject, html } = dto;
 
-    const transport = this.emailTransport();
-
-    const options: nodemailer.SendMailOptions = {
-      from: this.configService.get<string>('EMAIL_USER'),
-      to: recipient,
-      subject: subject,
-      html: html,
+  async sendMail(options: MailOptions) {
+    const mailOptions: nodemailer.SendMailOptions = {
+      from: this.configService.get<string>('SMTP_FROM'),
+      to: options.to,
+      subject: options.subject,
+      text: options.text,
+      html: options.html,
     };
+
     try {
-      await transport.sendMail(options);
-      console.log('Email successfully sent.');
+      await this.transporter.sendMail(mailOptions);
     } catch (error) {
-      console.log('Email error:', error);
+      console.error('Failed to send email:', error);
+      throw new Error('Failed to send email');
     }
   }
+
+  async sendPasswordResetEmail(email: string, resetToken: string) {
+    const baseUrl = this.configService.get<string>('APP_BASE_URL') ?? '';
+    const { subject, text, html } = getPasswordResetTemplate(
+      resetToken,
+      baseUrl,
+    );
+
+    await this.sendMail({
+      to: email,
+      subject,
+      text,
+      html,
+    });
+  }
 }
+
+// Test email sending:
+
+//     Use Mailtrap or a similar service for local testing.
+//     Trigger POST http://localhost:3000/auth/password-reset with { "email": "test@example.com" } in Postman and verify the email in Mailtrap.
