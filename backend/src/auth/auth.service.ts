@@ -33,7 +33,7 @@ export class AuthService {
     }
 
     // Hash password
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Create user with default role CUSTOMER
