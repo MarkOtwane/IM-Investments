@@ -1,19 +1,18 @@
 @env = development
 
-@access_token = <paste_access_token_here>
-
 ### login user
+
 POST http://localhost:3000/auth/password-reset
 Content-Type: application/json
 
 {
-  "email": "otwanemar12k254@gmail.com",
+  "email": "karenmasila7@gmail.com",
   "password": "Mark1234@#$.",
-  "role":"ADMIN"
+  "role": "CUSTOMER"
 }
 
 ###
-POST http://localhost:3000/auth/login
+POST http://localhost:3000/auth/password-reset
 Content-Type: application/json
 
 {
@@ -24,8 +23,8 @@ Content-Type: application/json
 
 ### add product to cart
 
-POST http://http://localhost:3000/cart
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjcsImVtYWlsIjoib3R3YW5lbWFyazAwM0BnbWFpbC5jb20iLCJyb2xlIjoiQ1VTVE9NRVIiLCJpYXQiOjE3NTAzNDI3NjksImV4cCI6MTc1MDM0NjM2OX0.ovSllvt008DWX5dcZii11_Z77ZEGDcUPaCmyYwFzeNE
+POST http://localhost:3000/cart
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjYsImVtYWlsIjoib3R3YW5lbWFyazI1NEBnbWFpbC5jb20iLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NTAzNjIzNDMsImV4cCI6MTc1MDM2NTk0M30.XRiedCyVss_DRSyx4lA2ZWR25pG2Ie2mTPA9Sv7esaE
 Content-Type: application/json
 
 {
@@ -33,8 +32,38 @@ Content-Type: application/json
 }
 
 ### Create a product (admin only)
+
 POST http://localhost:3000/products
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjYsImVtYWlsIjoib3R3YW5lbWFyazI1NEBnbWFpbC5jb20iLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NTAzNDA3NzMsImV4cCI6MTc1MDM0NDM3M30.mZkPC6kgT_dpcHeOHqjHJJUbsF1HAlU4CjZt0YwBsyI
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjYsImVtYWlsIjoib3R3YW5lbWFyazI1NEBnbWFpbC5jb20iLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NTAzNjIzNDMsImV4cCI6MTc1MDM2NTk0M30.XRiedCyVss_DRSyx4lA2ZWR25pG2Ie2mTPA9Sv7esaE
+Content-Type: application/json
+
+
+  {
+    "name": "Wireless Headphones",
+    "description": "Noise-cancelling over-ear Bluetooth headphones with 40-hour battery life.",
+    "price": 89.99,
+    "imageUrl": "https://via.placeholder.com/150?text=Headphones",
+    "stock": 50
+  }
+
+###delete a product
+POST http://localhost:3000/products
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjYsImVtYWlsIjoib3R3YW5lbWFyazI1NEBnbWFpbC5jb20iLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NTAzNjIzNDMsImV4cCI6MTc1MDM2NTk0M30.XRiedCyVss_DRSyx4lA2ZWR25pG2Ie2mTPA9Sv7esaE
+Content-Type: application/json
+
+
+  {
+    "name": "Wireless Headphones",
+    "description": "Noise-cancelling over-ear Bluetooth headphones with 40-hour battery life.",
+    "price": 89.99,
+    "imageUrl": "https://via.placeholder.com/150?text=Headphones",
+    "stock": 50
+  }
+
+###update product
+
+PATCH  http://localhost:3000/products
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjYsImVtYWlsIjoib3R3YW5lbWFyazI1NEBnbWFpbC5jb20iLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NTAzNjIzNDMsImV4cCI6MTc1MDM2NTk0M30.XRiedCyVss_DRSyx4lA2ZWR25pG2Ie2mTPA9Sv7esaE
 Content-Type: application/json
 
 
