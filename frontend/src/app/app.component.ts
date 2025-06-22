@@ -1,14 +1,21 @@
 import { Component } from '@angular/core';
-import { AdminModule } from './admin/admin.module';
-import { CoreModule } from './core/core.module';
-import { CustomerModule } from './customer/customer.module';
+import { LoginComponent } from './customer/login/login.component';
+import { RegisterComponent } from './customer/register/register.component';
+import { FooterComponent } from './shared/components/footer/footer.component';
+import { HeaderComponent } from './shared/components/header/header.component';
 
 @Component({
   selector: 'app-root',
-  imports: [AdminModule, CoreModule, CustomerModule],
+  standalone: true,
+  imports: [
+    RegisterComponent,
+    FooterComponent,
+    HeaderComponent,
+    LoginComponent,
+  ],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css',
+  styleUrls: ['./app.component.css'],
 })
 export class AppComponent {
-  title = 'frontend';
+  title = 'Shopie';
 }
