@@ -1,16 +1,19 @@
 import { Component, OnInit } from '@angular/core';
-import { ProductService } from '../../../core/services/product.service';
+import { Router } from '@angular/router';
 import { Product } from '../../../core/models/product.model';
+import { ProductService } from '../../../core/services/products.service';
+import { ProductCardComponent } from '../../../shared/components/product-card/product-card.component';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.scss'],
+  styleUrls: ['./dashboard.component.css'],
+  imports: [ProductCardComponent],
 })
 export class DashboardComponent implements OnInit {
   products: Product[] = [];
 
-  constructor(private productService: ProductService) {}
+  constructor(private productService: ProductService, private router: Router) {}
 
   ngOnInit(): void {
     this.productService.getAll().subscribe({
@@ -19,13 +22,23 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-  deleteProduct(id: number): void {
-    this.productService.delete(id).subscribe({
-      next: () =>
-        this.productService
-          .getAll()
-          .subscribe((products) => (this.products = products)),
-      error: (err) => console.error('Failed to delete product', err),
-    });
+  editProduct(productId: number): void {
+    this.router.navigate([`/admin/products/${productId}/edit`]);
+  }
+
+  deleteProduct(productId: number): void {
+    if (confirm('Are you sure you want to delete this product?')) {
+      this.productService.delete(productId).subscribe({
+        next: () =>
+          this.productService
+            .getAll()
+            .subscribe((products) => (this.products = products)),
+        error: (err) => console.error('Failed to delete product', err),
+      });
+    }
+  }
+
+  createProduct(): void {
+    this.router.navigate(['/admin/products/new']);
   }
 }

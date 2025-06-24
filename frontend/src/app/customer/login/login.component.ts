@@ -1,29 +1,28 @@
+import { FormsModule } from '@angular/forms';
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-login',
-  standalone: true,
   templateUrl: './login.component.html',
-  imports: [CommonModule, ReactiveFormsModule],
 })
 export class LoginComponent {
-  loginForm: FormGroup;
+  email: string = '';
+  password: string = '';
+  error: string | null = null;
 
-  constructor(private fb: FormBuilder) {
-    this.loginForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required]],
+  constructor(private authService: AuthService, private router: Router) {}
+
+  onSubmit(): void {
+    this.authService.login(this.email, this.password).subscribe({
+      next: () => {
+        const returnUrl =
+          this.router.parseUrl(this.router.url).queryParams['returnUrl'] ||
+          '/customer';
+        this.router.navigateByUrl(returnUrl);
+      },
+      error: (err) => (this.error = 'Invalid email or password'),
     });
-  }
-
-  onLogin() {
-    if (this.loginForm.valid) {
-      console.log('Login Data:', this.loginForm.value);
-    } else {
-      console.log('Form is invalid');
-    }
   }
 }

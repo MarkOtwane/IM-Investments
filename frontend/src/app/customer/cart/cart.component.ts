@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { CartService } from '../../core/services/cart.service';
 import { Cart } from '../../core/models/cart.model';
+import { CurrencyPipe } from "../../shared/pipes/currency.pipe";
 
 @Component({
   selector: 'app-cart',
   templateUrl: './cart.component.html',
-  styleUrls: ['./cart.component.scss'],
+  imports: [CurrencyPipe],
 })
 export class CartComponent implements OnInit {
   cart: Cart | null = null;
