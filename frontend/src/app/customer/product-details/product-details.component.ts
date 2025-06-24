@@ -4,12 +4,11 @@ import { Product } from '../../core/models/product.model';
 import { AuthService } from '../../core/services/auth.service';
 import { CartService } from '../../core/services/cart.service';
 import { ProductService } from '../../core/services/products.service';
-import { CurrencyPipe } from "../../shared/pipes/currency.pipe";
+import { CurrencyPipe } from '../../shared/pipes/currency.pipe';
 
 @Component({
   selector: 'app-product-detail',
   templateUrl: './product-details.component.html',
-  styleUrls: ['./product-details.component.css'],
   imports: [CurrencyPipe],
 })
 export class ProductDetailComponent implements OnInit {
