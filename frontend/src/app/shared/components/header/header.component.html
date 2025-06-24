@@ -1,27 +1,36 @@
-<header class="bg-white shadow-md">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
-      <!-- Logo / Brand -->
-      <div class="text-xl font-bold text-gray-800">
-        {{ appName }}
-      </div>
-  
-      <!-- Nav Links -->
-      <nav class="space-x-4 hidden md:block">
-        <a href="#" class="text-gray-600 hover:text-blue-600">Home</a>
-        <a href="#" class="text-gray-600 hover:text-blue-600">Products</a>
-        <a href="#" class="text-gray-600 hover:text-blue-600">Cart</a>
-        <a href="#" class="text-gray-600 hover:text-blue-600">About</a>
-        <a href="#" class="text-gray-600 hover:text-blue-600">Contact</a>
-      </nav>
-  
-      <!-- Mobile Menu Icon (placeholder for now) -->
-      <div class="md:hidden text-gray-600">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M4 6h16M4 12h16M4 18h16"></path>
-        </svg>
-      </div>
-    </div>
-  </header>
-  
+<nav class="bg-blue-600 p-4 flex gap-4 items-center">
+  <a routerLink="/customer" class="text-white font-bold hover:underline"
+    >Home</a
+  >
+  <a
+    *ngIf="isLoggedIn"
+    routerLink="/customer/cart"
+    class="text-white font-bold hover:underline"
+    >Cart</a
+  >
+  <a
+    *ngIf="!isLoggedIn"
+    routerLink="/customer/login"
+    class="text-white font-bold hover:underline"
+    >Login</a
+  >
+  <a
+    *ngIf="!isLoggedIn"
+    routerLink="/customer/register"
+    class="text-white font-bold hover:underline"
+    >Register</a
+  >
+  <a
+    *ngIf="isAdmin"
+    routerLink="/admin"
+    class="text-white font-bold hover:underline"
+    >Admin Dashboard</a
+  >
+  <button
+    *ngIf="isLoggedIn"
+    (click)="logout()"
+    class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
+  >
+    Logout
+  </button>
+</nav>

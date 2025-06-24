@@ -1,0 +1,21 @@
+<div class="container mx-auto px-4 py-8 bg-gray-100 min-h-screen">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-bold text-gray-800">Admin Dashboard</h1>
+    <button
+      (click)="createProduct()"
+      class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+    >
+      Add New Product
+    </button>
+  </div>
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    <app-product-card
+      *ngFor="let product of products"
+      [product]="product"
+      [isAdmin]="true"
+      (editProduct)="editProduct($event)"
+      (deleteProduct)="deleteProduct($event)"
+      class="w-full"
+    ></app-product-card>
+  </div>
+</div>

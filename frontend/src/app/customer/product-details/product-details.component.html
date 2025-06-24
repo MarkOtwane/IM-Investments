@@ -1,0 +1,61 @@
+<div class="container mx-auto px-4 py-8 bg-gray-100 min-h-screen">
+  <div
+    *ngIf="product; else notFound"
+    class="bg-white shadow-md rounded-lg p-6 lg:flex lg:gap-8"
+  >
+    <div class="lg:w-1/2">
+      <img
+        [src]="product?.imageUrl"
+        [alt]="product?.name"
+        class="w-full h-96 object-cover rounded-md mb-4"
+      />
+    </div>
+    <div class="lg:w-1/2">
+      <h1 class="text-3xl font-bold text-gray-800 mb-4">{{ product?.name }}</h1>
+      <p class="text-gray-600 mb-4">{{ product?.description }}</p>
+      <p class="text-green-600 font-bold text-2xl mb-4">
+        {{ (product?.price ?? 0) | currency }}
+      </p>
+      <p class="text-gray-600 mb-4">In stock: {{ product?.stock }}</p>
+      <div class="flex items-center mb-4">
+        <label for="quantity" class="text-sm font-medium text-gray-700 mr-2"
+          >Quantity:</label
+        >
+        <div class="flex items-center border border-gray-300 rounded-md">
+          <button
+            (click)="decreaseQuantity()"
+            class="px-3 py-2 text-gray-600 hover:bg-gray-200"
+            [disabled]="quantity <= 1"
+          >
+            -
+          </button>
+          <input
+            id="quantity"
+            [(ngModel)]="quantity"
+            type="number"
+            min="1"
+            [max]="product?.stock"
+            class="w-16 px-3 py-2 text-center border-none focus:outline-none"
+          />
+          <button
+            (click)="increaseQuantity()"
+            class="px-3 py-2 text-gray-600 hover:bg-gray-200"
+            [disabled]="quantity >= (product?.stock ?? 0)"
+          >
+            +
+          </button>
+        </div>
+      </div>
+      <button
+        (click)="addToCart()"
+        class="bg-blue-500 text-white px-6 py-3 rounded-md hover:bg-blue-600 w-full lg:w-auto"
+      >
+        Add to Cart
+      </button>
+      <div *ngIf="error" class="text-red-500 text-sm mt-4">{{ error }}</div>
+    </div>
+  </div>
+  <ng-template #notFound>
+    <p class="text-gray-600 text-center text-lg">Product not found.</p>
+  </ng-template>
+</div>

@@ -1,23 +1,14 @@
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { Component } from '@angular/core';
-import { LoginComponent } from './customer/login/login.component';
-import { RegisterComponent } from './customer/register/register.component';
+import { RouterModule } from '@angular/router';
+import { AuthInterceptor } from './core/interceptors/auth.interceptor';
 import { FooterComponent } from './shared/components/footer/footer.component';
 import { HeaderComponent } from './shared/components/header/header.component';
-import { BrowserModule } from '@angular/platform-browser';
-import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
-import { AuthInterceptor } from './core/interceptors/auth.interceptor';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [
-    RegisterComponent,
-    FooterComponent,
-    HeaderComponent,
-    LoginComponent,
-    BrowserModule,
-    HttpClientModule,
-  ],
+  imports: [FooterComponent, HeaderComponent, HttpClientModule, RouterModule],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,
