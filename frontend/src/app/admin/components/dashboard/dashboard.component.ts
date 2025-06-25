@@ -39,6 +39,6 @@ export class DashboardComponent implements OnInit {
   }
 
   createProduct(): void {
-    this.router.navigate(['/admin/products/new']);
+    this.router.navigate(['/admin/product-form']);
   }
 }

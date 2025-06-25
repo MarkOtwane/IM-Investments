@@ -9,7 +9,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterModule, ReactiveFormsModule],
+  imports: [RouterModule, ReactiveFormsModule, FooterComponent, HeaderComponent],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,

@@ -10,7 +10,6 @@ import { AuthService } from '../../core/services/auth.service';
   imports: [FormsModule, CommonModule],
 })
 export class RegisterComponent {
-  fullName: string = '';
   email: string = '';
   password: string = '';
   confirmPassword: string = '';
@@ -22,7 +21,6 @@ export class RegisterComponent {
     this.error = null;
 
     if (
-      !this.fullName ||
       !this.email ||
       !this.password ||
       !this.confirmPassword

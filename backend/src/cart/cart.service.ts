@@ -1,6 +1,6 @@
 import {
-  Injectable,
   BadRequestException,
+  Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
@@ -42,7 +42,7 @@ export class CartService {
       let cart = await prisma.cart.findUnique({ where: { userId } });
       if (!cart) {
         cart = await prisma.cart.create({
-          data: { userId },
+          data: { userId: Number(userId) },
         });
       }
 

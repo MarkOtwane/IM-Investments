@@ -22,7 +22,7 @@ export class LoginComponent {
       next: () => {
         const returnUrl =
           this.router.parseUrl(this.router.url).queryParams['returnUrl'] ||
-          '/customer';
+          '/home';
         this.router.navigateByUrl(returnUrl);
       },
       error: (err) => (this.error = 'Invalid email or password'),

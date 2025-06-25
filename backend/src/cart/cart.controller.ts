@@ -18,6 +18,7 @@ export class CartController {
   @Post()
   @UseGuards(JwtAuthGuard)
   addToCart(@Request() req, @Body(ValidationPipe) addToCartDto: AddToCartDto) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
     const userId = req.user.userId; // Extracted from JWT payload
     return this.cartService.addToCart(userId, addToCartDto);
   }
@@ -25,6 +26,7 @@ export class CartController {
   @Get()
   @UseGuards(JwtAuthGuard)
   getCart(@Request() req) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
     const userId = req.user.userId; // Extracted from JWT payload
     return this.cartService.getCart(userId);
   }

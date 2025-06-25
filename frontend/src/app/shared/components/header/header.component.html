@@ -1,36 +1,123 @@
-<nav class="bg-blue-600 p-4 flex gap-4 items-center">
-  <a routerLink="/customer" class="text-white font-bold hover:underline"
-    >Home</a
-  >
-  <a
-    *ngIf="isLoggedIn"
-    routerLink="/customer/cart"
-    class="text-white font-bold hover:underline"
-    >Cart</a
-  >
-  <a
-    *ngIf="!isLoggedIn"
-    routerLink="/customer/login"
-    class="text-white font-bold hover:underline"
-    >Login</a
-  >
-  <a
-    *ngIf="!isLoggedIn"
-    routerLink="/customer/register"
-    class="text-white font-bold hover:underline"
-    >Register</a
-  >
-  <a
-    *ngIf="isAdmin"
-    routerLink="/admin"
-    class="text-white font-bold hover:underline"
-    >Admin Dashboard</a
-  >
-  <button
-    *ngIf="isLoggedIn"
-    (click)="logout()"
-    class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
-  >
-    Logout
-  </button>
-</nav>
+<header class="bg-blue-600 text-white shadow-md">
+  <nav class="container mx-auto px-4 py-4 flex items-center justify-between">
+    <!-- Logo -->
+    <a routerLink="/customer" class="text-2xl font-bold">Shopie</a>
+
+    <div class="hidden md:flex items-center space-x-6">
+      <a routerLink="/customer" class="hover:text-blue-200 transition-colors"
+        >Home</a
+      >
+      <a
+        *ngIf="isLoggedIn"
+        routerLink="/customer/cart"
+        class="hover:text-blue-200 transition-colors"
+        >Cart</a
+      >
+      <a
+        *ngIf="!isLoggedIn"
+        routerLink="/customer/login"
+        class="hover:text-blue-200 transition-colors"
+        >Login</a
+      >
+      <a
+        *ngIf="!isLoggedIn"
+        routerLink="/customer/register"
+        class="hover:text-blue-200 transition-colors"
+        >Register</a
+      >
+      <a
+        *ngIf="isLoggedIn && isAdmin"
+        routerLink="/admin"
+        class="hover:text-blue-200 transition-colors"
+        >Dashboard</a
+      >
+      <div *ngIf="isLoggedIn" class="flex items-center space-x-4">
+        <span class="text-sm">Welcome, {{ userEmail }}</span>
+        <button
+          (click)="logout()"
+          class="hover:text-blue-200 transition-colors"
+        >
+          Logout
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Menu Button -->
+    <button
+      class="md:hidden focus:outline-none"
+      (click)="toggleMenu()"
+      aria-label="Toggle menu"
+    >
+      <svg
+        class="w-6 h-6"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          *ngIf="!isMenuOpen"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M4 6h16M4 12h16M4 18h16"
+        ></path>
+        <path
+          *ngIf="isMenuOpen"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M6 18L18 6M6 6l12 12"
+        ></path>
+      </svg>
+    </button>
+  </nav>
+
+  <div *ngIf="isMenuOpen" class="md:hidden bg-blue-700 py-4">
+    <div class="container mx-auto px-4 flex flex-col space-y-4">
+      <a
+        routerLink="/home"
+        class="hover:text-blue-200 transition-colors"
+        (click)="toggleMenu()"
+        >Home</a
+      >
+      <a
+        *ngIf="isLoggedIn"
+        routerLink="/customer/cart"
+        class="hover:text-blue-200 transition-colors"
+        (click)="toggleMenu()"
+        >Cart</a
+      >
+      <a
+        *ngIf="!isLoggedIn"
+        routerLink="/customer/login"
+        class="hover:text-blue-200 transition-colors"
+        (click)="toggleMenu()"
+        >Login</a
+      >
+      <a
+        *ngIf="!isLoggedIn"
+        routerLink="/customer/register"
+        class="hover:text-blue-200 transition-colors"
+        (click)="toggleMenu()"
+        >Register</a
+      >
+      <a
+        *ngIf="isLoggedIn && isAdmin"
+        routerLink="/admin"
+        class="hover:text-blue-200 transition-colors"
+        (click)="toggleMenu()"
+        >Dashboard</a
+      >
+      <div *ngIf="isLoggedIn" class="flex flex-col space-y-4">
+        <span class="text-sm">Welcome, {{ userEmail }}</span>
+        <button
+          (click)="logout()"
+          class="hover:text-blue-200 transition-colors text-left"
+        >
+          Logout
+        </button>
+      </div>
+    </div>
+  </div>
+</header>

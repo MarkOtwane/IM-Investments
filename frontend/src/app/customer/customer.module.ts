@@ -1,10 +1,11 @@
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { ProductCardComponent } from '../shared/components/product-card/product-card.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
 import { SharedModule } from '../shared/shared.module';
-import { CartComponent } from './cart/cart.component';
 import { CustomerRoutingModule } from './customer-routing.module';
+
+import { CartComponent } from './cart/cart.component';
 import { HomeComponent } from './home/home.component';
 import { LoginComponent } from './login/login.component';
 import { PasswordResetComponent } from './password-reset/password-reset.component';
@@ -16,16 +17,16 @@ import { RegisterComponent } from './register/register.component';
   imports: [
     CommonModule,
     FormsModule,
-    SharedModule,
+    ReactiveFormsModule,
     CustomerRoutingModule,
-    ProductDetailComponent,
+    SharedModule,
     HomeComponent,
     CartComponent,
     LoginComponent,
     RegisterComponent,
     PasswordResetComponent,
-    ReactiveFormsModule
+    ProductDetailComponent,
   ],
-  exports: [ProductCardComponent],
+  exports: [],
 })
 export class CustomerModule {}

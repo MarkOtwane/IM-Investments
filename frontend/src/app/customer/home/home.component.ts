@@ -5,11 +5,12 @@ import { ProductService } from '../../core/services/products.service';
 import { CustomerModule } from "../customer.module";
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { ProductCardComponent } from "../../shared/components/product-card/product-card.component";
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
-  imports: [CustomerModule, FormsModule, CommonModule],
+  imports: [CustomerModule, FormsModule, CommonModule, ProductCardComponent],
 })
 export class HomeComponent implements OnInit {
   products: Product[] = [];

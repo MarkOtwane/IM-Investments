@@ -1,30 +1,40 @@
-import { Component, OnInit } from '@angular/core';
-import { AuthService } from '../../../core/services/auth.service';
-import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { Component } from '@angular/core';
+import { Router, RouterModule } from '@angular/router';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css'],
-  imports: [CommonModule, FormsModule]
+  imports: [CommonModule, RouterModule],
 })
-export class HeaderComponent implements OnInit {
-  isLoggedIn: boolean = false;
-  isAdmin: boolean = false;
+export class HeaderComponent {
+  isMenuOpen: boolean = false;
 
   constructor(private authService: AuthService, private router: Router) {}
 
-  ngOnInit(): void {
-    this.isLoggedIn = this.authService.isLoggedIn();
-    this.isAdmin = this.authService.getUserRole() === 'ADMIN';
+  get isLoggedIn(): boolean {
+    return this.authService.isLoggedIn();
+  }
+
+  get userEmail(): string | null {
+    const token = this.authService.getToken();
+    if (!token) return null;
+    const payload = this.authService['decodeToken'](token);
+    return payload ? payload.email : null;
+  }
+
+  get isAdmin(): boolean {
+    return this.authService.getUserRole() === 'ADMIN';
+  }
+
+  toggleMenu(): void {
+    this.isMenuOpen = !this.isMenuOpen;
   }
 
   logout(): void {
     this.authService.logout();
-    this.isLoggedIn = false;
-    this.isAdmin = false;
-    this.router.navigate(['/customer']);
+    this.router.navigate(['/customer/login']);
   }
 }
