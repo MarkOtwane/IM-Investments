@@ -15,17 +15,6 @@ export const routes: Routes = [
   { path: 'home', component: HomeComponent },
   { path: 'cart', component: CartComponent },
   { path: 'footer', component: FooterComponent },
-  {
-    path: 'admin',
-    component: DashboardComponent,
-    // children: [
-    //   { path: 'view-products', component: ViewProductsComponent },
-    //   { path: 'edit-product/:id', component: EditProductComponent },
-    //   { path: 'add-product', component: AddProductComponent },
-    //   { path: 'product-list', component: ProductListComponent },
-    //   { path: 'view-users', component: ViewUsersComponent },
-    //   { path: '', redirectTo: 'view-products', pathMatch: 'full' },
-    // ],
-  },
-  { path: '**', redirectTo: '', pathMatch: 'full' },
+  { path: 'admin', component: DashboardComponent },
+  { path: '**', redirectTo: 'home', pathMatch: 'full' },
 ];

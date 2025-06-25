@@ -10,11 +10,11 @@ import { CommonModule } from '@angular/common';
   imports: [CurrencyPipe, CommonModule],
 })
 export class ProductCardComponent {
-  @Input() product!: Product; // Required input
-  @Input() isAdmin: boolean = false; // Toggle admin-specific actions
-  @Output() addToCart = new EventEmitter<number>(); // Emits productId
-  @Output() editProduct = new EventEmitter<number>(); // Emits productId
-  @Output() deleteProduct = new EventEmitter<number>(); // Emits productId
+  @Input() product!: Product; 
+  @Input() isAdmin: boolean = false;
+  @Output() addToCart = new EventEmitter<number>(); 
+  @Output() editProduct = new EventEmitter<number>(); 
+  @Output() deleteProduct = new EventEmitter<number>(); 
 
   onAddToCart(): void {
     this.addToCart.emit(this.product.id);

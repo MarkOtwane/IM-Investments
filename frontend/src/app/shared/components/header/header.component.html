@@ -1,27 +1,27 @@
 <header class="bg-blue-600 text-white shadow-md">
   <nav class="container mx-auto px-4 py-4 flex items-center justify-between">
     <!-- Logo -->
-    <a routerLink="/customer" class="text-2xl font-bold">Shopie</a>
+    <a routerLink="/home" class="text-2xl font-bold">Shopie</a>
 
     <div class="hidden md:flex items-center space-x-6">
-      <a routerLink="/customer" class="hover:text-blue-200 transition-colors"
+      <a routerLink="/home" class="hover:text-blue-200 transition-colors"
         >Home</a
       >
       <a
         *ngIf="isLoggedIn"
-        routerLink="/customer/cart"
+        routerLink="/cart"
         class="hover:text-blue-200 transition-colors"
         >Cart</a
       >
       <a
         *ngIf="!isLoggedIn"
-        routerLink="/customer/login"
+        routerLink="/login"
         class="hover:text-blue-200 transition-colors"
         >Login</a
       >
       <a
         *ngIf="!isLoggedIn"
-        routerLink="/customer/register"
+        routerLink="/register"
         class="hover:text-blue-200 transition-colors"
         >Register</a
       >

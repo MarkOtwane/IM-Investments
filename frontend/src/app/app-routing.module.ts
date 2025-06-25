@@ -4,9 +4,9 @@ import { AuthGuard } from './core/guards/auth.guard';
 import { AdminGuard } from './core/guards/admin.guard';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'customer', pathMatch: 'full' },
+  { path: '', redirectTo: 'home', pathMatch: 'full' },
   {
-    path: 'customer',
+    path: 'home',
     loadChildren: () =>
       import('./customer/customer.module').then((m) => m.CustomerModule),
   },
