@@ -39,6 +39,7 @@ export class DashboardComponent implements OnInit {
   }
 
   createProduct(): void {
-    this.router.navigate(['/product-form']);
+    alert('Create button clicked');
+    this.router.navigate(['/admin/product-form']);
   }
 }

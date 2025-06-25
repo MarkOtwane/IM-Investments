@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { DashboardComponent } from './admin/components/dashboard/dashboard.component';
+import { ProductFormComponent } from './admin/components/product-form/product-form.component';
 import { CartComponent } from './customer/cart/cart.component';
 import { HomeComponent } from './customer/home/home.component';
 import { LoginComponent } from './customer/login/login.component';
@@ -15,6 +16,12 @@ export const routes: Routes = [
   { path: 'home', component: HomeComponent },
   { path: 'cart', component: CartComponent },
   { path: 'footer', component: FooterComponent },
-  { path: 'admin', component: DashboardComponent },
+  {
+    path: 'admin',
+    children: [
+      { path: '', component: DashboardComponent }, // /admin
+      { path: 'product-form', component: ProductFormComponent }, // /admin/product-form
+    ],
+  },
   { path: '**', redirectTo: 'home', pathMatch: 'full' },
 ];
