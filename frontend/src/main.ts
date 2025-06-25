@@ -6,8 +6,5 @@ import { appConfig } from './app/app.config';
 
 bootstrapApplication(AppComponent, {
   ...appConfig,
-  providers: [
-    ...(appConfig.providers ?? []),
-    provideHttpClient(withFetch()),
-  ],
+  providers: [...(appConfig.providers ?? []), provideHttpClient(withFetch())],
 });

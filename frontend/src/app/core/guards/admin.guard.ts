@@ -23,10 +23,10 @@ export class AdminGuard implements CanActivate {
     | Promise<boolean | UrlTree>
     | boolean
     | UrlTree {
-    if (this.authService['isAdmin']()) {
+    if (this.authService.isAdmin()) {
       return true;
     }
-    this.router.navigate(['../../customer/home/home.component.html']);
+    this.router.navigate(['/customer/home/']);
     return false;
   }
 }

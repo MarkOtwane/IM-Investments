@@ -59,6 +59,10 @@ export class AuthService {
     return payload ? payload.role : null;
   }
 
+  isAdmin(): boolean {
+    return this.getUserRole() === 'ADMIN';
+  }
+
   logout(): void {
     if (typeof window !== 'undefined') {
       localStorage.removeItem('token');

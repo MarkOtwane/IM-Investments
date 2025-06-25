@@ -6,11 +6,12 @@ import { CartService } from '../../core/services/cart.service';
 import { ProductService } from '../../core/services/products.service';
 import { CurrencyPipe } from '../../shared/pipes/currency.pipe';
 import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-product-detail',
   templateUrl: './product-details.component.html',
-  imports: [CurrencyPipe, FormsModule],
+  imports: [CurrencyPipe, FormsModule, CommonModule],
 })
 export class ProductDetailComponent implements OnInit {
   product: Product | null = null;

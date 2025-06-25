@@ -1,11 +1,12 @@
+import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { AuthService } from '../../core/services/auth.service';
 import { FormsModule } from '@angular/forms';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-password-reset',
   templateUrl: './password-reset.component.html',
-  imports:[FormsModule]
+  imports: [FormsModule, CommonModule],
 })
 export class PasswordResetComponent {
   email: string = '';

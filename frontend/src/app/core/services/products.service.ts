@@ -9,8 +9,6 @@ import { environment } from '../../../enviroments/enviroment';
 })
 export class ProductService {
   private apiUrl = `${environment.apiUrl}/products`;
-  getAll: any;
-  delete: any;
 
   constructor(private http: HttpClient) {}
 

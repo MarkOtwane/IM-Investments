@@ -1,13 +1,14 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Cart } from '../../core/models/cart.model';
 import { CartService } from '../../core/services/cart.service';
 import { CurrencyPipe } from '../../shared/pipes/currency.pipe';
-import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-cart',
   templateUrl: './cart.component.html',
-  imports: [CurrencyPipe, FormsModule],
+  imports: [CurrencyPipe, FormsModule, ReactiveFormsModule, CommonModule],
 })
 export class CartComponent implements OnInit {
   cart: Cart | null = null;

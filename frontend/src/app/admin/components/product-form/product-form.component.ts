@@ -1,15 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { Product } from '../../../core/models/product.model';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Product } from '../../../core/models/product.model';
 import { ProductService } from '../../../core/services/products.service';
 
 @Component({
   selector: 'app-product-form',
   templateUrl: './product-form.component.html',
   styleUrls: ['./product-form.component.css'],
-  imports:[FormsModule]
+  imports: [FormsModule, CommonModule],
 })
 export class ProductFormComponent implements OnInit {
   product: Omit<Product, 'id' | 'createdAt'> = {
@@ -54,10 +55,12 @@ export class ProductFormComponent implements OnInit {
         id: this.productId,
         createdAt: new Date().toISOString(), // or fetch the original createdAt if available
       };
-      this.productService.updateProduct(this.productId.toString(), updatedProduct).subscribe({
-        next: () => this.router.navigate(['/admin']),
-        error: (err: any) => (this.error = 'Failed to update product'),
-      });
+      this.productService
+        .updateProduct(this.productId.toString(), updatedProduct)
+        .subscribe({
+          next: () => this.router.navigate(['/admin']),
+          error: (err: any) => (this.error = 'Failed to update product'),
+        });
     } else {
       const newProduct: Product = {
         ...this.product,

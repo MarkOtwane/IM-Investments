@@ -1,4 +1,4 @@
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { ProductCardComponent } from '../shared/components/product-card/product-card.component';
@@ -24,6 +24,7 @@ import { RegisterComponent } from './register/register.component';
     LoginComponent,
     RegisterComponent,
     PasswordResetComponent,
+    ReactiveFormsModule
   ],
   exports: [ProductCardComponent],
 })
