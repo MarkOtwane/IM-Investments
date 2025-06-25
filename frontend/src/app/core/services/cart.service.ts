@@ -12,11 +12,11 @@ export class CartService {
 
   constructor(private http: HttpClient) {}
 
-  addToCart(productId: number, quantity: number): Observable<CartItem> {
+  addToCart(productId: string, quantity: number): Observable<CartItem> {
     return this.http.post<CartItem>(this.apiUrl, { productId, quantity });
   }
 
-  removeFromCart(cartItemId: number): Observable<CartItem> {
+  removeFromCart(cartItemId: string): Observable<CartItem> {
     return this.http.delete<CartItem>(`${this.apiUrl}/${cartItemId}`);
   }
 

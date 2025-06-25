@@ -1,5 +1,11 @@
-import { Inject, Injectable } from '@angular/core';
-import { CanActivate, Router, UrlTree } from '@angular/router';
+import { Injectable } from '@angular/core';
+import {
+  ActivatedRouteSnapshot,
+  CanActivate,
+  Router,
+  RouterStateSnapshot,
+  UrlTree,
+} from '@angular/router';
 import { Observable } from 'rxjs';
 import { AuthService } from '../services/auth.service';
 
@@ -7,18 +13,20 @@ import { AuthService } from '../services/auth.service';
   providedIn: 'root',
 })
 export class AuthGuard implements CanActivate {
-  constructor(
-    @Inject(AuthService) private authService: AuthService,
-    private router: Router
-  ) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
-  canActivate(): boolean | UrlTree | Observable<boolean | UrlTree> {
+  canActivate(
+    route: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot
+  ):
+    | Observable<boolean | UrlTree>
+    | Promise<boolean | UrlTree>
+    | boolean
+    | UrlTree {
     if (this.authService.isLoggedIn()) {
       return true;
     }
-    // Redirect to login page with return URL
-    return this.router.createUrlTree(['/customer/login'], {
-      queryParams: { returnUrl: this.router.routerState.snapshot.url },
-    });
+    this.router.navigate(['../../customer/login/login.component.html']);
+    return false;
   }
 }

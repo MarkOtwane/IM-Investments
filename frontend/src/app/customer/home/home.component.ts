@@ -3,11 +3,12 @@ import { Product } from '../../core/models/product.model';
 import { CartService } from '../../core/services/cart.service';
 import { ProductService } from '../../core/services/products.service';
 import { CustomerModule } from "../customer.module";
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
-  imports: [CustomerModule],
+  imports: [CustomerModule, FormsModule],
 })
 export class HomeComponent implements OnInit {
   products: Product[] = [];
@@ -19,13 +20,13 @@ export class HomeComponent implements OnInit {
 
   ngOnInit(): void {
     this.productService.getAll().subscribe({
-      next: (products) => (this.products = products),
-      error: (err) => console.error('Failed to load products', err),
+      next: (products: Product[]) => (this.products = products),
+      error: (err: any) => console.error('Failed to load products', err),
     });
   }
 
-  addToCart(productId: number): void {
-    this.cartService.addToCart(productId, 1).subscribe({
+  addToCart(productId: string): void {
+    this.cartService.addToCart(productId.toString(), 1).subscribe({
       next: () => alert('Added to cart!'),
       error: (err) => console.error('Failed to add to cart', err),
     });

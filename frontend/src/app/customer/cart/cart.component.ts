@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { CartService } from '../../core/services/cart.service';
 import { Cart } from '../../core/models/cart.model';
-import { CurrencyPipe } from "../../shared/pipes/currency.pipe";
+import { CartService } from '../../core/services/cart.service';
+import { CurrencyPipe } from '../../shared/pipes/currency.pipe';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-cart',
   templateUrl: './cart.component.html',
-  imports: [CurrencyPipe],
+  imports: [CurrencyPipe, FormsModule],
 })
 export class CartComponent implements OnInit {
   cart: Cart | null = null;
@@ -20,7 +21,7 @@ export class CartComponent implements OnInit {
     });
   }
 
-  removeItem(cartItemId: number): void {
+  removeItem(cartItemId: string): void {
     this.cartService.removeFromCart(cartItemId).subscribe({
       next: () =>
         this.cartService.getCart().subscribe((cart) => (this.cart = cart)),

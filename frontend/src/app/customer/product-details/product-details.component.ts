@@ -5,11 +5,12 @@ import { AuthService } from '../../core/services/auth.service';
 import { CartService } from '../../core/services/cart.service';
 import { ProductService } from '../../core/services/products.service';
 import { CurrencyPipe } from '../../shared/pipes/currency.pipe';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-product-detail',
   templateUrl: './product-details.component.html',
-  imports: [CurrencyPipe],
+  imports: [CurrencyPipe, FormsModule],
 })
 export class ProductDetailComponent implements OnInit {
   product: Product | null = null;
@@ -25,8 +26,8 @@ export class ProductDetailComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const productId = +this.route.snapshot.paramMap.get('id')!;
-    this.productService.getById(productId).subscribe({
+    const productId = this.route.snapshot.paramMap.get('id')!;
+    this.productService.getProductById(productId).subscribe({
       next: (product) => (this.product = product),
       error: (err) => {
         this.error = 'Product not found';
@@ -37,7 +38,7 @@ export class ProductDetailComponent implements OnInit {
 
   addToCart(): void {
     if (!this.authService.isLoggedIn()) {
-      this.router.navigate(['/customer/login'], {
+      this.router.navigate(['../../customer/login'], {
         queryParams: { returnUrl: this.router.url },
       });
       return;
@@ -47,10 +48,10 @@ export class ProductDetailComponent implements OnInit {
       this.quantity > 0 &&
       this.quantity <= this.product.stock
     ) {
-      this.cartService.addToCart(this.product.id, this.quantity).subscribe({
+      this.cartService.addToCart(this.product.id.toString(), this.quantity).subscribe({
         next: () => {
           alert('Added to cart!');
-          this.router.navigate(['/customer/cart']);
+          this.router.navigate(['../../customer/cart']);
         },
         error: (err) => {
           this.error =

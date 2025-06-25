@@ -17,8 +17,8 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit(): void {
     this.productService.getAll().subscribe({
-      next: (products) => (this.products = products),
-      error: (err) => console.error('Failed to load products', err),
+      next: (products: Product[]) => (this.products = products),
+      error: (err: any) => console.error('Failed to load products', err),
     });
   }
 
@@ -32,8 +32,8 @@ export class DashboardComponent implements OnInit {
         next: () =>
           this.productService
             .getAll()
-            .subscribe((products) => (this.products = products)),
-        error: (err) => console.error('Failed to delete product', err),
+            .subscribe((products: Product[]) => (this.products = products)),
+        error: (err: any) => console.error('Failed to delete product', err),
       });
     }
   }

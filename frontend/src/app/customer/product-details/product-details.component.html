@@ -34,7 +34,7 @@
             [(ngModel)]="quantity"
             type="number"
             min="1"
-            [max]="product?.stock"
+            [max]="product?.stock ?? null"
             class="w-16 px-3 py-2 text-center border-none focus:outline-none"
           />
           <button

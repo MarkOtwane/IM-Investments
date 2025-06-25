@@ -60,15 +60,22 @@ export class AuthService {
   }
 
   logout(): void {
-    localStorage.removeItem('token');
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('token');
+    }
   }
 
   public getToken(): string | null {
-    return localStorage.getItem('token');
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('token');
+    }
+    return null;
   }
 
   private setToken(token: string): void {
-    localStorage.setItem('token', token);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('token', token);
+    }
   }
 
   private decodeToken(token: string): JwtPayload | null {

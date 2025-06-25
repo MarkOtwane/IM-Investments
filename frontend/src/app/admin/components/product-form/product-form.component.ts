@@ -9,6 +9,7 @@ import { ProductService } from '../../../core/services/products.service';
   selector: 'app-product-form',
   templateUrl: './product-form.component.html',
   styleUrls: ['./product-form.component.css'],
+  imports:[FormsModule]
 })
 export class ProductFormComponent implements OnInit {
   product: Omit<Product, 'id' | 'createdAt'> = {
@@ -32,7 +33,7 @@ export class ProductFormComponent implements OnInit {
     this.productId = +this.route.snapshot.paramMap.get('id')!;
     if (this.productId) {
       this.isEdit = true;
-      this.productService.getById(this.productId).subscribe({
+      this.productService.getProductById(this.productId!.toString()).subscribe({
         next: (product) =>
           (this.product = {
             name: product.name,
@@ -48,14 +49,24 @@ export class ProductFormComponent implements OnInit {
 
   onSubmit(): void {
     if (this.isEdit && this.productId) {
-      this.productService.update(this.productId, this.product).subscribe({
+      const updatedProduct: Product = {
+        ...(this.product as Product),
+        id: this.productId,
+        createdAt: new Date().toISOString(), // or fetch the original createdAt if available
+      };
+      this.productService.updateProduct(this.productId.toString(), updatedProduct).subscribe({
         next: () => this.router.navigate(['/admin']),
-        error: (err) => (this.error = 'Failed to update product'),
+        error: (err: any) => (this.error = 'Failed to update product'),
       });
     } else {
-      this.productService.create(this.product).subscribe({
+      const newProduct: Product = {
+        ...this.product,
+        id: 0, // or use a temporary value, backend should assign the real id
+        createdAt: new Date().toISOString(),
+      };
+      this.productService.createProduct(newProduct).subscribe({
         next: () => this.router.navigate(['/admin']),
-        error: (err) => (this.error = 'Failed to create product'),
+        error: (err: any) => (this.error = 'Failed to create product'),
       });
     }
   }
