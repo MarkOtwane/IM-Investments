@@ -7,3 +7,5 @@ export interface Product {
   stock: number;
   createdAt: string;
 }
+
+export type CreateProductDto = Omit<Product, 'id' | 'createdAt'>;
