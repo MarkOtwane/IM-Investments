@@ -9,7 +9,7 @@ import { FooterComponent } from './shared/components/footer/footer.component';
 import { HeaderComponent } from './shared/components/header/header.component';
 
 export const routes: Routes = [
-  { path: '', pathMatch: 'full', component: RegisterComponent },
+  { path: '', pathMatch: 'full', component: HomeComponent },
   { path: 'header', component: HeaderComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'login', component: LoginComponent },

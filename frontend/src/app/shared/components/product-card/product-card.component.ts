@@ -17,6 +17,7 @@ export class ProductCardComponent {
   @Output() deleteProduct = new EventEmitter<number>(); 
 
   onAddToCart(): void {
+    alert('button is clicked');
     this.addToCart.emit(this.product.id);
   }
 

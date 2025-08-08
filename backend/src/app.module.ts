@@ -7,14 +7,12 @@ import { CartModule } from './cart/cart.module';
 import { MailerModule } from './mailer/mailer.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { ProductsModule } from './products/products.module';
-import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
     MailerModule,
     ConfigModule.forRoot(),
     PrismaModule,
-    UserModule,
     AuthModule,
     ProductsModule,
     CartModule,
