@@ -1,4 +1,11 @@
-import { IsString, IsNotEmpty, IsNumber, Min, IsUrl } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  IsNumber,
+  Min,
+  IsUrl,
+  IsOptional,
+} from 'class-validator';
 
 export class CreateProductDto {
   @IsString()
@@ -14,8 +21,8 @@ export class CreateProductDto {
   price: number;
 
   @IsUrl()
-  @IsNotEmpty()
-  imageUrl: string;
+  @IsOptional()
+  imageUrl?: string;
 
   @IsNumber()
   @Min(0)

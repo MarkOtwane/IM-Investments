@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -8,27 +10,36 @@ export class ProductsService {
   constructor(private prisma: PrismaService) {}
 
   async create(createProductDto: CreateProductDto) {
+    // Build the data object dynamically
+    const data: any = {
+      name: createProductDto.name,
+      description: createProductDto.description,
+      price: createProductDto.price,
+      stock: createProductDto.stock,
+    };
+
+    // Only add imageUrl if it's provided
+    if (createProductDto.imageUrl !== undefined) {
+      data.imageUrl = createProductDto.imageUrl;
+    }
+
     return this.prisma.product.create({
-      data: {
-        name: createProductDto.name,
-        description: createProductDto.description,
-        price: createProductDto.price,
-        imageUrl: createProductDto.imageUrl,
-        stock: createProductDto.stock,
-      },
+      data,
     });
   }
 
   async findAll(search?: string, page = 1, limit = 10) {
     const skip = (page - 1) * limit;
-    const where = search
-      ? {
-          OR: [
-            { name: { contains: search, mode: 'insensitive' as const } },
-            { description: { contains: search, mode: 'insensitive' as const } },
-          ],
-        }
-      : {};
+    let where: any = {};
+
+    if (search) {
+      where = {
+        OR: [
+          { name: { contains: search, mode: 'insensitive' } },
+          { description: { contains: search, mode: 'insensitive' } },
+        ],
+      };
+    }
 
     return this.prisma.product.findMany({
       where,

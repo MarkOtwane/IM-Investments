@@ -20,10 +20,15 @@ export class LoginComponent {
   onSubmit(): void {
     this.authService.login(this.email, this.password).subscribe({
       next: () => {
-        const returnUrl =
-          this.router.parseUrl(this.router.url).queryParams['returnUrl'] ||
-          '/home';
-        this.router.navigateByUrl(returnUrl);
+        // Check if user is admin and redirect accordingly
+        if (this.authService.isAdmin()) {
+          this.router.navigate(['/admin']);
+        } else {
+          const returnUrl =
+            this.router.parseUrl(this.router.url).queryParams['returnUrl'] ||
+            '/home';
+          this.router.navigateByUrl(returnUrl);
+        }
       },
       error: (err) => (this.error = 'Invalid email or password'),
     });

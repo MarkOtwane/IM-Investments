@@ -24,6 +24,7 @@ export class ProductFormComponent implements OnInit {
   isEdit = false;
   productId: number | null = null;
   error: string | null = null;
+  selectedFile: File | null = null;
 
   constructor(
     private productService: ProductService,
@@ -56,31 +57,74 @@ export class ProductFormComponent implements OnInit {
     }
   }
 
+  onFileSelected(event: any): void {
+    this.selectedFile = event.target.files[0];
+  }
+
   onSubmit(): void {
     if (this.isEdit && this.productId !== null) {
-      const updatedProduct: Product = {
-        ...this.product,
-        id: this.productId,
-        createdAt: new Date().toISOString(),
-      };
+      // For updates, we can send either JSON or form data
+      if (this.selectedFile) {
+        // If a new file is selected, use form data
+        const formData = new FormData();
+        formData.append('name', this.product.name);
+        formData.append('description', this.product.description);
+        formData.append('price', this.product.price.toString());
+        formData.append('stock', this.product.stock.toString());
+        formData.append('image', this.selectedFile);
 
-      this.productService
-        .updateProduct(this.productId.toString(), updatedProduct)
-        .subscribe({
+        this.productService.updateProductWithImage(this.productId.toString(), formData).subscribe({
           next: () => this.router.navigate(['/admin']),
-          error: (err) => {
+          error: (err: any) => {
             console.error('Failed to update product:', err);
             this.error = 'Failed to update product';
           },
         });
+      } else {
+        // If no new file, send JSON
+        const updatedProduct: Product = {
+          ...this.product,
+          id: this.productId,
+          createdAt: new Date().toISOString(),
+        };
+
+        this.productService
+          .updateProduct(this.productId.toString(), updatedProduct)
+          .subscribe({
+            next: () => this.router.navigate(['/admin']),
+            error: (err: any) => {
+              console.error('Failed to update product:', err);
+              this.error = 'Failed to update product';
+            },
+          });
+      }
     } else {
-      this.productService.createProduct(this.product).subscribe({
-        next: () => this.router.navigate(['/admin']),
-        error: (err) => {
-          console.error('Failed to create product:', err);
-          this.error = 'Failed to create product';
-        },
-      });
+      // For creation, always use form data if there's a file
+      if (this.selectedFile) {
+        const formData = new FormData();
+        formData.append('name', this.product.name);
+        formData.append('description', this.product.description);
+        formData.append('price', this.product.price.toString());
+        formData.append('stock', this.product.stock.toString());
+        formData.append('image', this.selectedFile);
+
+        this.productService.createProductWithImage(formData).subscribe({
+          next: () => this.router.navigate(['/admin']),
+          error: (err: any) => {
+            console.error('Failed to create product:', err);
+            this.error = 'Failed to create product';
+          },
+        });
+      } else {
+        // If no file, send JSON (though this might not work with Cloudinary-only setup)
+        this.productService.createProduct(this.product).subscribe({
+          next: () => this.router.navigate(['/admin']),
+          error: (err: any) => {
+            console.error('Failed to create product:', err);
+            this.error = 'Failed to create product';
+          },
+        });
+      }
     }
   }
 }

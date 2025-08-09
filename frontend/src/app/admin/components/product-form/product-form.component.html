@@ -1,70 +1,74 @@
 <div class="container mx-auto px-4 py-8 bg-gray-100 min-h-screen">
-    <h1 class="text-3xl font-bold text-gray-800 mb-6">{{ isEdit ? 'Edit Product' : 'Create Product' }}</h1>
-    <div class="w-full max-w-lg bg-white shadow-md rounded-lg p-6">
-      <form (ngSubmit)="onSubmit()" class="space-y-4">
-        <div>
-          <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
-          <input
-            id="name"
-            [(ngModel)]="product.name"
-            name="name"
-            type="text"
-            required
-            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-          >
-        </div>
-        <div>
-          <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
-          <textarea
-            id="description"
-            [(ngModel)]="product.description"
-            name="description"
-            required
-            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-          ></textarea>
-        </div>
-        <div>
-          <label for="price" class="block text-sm font-medium text-gray-700">Price</label>
-          <input
-            id="price"
-            [(ngModel)]="product.price"
-            name="price"
-            type="number"
-            step="0.01"
-            required
-            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-          >
-        </div>
-        <div>
-          <label for="imageUrl" class="block text-sm font-medium text-gray-700">Image URL</label>
-          <input
-            id="imageUrl"
-            [(ngModel)]="product.imageUrl"
-            name="imageUrl"
-            type="url"
-            required
-            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-          >
-        </div>
-        <div>
-          <label for="stock" class="block text-sm font-medium text-gray-700">Stock</label>
-          <input
-            id="stock"
-            [(ngModel)]="product.stock"
-            name="stock"
-            type="number"
-            required
-            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-          >
-        </div>
-        <div *ngIf="error" class="text-red-500 text-sm">{{ error }}</div>
-        <button
-          type="submit"
-          class="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600"
-          [disabled]="!product.name || !product.description || !product.price || !product.imageUrl || !product.stock"
+  <h1 class="text-3xl font-bold text-gray-800 mb-6">{{ isEdit ? 'Edit Product' : 'Create Product' }}</h1>
+  <div class="w-full max-w-lg bg-white shadow-md rounded-lg p-6">
+    <form (ngSubmit)="onSubmit()" class="space-y-4">
+      <div>
+        <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
+        <input
+          id="name"
+          [(ngModel)]="product.name"
+          name="name"
+          type="text"
+          required
+          class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
         >
-          {{ isEdit ? 'Update Product' : 'Create Product' }}
-        </button>
-      </form>
-    </div>
+      </div>
+      <div>
+        <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
+        <textarea
+          id="description"
+          [(ngModel)]="product.description"
+          name="description"
+          required
+          class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+        ></textarea>
+      </div>
+      <div>
+        <label for="price" class="block text-sm font-medium text-gray-700">Price</label>
+        <input
+          id="price"
+          [(ngModel)]="product.price"
+          name="price"
+          type="number"
+          step="0.01"
+          required
+          class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+        >
+      </div>
+      <div>
+        <label for="image" class="block text-sm font-medium text-gray-700">Product Image</label>
+        <input
+          id="image"
+          type="file"
+          (change)="onFileSelected($event)"
+          accept="image/*"
+          class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+        >
+        <p class="mt-1 text-sm text-gray-500">Select an image to upload for this product</p>
+      </div>
+      <div *ngIf="!isEdit && product.imageUrl">
+        <label class="block text-sm font-medium text-gray-700">Current Image Preview</label>
+        <img [src]="product.imageUrl" alt="Current product image" class="mt-1 h-32 w-auto object-contain">
+      </div>
+      <div>
+        <label for="stock" class="block text-sm font-medium text-gray-700">Stock</label>
+        <input
+          id="stock"
+          [(ngModel)]="product.stock"
+          name="stock"
+          type="number"
+          required
+          class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+        >
+      </div>
+      <div *ngIf="error" class="text-red-500 text-sm">{{ error }}</div>
+      <button
+        type="submit"
+        class="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600"
+        [disabled]="!product.name || !product.description || !product.price || !product.stock"
+      >
+        {{ isEdit ? 'Update Product' : 'Create Product' }}
+      </button>
+    </form>
   </div>
+</div>

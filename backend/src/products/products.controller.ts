@@ -9,26 +9,44 @@ import {
   Patch,
   Post,
   Query,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
   ValidationPipe,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { Roles } from '../auth/roles.decorator';
 import { RolesGuard } from '../auth/roles.guard';
+import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductsService } from './products.service';
 
 @Controller('products')
 export class ProductsController {
-  constructor(private readonly productsService: ProductsService) {}
+  constructor(
+    private readonly productsService: ProductsService,
+    private readonly cloudinaryService: CloudinaryService,
+  ) {}
 
   @Post()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('ADMIN')
-  create(@Body(ValidationPipe) createProductDto: CreateProductDto) {
+  @UseInterceptors(FileInterceptor('image'))
+  async create(
+    @Body(ValidationPipe) createProductDto: CreateProductDto,
+    @UploadedFile() file: any,
+  ) {
+    // If an image file is uploaded, upload it to Cloudinary and update the imageUrl
+    if (file) {
+      const imageUrl = await this.cloudinaryService.uploadImage(file);
+      createProductDto.imageUrl = imageUrl;
+    }
+
     return this.productsService.create(createProductDto);
   }
+
   @Get()
   findAll(
     @Query('search') search: string,
@@ -46,10 +64,18 @@ export class ProductsController {
   @Patch(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('ADMIN')
-  update(
+  @UseInterceptors(FileInterceptor('image'))
+  async update(
     @Param('id', ParseIntPipe) id: number,
     @Body(ValidationPipe) updateProductDto: UpdateProductDto,
+    @UploadedFile() file: any,
   ) {
+    // If an image file is uploaded, upload it to Cloudinary and update the imageUrl
+    if (file) {
+      const imageUrl = await this.cloudinaryService.uploadImage(file);
+      updateProductDto.imageUrl = imageUrl;
+    }
+
     return this.productsService.update(id, updateProductDto);
   }
 
@@ -60,11 +86,3 @@ export class ProductsController {
     return this.productsService.remove(id);
   }
 }
-
-// Test endpoints in Postman:
-
-//     POST http://localhost:3000/products (admin, with JWT) with { "name": "T-Shirt", "description": "Cotton T-Shirt", "price": 19.99, "imageUrl": "https://example.com/tshirt.jpg", "stock": 100 }.
-//     GET http://localhost:3000/products?search=t-shirt&page=1&limit=10 (public).
-//     GET http://localhost:3000/products/1 (public).
-//     PATCH http://localhost:3000/products/1 (admin, with JWT).
-//     DELETE http://localhost:3000/products/1 (admin, with JWT).
