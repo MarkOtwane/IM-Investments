@@ -35,7 +35,7 @@ export class CartComponent implements OnInit {
     });
   }
 
-  removeItem(cartItemId: string): void {
+  removeItem(cartItemId: number): void {
     this.cartService.removeFromCart(cartItemId).subscribe({
       next: () => this.loadCart(),
       error: (err) => console.error('Failed to remove item', err),

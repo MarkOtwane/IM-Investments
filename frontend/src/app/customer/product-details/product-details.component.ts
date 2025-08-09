@@ -49,7 +49,7 @@ export class ProductDetailComponent implements OnInit {
       this.quantity > 0 &&
       this.quantity <= this.product.stock
     ) {
-      this.cartService.addToCart(this.product.id.toString(), this.quantity).subscribe({
+      this.cartService.addToCart(this.product.id, this.quantity).subscribe({
         next: () => {
           alert('Added to cart!');
           this.router.navigate(['../../customer/cart']);

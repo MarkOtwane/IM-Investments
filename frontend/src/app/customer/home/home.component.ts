@@ -38,7 +38,7 @@ export class HomeComponent implements OnInit {
   }
 
   addToCart(productId: number, quantity: number): void {
-    this.cartService.addToCart(productId.toString(), quantity).subscribe({
+    this.cartService.addToCart(productId, quantity).subscribe({
       next: () => {
         alert(`Added ${quantity} item(s) to cart!`);
         // Reset quantity to 1 after adding to cart

@@ -12,15 +12,15 @@ export class CartService {
 
   constructor(private http: HttpClient) {}
 
-  addToCart(productId: string, quantity: number): Observable<CartItem> {
+  addToCart(productId: number, quantity: number): Observable<CartItem> {
     return this.http.post<CartItem>(this.apiUrl, { productId, quantity });
   }
 
-  updateCartItem(cartItemId: string, quantity: number): Observable<CartItem> {
+  updateCartItem(cartItemId: number, quantity: number): Observable<CartItem> {
     return this.http.put<CartItem>(`${this.apiUrl}/${cartItemId}`, { quantity });
   }
 
-  removeFromCart(cartItemId: string): Observable<CartItem> {
+  removeFromCart(cartItemId: number): Observable<CartItem> {
     return this.http.delete<CartItem>(`${this.apiUrl}/${cartItemId}`);
   }
 

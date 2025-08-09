@@ -1,6 +1,5 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
 }
 
 datasource db {
@@ -26,8 +25,7 @@ model Product {
   price       Float
   imageUrl    String
   stock       Int
-  categoryId  Int
-  category    Category   @relation(fields: [categoryId], references: [id])
+  category    Category
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
   cartItems   CartItem[]
@@ -54,8 +52,9 @@ enum Role {
   CUSTOMER
 }
 
-model Category {
-  id        Int        @id @default(autoincrement())
-  name      String     @unique
-  products  Product[]
+enum Category {
+  CLOTHING
+  ELECTRONICS
+  HOME_KITCHEN
+  BEAUTY
 }

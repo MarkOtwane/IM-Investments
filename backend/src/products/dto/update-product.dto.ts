@@ -1,4 +1,13 @@
-import { IsString, IsNumber, Min, IsUrl, IsOptional } from 'class-validator';
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+import {
+  IsEnum,
+  IsNumber,
+  IsOptional,
+  IsString,
+  IsUrl,
+  Min,
+} from 'class-validator';
+import { Category } from '@prisma/client';
 
 export class UpdateProductDto {
   @IsString()
@@ -22,4 +31,8 @@ export class UpdateProductDto {
   @Min(0)
   @IsOptional()
   stock?: number;
+
+  @IsEnum(Category)
+  @IsOptional()
+  category?: Category;
 }
