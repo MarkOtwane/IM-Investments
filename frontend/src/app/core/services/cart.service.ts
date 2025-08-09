@@ -16,6 +16,10 @@ export class CartService {
     return this.http.post<CartItem>(this.apiUrl, { productId, quantity });
   }
 
+  updateCartItem(cartItemId: string, quantity: number): Observable<CartItem> {
+    return this.http.put<CartItem>(`${this.apiUrl}/${cartItemId}`, { quantity });
+  }
+
   removeFromCart(cartItemId: string): Observable<CartItem> {
     return this.http.delete<CartItem>(`${this.apiUrl}/${cartItemId}`);
   }

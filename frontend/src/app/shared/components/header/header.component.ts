@@ -1,7 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
+import { CartService } from '../../../core/services/cart.service';
+import { Cart } from '../../../core/models/cart.model';
 
 @Component({
   selector: 'app-header',
@@ -9,10 +11,24 @@ import { AuthService } from '../../../core/services/auth.service';
   styleUrls: ['./header.component.css'],
   imports: [CommonModule, RouterModule],
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnInit {
   isMenuOpen: boolean = false;
+  cart: Cart | null = null;
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(
+    private authService: AuthService,
+    private cartService: CartService,
+    private router: Router
+  ) {}
+
+  ngOnInit(): void {
+    if (this.authService.isLoggedIn()) {
+      this.cartService.getCart().subscribe({
+        next: (cart) => (this.cart = cart),
+        error: (err) => console.error('Failed to load cart', err),
+      });
+    }
+  }
 
   get isLoggedIn(): boolean {
     return this.authService.isLoggedIn();
@@ -27,6 +43,11 @@ export class HeaderComponent {
 
   get isAdmin(): boolean {
     return this.authService.getUserRole() === 'ADMIN';
+  }
+
+  get cartItemCount(): number {
+    if (!this.cart) return 0;
+    return this.cart.items.reduce((total, item) => total + item.quantity, 0);
   }
 
   toggleMenu(): void {

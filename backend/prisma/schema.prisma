@@ -26,6 +26,8 @@ model Product {
   price       Float
   imageUrl    String
   stock       Int
+  categoryId  Int
+  category    Category   @relation(fields: [categoryId], references: [id])
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
   cartItems   CartItem[]
@@ -50,4 +52,10 @@ model CartItem {
 enum Role {
   ADMIN
   CUSTOMER
+}
+
+model Category {
+  id        Int        @id @default(autoincrement())
+  name      String     @unique
+  products  Product[]
 }

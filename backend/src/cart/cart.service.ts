@@ -70,6 +70,54 @@ export class CartService {
     });
   }
 
+  async updateCartItem(userId: number, cartItemId: number, quantity: number) {
+    // Check if cart item exists and belongs to user
+    const cartItem = await this.prisma.cartItem.findUnique({
+      where: { id: cartItemId },
+      include: { cart: true },
+    });
+
+    if (!cartItem) {
+      throw new NotFoundException(`Cart item with ID ${cartItemId} not found`);
+    }
+
+    if (cartItem.cart.userId !== userId) {
+      throw new BadRequestException('Cart item does not belong to user');
+    }
+
+    // Check if product has enough stock
+    const product = await this.prisma.product.findUnique({
+      where: { id: cartItem.productId },
+    });
+
+    if (!product) {
+      throw new NotFoundException(
+        `Product with ID ${cartItem.productId} not found`,
+      );
+    }
+
+    if (product.stock + cartItem.quantity < quantity) {
+      throw new BadRequestException(
+        `Insufficient stock for product ${product.name}`,
+      );
+    }
+
+    // Use transaction to ensure atomicity
+    return this.prisma.$transaction(async (prisma) => {
+      // Update product stock
+      await prisma.product.update({
+        where: { id: cartItem.productId },
+        data: { stock: product.stock + cartItem.quantity - quantity },
+      });
+
+      // Update cart item quantity
+      return prisma.cartItem.update({
+        where: { id: cartItemId },
+        data: { quantity },
+      });
+    });
+  }
+
   async getCart(userId: number) {
     const cart = await this.prisma.cart.findUnique({
       where: { userId },

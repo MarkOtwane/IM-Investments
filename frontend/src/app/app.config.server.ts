@@ -1,4 +1,4 @@
-import { provideHttpClient } from "@angular/common/http";
+import { provideHttpClient, withFetch } from "@angular/common/http";
 import { ApplicationConfig, mergeApplicationConfig } from "@angular/core";
 import { provideServerRendering } from "@angular/platform-server";
 import { provideServerRouting } from "@angular/ssr";
@@ -10,7 +10,7 @@ const serverConfig: ApplicationConfig = {
   providers: [
     provideServerRendering(),
     provideServerRouting(serverRoutes),
-    provideHttpClient(),
+    provideHttpClient(withFetch()),
   ],
 };
 

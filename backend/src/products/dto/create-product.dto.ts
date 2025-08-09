@@ -27,4 +27,8 @@ export class CreateProductDto {
   @IsNumber()
   @Min(0)
   stock: number;
+
+  @IsNumber()
+  @IsNotEmpty()
+  categoryId: number;
 }

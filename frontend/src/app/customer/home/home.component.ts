@@ -29,12 +29,12 @@ export class HomeComponent implements OnInit {
         products.forEach((product) => {
           this.productQuantities[product.id] = 1;
         });
+
+        // For demo purposes, use the first few products as recently viewed
+        this.recentlyViewed = this.products.slice(0, 4);
       },
       error: (err: any) => console.error('Failed to load products', err),
     });
-
-    // For demo purposes, use the first few products as recently viewed
-    this.recentlyViewed = this.products.slice(0, 4);
   }
 
   addToCart(productId: number, quantity: number): void {
@@ -43,8 +43,14 @@ export class HomeComponent implements OnInit {
         alert(`Added ${quantity} item(s) to cart!`);
         // Reset quantity to 1 after adding to cart
         this.productQuantities[productId] = 1;
+        
+        // Update cart in header (if needed)
+        // This would require a cart service event or shared state
       },
-      error: (err) => console.error('Failed to add to cart', err),
+      error: (err) => {
+        console.error('Failed to add to cart', err);
+        alert('Failed to add item to cart. Please try again.');
+      },
     });
   }
 

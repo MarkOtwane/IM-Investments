@@ -17,9 +17,16 @@
       <a
         *ngIf="isLoggedIn"
         routerLink="/customer/cart"
-        class="hover:text-blue-200 transition-colors"
-        >Cart</a
+        class="hover:text-blue-200 transition-colors relative"
       >
+        Cart
+        <span
+          *ngIf="cartItemCount > 0"
+          class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center"
+        >
+          {{ cartItemCount }}
+        </span>
+      </a>
       <a
         *ngIf="!isLoggedIn"
         routerLink="/customer/login"
@@ -91,10 +98,17 @@
       <a
         *ngIf="isLoggedIn"
         routerLink="/customer/cart"
-        class="hover:text-blue-200 transition-colors"
+        class="hover:text-blue-200 transition-colors relative"
         (click)="toggleMenu()"
-        >Cart</a
       >
+        Cart
+        <span
+          *ngIf="cartItemCount > 0"
+          class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center"
+        >
+          {{ cartItemCount }}
+        </span>
+      </a>
       <a
         *ngIf="!isLoggedIn"
         routerLink="/customer/login"
