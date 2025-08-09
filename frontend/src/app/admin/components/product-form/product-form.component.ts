@@ -2,7 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { CreateProductDto, Product } from '../../../core/models/product.model';
+import { Category, CreateProductDto, Product } from '../../../core/models/product.model';
+import { CategoriesService } from '../../../core/services/categories.service';
 import { ProductService } from '../../../core/services/products.service';
 
 @Component({
@@ -19,8 +20,10 @@ export class ProductFormComponent implements OnInit {
     price: 0,
     imageUrl: '',
     stock: 0,
+    categoryId: 1, // Default to first category
   };
 
+  categories: Category[] = [];
   isEdit = false;
   productId: number | null = null;
   error: string | null = null;
@@ -28,11 +31,15 @@ export class ProductFormComponent implements OnInit {
 
   constructor(
     private productService: ProductService,
+    private categoriesService: CategoriesService,
     private route: ActivatedRoute,
     private router: Router
   ) {}
 
   ngOnInit(): void {
+    // Load categories first
+    this.loadCategories();
+
     const idParam = this.route.snapshot.paramMap.get('id');
     this.productId = idParam ? +idParam : null;
 
@@ -47,6 +54,7 @@ export class ProductFormComponent implements OnInit {
             price: product.price,
             imageUrl: product.imageUrl,
             stock: product.stock,
+            categoryId: product.categoryId,
           };
         },
         error: (err) => {
@@ -55,6 +63,21 @@ export class ProductFormComponent implements OnInit {
         },
       });
     }
+  }
+
+  loadCategories(): void {
+    this.categoriesService.getAllCategories().subscribe({
+      next: (categories) => {
+        this.categories = categories;
+        if (categories.length > 0 && !this.isEdit) {
+          this.product.categoryId = categories[0].id;
+        }
+      },
+      error: (err) => {
+        console.error('Failed to load categories', err);
+        this.error = 'Failed to load categories';
+      },
+    });
   }
 
   onFileSelected(event: any): void {
@@ -71,6 +94,7 @@ export class ProductFormComponent implements OnInit {
         formData.append('description', this.product.description);
         formData.append('price', this.product.price.toString());
         formData.append('stock', this.product.stock.toString());
+        formData.append('categoryId', this.product.categoryId.toString());
         formData.append('image', this.selectedFile);
 
         this.productService.updateProductWithImage(this.productId.toString(), formData).subscribe({
@@ -86,6 +110,7 @@ export class ProductFormComponent implements OnInit {
           ...this.product,
           id: this.productId,
           createdAt: new Date().toISOString(),
+          category: this.categories.find(c => c.id === this.product.categoryId) || { id: 0, name: '' },
         };
 
         this.productService
@@ -106,6 +131,7 @@ export class ProductFormComponent implements OnInit {
         formData.append('description', this.product.description);
         formData.append('price', this.product.price.toString());
         formData.append('stock', this.product.stock.toString());
+        formData.append('categoryId', this.product.categoryId.toString());
         formData.append('image', this.selectedFile);
 
         this.productService.createProductWithImage(formData).subscribe({
@@ -116,7 +142,7 @@ export class ProductFormComponent implements OnInit {
           },
         });
       } else {
-        // If no file, send JSON (though this might not work with Cloudinary-only setup)
+        // If no file, send JSON
         this.productService.createProduct(this.product).subscribe({
           next: () => this.router.navigate(['/admin']),
           error: (err: any) => {

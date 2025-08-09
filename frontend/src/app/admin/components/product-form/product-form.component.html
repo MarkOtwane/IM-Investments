@@ -36,6 +36,20 @@
         >
       </div>
       <div>
+        <label for="category" class="block text-sm font-medium text-gray-700">Category</label>
+        <select
+          id="category"
+          [(ngModel)]="product.categoryId"
+          name="category"
+          required
+          class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+        >
+          <option *ngFor="let category of categories" [value]="category.id">
+            {{ category.name }}
+          </option>
+        </select>
+      </div>
+      <div>
         <label for="image" class="block text-sm font-medium text-gray-700">Product Image</label>
         <input
           id="image"
@@ -65,7 +79,7 @@
       <button
         type="submit"
         class="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600"
-        [disabled]="!product.name || !product.description || !product.price || !product.stock"
+        [disabled]="!product.name || !product.description || !product.price || !product.stock || !product.categoryId"
       >
         {{ isEdit ? 'Update Product' : 'Create Product' }}
       </button>

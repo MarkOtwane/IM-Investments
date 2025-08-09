@@ -1,7 +1,7 @@
-/* Login component styles */
-.login-container {
+/* Register component styles */
+.register-container {
     min-height: 100vh;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #10b981 0%, #3b82f6 50%, #8b5cf6 100%);
 }
 
 /* Form animations */
@@ -23,7 +23,7 @@
 
 /* Input focus effects */
 .form-input:focus {
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
 }
 
 /* Button hover effects */
@@ -33,7 +33,7 @@
 
 .btn-primary:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.4);
+    box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.4);
 }
 
 .btn-primary:active {
@@ -85,19 +85,19 @@
     color: #374151;
 }
 
-/* Social login button hover */
-.social-btn {
-    transition: all 0.3s ease;
+/* Checkbox styling */
+.checkbox-custom {
+    transition: all 0.2s ease;
 }
 
-.social-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+.checkbox-custom:checked {
+    background-color: #10b981;
+    border-color: #10b981;
 }
 
 /* Responsive design */
 @media (max-width: 640px) {
-    .login-container {
+    .register-container {
         padding: 1rem;
     }
 
@@ -108,12 +108,12 @@
 
 /* Accessibility improvements */
 .form-input:focus-visible {
-    outline: 2px solid #3b82f6;
+    outline: 2px solid #10b981;
     outline-offset: 2px;
 }
 
 .btn-primary:focus-visible {
-    outline: 2px solid #3b82f6;
+    outline: 2px solid #10b981;
     outline-offset: 2px;
 }
 
@@ -131,6 +131,28 @@
     }
 
     .form-input:focus {
-        border-color: #3b82f6;
+        border-color: #10b981;
+    }
+}
+
+/* Success message styling */
+.success-message {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    border-radius: 0.75rem;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }

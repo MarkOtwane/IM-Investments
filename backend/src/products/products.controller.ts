@@ -52,8 +52,10 @@ export class ProductsController {
     @Query('search') search: string,
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
+    @Query('categoryId') categoryId?: string,
   ) {
-    return this.productsService.findAll(search, page, limit);
+    const categoryIdNumber = categoryId ? parseInt(categoryId, 10) : undefined;
+    return this.productsService.findAll(search, page, limit, categoryIdNumber);
   }
 
   @Get(':id')

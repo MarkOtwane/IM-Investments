@@ -20,7 +20,7 @@ export class ProductsService {
       description: createProductDto.description,
       price: createProductDto.price,
       stock: createProductDto.stock,
-      category: createProductDto.category, // ✅ include category
+      categoryId: createProductDto.categoryId,
     };
 
     // Only add imageUrl if it's provided
@@ -30,10 +30,13 @@ export class ProductsService {
 
     return this.prisma.product.create({
       data,
+      include: {
+        category: true,
+      },
     });
   }
 
-  async findAll(search?: string, page = 1, limit = 10, category?: string) {
+  async findAll(search?: string, page = 1, limit = 10, categoryId?: number) {
     const skip = (page - 1) * limit;
     let where: any = {};
 
@@ -46,8 +49,8 @@ export class ProductsService {
     }
 
     // Optional category filter
-    if (category) {
-      where.category = category;
+    if (categoryId) {
+      where.categoryId = categoryId;
     }
 
     return this.prisma.product.findMany({
@@ -55,11 +58,19 @@ export class ProductsService {
       skip,
       take: limit,
       orderBy: { createdAt: 'desc' },
+      include: {
+        category: true,
+      },
     });
   }
 
   async findOne(id: number) {
-    const product = await this.prisma.product.findUnique({ where: { id } });
+    const product = await this.prisma.product.findUnique({ 
+      where: { id },
+      include: {
+        category: true,
+      },
+    });
     if (!product) {
       throw new NotFoundException(`Product with ID ${id} not found`);
     }
@@ -90,13 +101,16 @@ export class ProductsService {
     if (updateProductDto.stock !== undefined) {
       updateData.stock = updateProductDto.stock;
     }
-    if (updateProductDto.category) {
-      updateData.category = updateProductDto.category;
+    if (updateProductDto.categoryId) {
+      updateData.categoryId = updateProductDto.categoryId;
     }
 
     return this.prisma.product.update({
       where: { id },
       data: updateData,
+      include: {
+        category: true,
+      },
     });
   }
 

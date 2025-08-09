@@ -6,9 +6,7 @@ import {
   Min,
   IsUrl,
   IsOptional,
-  IsEnum,
 } from 'class-validator';
-import { Category } from '@prisma/client';
 
 export class CreateProductDto {
   @IsString()
@@ -31,9 +29,6 @@ export class CreateProductDto {
   @Min(0)
   stock: number;
 
-  @IsEnum(Category, {
-    message:
-      'Category must be one of: CLOTHING, ELECTRONICS, HOME_KITCHEN, BEAUTY',
-  })
-  category: Category;
+  @IsNumber()
+  categoryId: number;
 }
