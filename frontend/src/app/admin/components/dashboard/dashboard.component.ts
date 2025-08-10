@@ -6,6 +6,7 @@ import { Category, Product } from '../../../core/models/product.model';
 import { AuthService } from '../../../core/services/auth.service';
 import { CategoriesService } from '../../../core/services/categories.service';
 import { ProductService } from '../../../core/services/products.service';
+import { AdminSidebarComponent } from '../sidebar/sidebar.component';
 
 interface DashboardStats {
   totalProducts: number;
@@ -25,7 +26,7 @@ interface RecentActivity {
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'],
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, AdminSidebarComponent],
 })
 export class DashboardComponent implements OnInit {
   products: Product[] = [];

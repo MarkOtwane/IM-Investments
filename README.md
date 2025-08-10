@@ -1,6 +1,6 @@
-# Shopie - Full-Stack E-Commerce Platform
+# IM Investments - Full-Stack E-Commerce Platform
 
-Shopie is a full-stack e-commerce platform using Angular (frontend) and NestJS (backend). Customers can browse, search, and shop. Admins manage products. Includes authentication, cart system, and dynamic stock management.
+IM Investments is a full-stack e-commerce platform using Angular (frontend) and NestJS (backend). Customers can browse, search, and shop. Admins manage products. Includes authentication, cart system, and dynamic stock management.
 
 ## Features
 

@@ -1,33 +1,24 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
-import { PrismaClient } from '../generated/prisma/client';
-
+import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log('Seeding default categories...');
+  const categories = [
+    { name: 'Clothing' },
+    { name: 'Electronics' },
+    { name: 'Home & Kitchen' },
+    { name: 'Beauty' },
+  ];
 
-  const categories = ['Clothing', 'Electronics', 'Home & Kitchen', 'Beauty'];
-
-  for (const categoryName of categories) {
-    // Check if category already exists
-    const existingCategory = await prisma.category.findUnique({
-      where: { name: categoryName },
+  for (const category of categories) {
+    await prisma.category.upsert({
+      where: { name: category.name },
+      update: {},
+      create: category,
     });
-
-    if (!existingCategory) {
-      // Create category if it doesn't exist
-      await prisma.category.create({
-        data: {
-          name: categoryName,
-        },
-      });
-      console.log(`Created category: ${categoryName}`);
-    } else {
-      console.log(`Category already exists: ${categoryName}`);
-    }
   }
 
-  console.log('Seeding completed.');
+  console.log('✅ Categories seeded');
 }
 
 main()

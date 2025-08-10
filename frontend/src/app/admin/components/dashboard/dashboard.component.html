@@ -1,492 +1,388 @@
-<!-- Admin Dashboard -->
-<div class="min-h-screen bg-gray-50">
-  <!-- Header Section -->
-  <div class="bg-white shadow-sm border-b border-gray-200">
-    <div class="container mx-auto px-4 py-6">
+<!-- Admin Dashboard with Sidebar -->
+<div class="flex min-h-screen bg-gray-50">
+  <!-- Sidebar -->
+  <app-admin-sidebar></app-admin-sidebar>
+
+  <!-- Main Content -->
+  <div class="flex-1 ml-64">
+    <!-- Top Bar -->
+    <div class="bg-white shadow-sm border-b border-gray-200 px-6 py-4">
       <div class="flex justify-between items-center">
         <div>
-          <h1 class="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
-          <p class="text-gray-600 mt-1">
+          <h1 class="text-2xl font-bold text-gray-900">Admin Dashboard</h1>
+          <p class="text-gray-600 text-sm">
             Welcome back, {{ userEmail }}! Here's what's happening today.
           </p>
         </div>
-        <div class="flex items-center space-x-4">
-          <button
-            (click)="createProduct()"
-            class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium flex items-center"
-          >
-            <svg
-              class="w-5 h-5 mr-2"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-              />
-            </svg>
-            Add New Product
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Main Content -->
-  <div class="container mx-auto px-4 py-8">
-    <!-- Stats Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-      <!-- Total Products -->
-      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-        <div class="flex items-center justify-between">
-          <div>
-            <p class="text-sm font-medium text-gray-600">Total Products</p>
-            <p class="text-3xl font-bold text-gray-900">
-              {{ products.length }}
-            </p>
-          </div>
-          <div class="bg-blue-100 p-3 rounded-lg">
-            <svg
-              class="w-8 h-8 text-blue-600"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
-              />
-            </svg>
-          </div>
-        </div>
-        <div class="mt-4">
-          <span class="text-sm text-green-600 font-medium">+12%</span>
-          <span class="text-sm text-gray-500 ml-1">from last month</span>
-        </div>
-      </div>
-
-      <!-- Total Categories -->
-      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-        <div class="flex items-center justify-between">
-          <div>
-            <p class="text-sm font-medium text-gray-600">Categories</p>
-            <p class="text-3xl font-bold text-gray-900">
-              {{ categories.length }}
-            </p>
-          </div>
-          <div class="bg-green-100 p-3 rounded-lg">
-            <svg
-              class="w-8 h-8 text-green-600"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
-              />
-            </svg>
-          </div>
-        </div>
-        <div class="mt-4">
-          <span class="text-sm text-green-600 font-medium">+5%</span>
-          <span class="text-sm text-gray-500 ml-1">from last month</span>
-        </div>
-      </div>
-
-      <!-- Low Stock Products -->
-      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-        <div class="flex items-center justify-between">
-          <div>
-            <p class="text-sm font-medium text-gray-600">Low Stock</p>
-            <p class="text-3xl font-bold text-gray-900">
-              {{ lowStockProducts.length }}
-            </p>
-          </div>
-          <div class="bg-yellow-100 p-3 rounded-lg">
-            <svg
-              class="w-8 h-8 text-yellow-600"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z"
-              />
-            </svg>
-          </div>
-        </div>
-        <div class="mt-4">
-          <span class="text-sm text-yellow-600 font-medium">+3</span>
-          <span class="text-sm text-gray-500 ml-1">since yesterday</span>
-        </div>
-      </div>
-
-      <!-- Total Revenue -->
-      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-        <div class="flex items-center justify-between">
-          <div>
-            <p class="text-sm font-medium text-gray-600">Total Revenue</p>
-            <p class="text-3xl font-bold text-gray-900">
-              ${{ totalRevenue | number : "1.0-0" }}
-            </p>
-          </div>
-          <div class="bg-purple-100 p-3 rounded-lg">
-            <svg
-              class="w-8 h-8 text-purple-600"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"
-              />
-            </svg>
-          </div>
-        </div>
-        <div class="mt-4">
-          <span class="text-sm text-green-600 font-medium">+8.2%</span>
-          <span class="text-sm text-gray-500 ml-1">from last month</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Quick Actions -->
-    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-8">
-      <h2 class="text-xl font-semibold text-gray-900 mb-4">Quick Actions</h2>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <button
           (click)="createProduct()"
-          class="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+          class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium flex items-center"
         >
-          <div class="bg-blue-100 p-2 rounded-lg mr-4">
-            <svg
-              class="w-6 h-6 text-blue-600"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-              />
-            </svg>
-          </div>
-          <div class="text-left">
-            <p class="font-medium text-gray-900">Add Product</p>
-            <p class="text-sm text-gray-500">Create a new product</p>
-          </div>
-        </button>
-
-        <button
-          (click)="manageCategories()"
-          class="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
-        >
-          <div class="bg-green-100 p-2 rounded-lg mr-4">
-            <svg
-              class="w-6 h-6 text-green-600"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
-              />
-            </svg>
-          </div>
-          <div class="text-left">
-            <p class="font-medium text-gray-900">Manage Categories</p>
-            <p class="text-sm text-gray-500">Organize products</p>
-          </div>
-        </button>
-
-        <button
-          (click)="viewAnalytics()"
-          class="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
-        >
-          <div class="bg-purple-100 p-2 rounded-lg mr-4">
-            <svg
-              class="w-6 h-6 text-purple-600"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-              />
-            </svg>
-          </div>
-          <div class="text-left">
-            <p class="font-medium text-gray-900">View Analytics</p>
-            <p class="text-sm text-gray-500">Sales & performance</p>
-          </div>
-        </button>
-      </div>
-    </div>
-
-    <!-- Recent Activity & Low Stock Alerts -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-      <!-- Recent Activity -->
-      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-        <h2 class="text-xl font-semibold text-gray-900 mb-4">
-          Recent Activity
-        </h2>
-        <div class="space-y-4">
-          <div
-            *ngFor="let activity of recentActivities"
-            class="flex items-center space-x-3"
+          <svg
+            class="w-4 h-4 mr-2"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
           >
-            <div class="flex-shrink-0">
-              <div
-                class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center"
-              >
-                <svg
-                  class="w-4 h-4 text-blue-600"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                  />
-                </svg>
-              </div>
-            </div>
-            <div class="flex-1 min-w-0">
-              <p class="text-sm font-medium text-gray-900">
-                {{ activity.title }}
-              </p>
-              <p class="text-sm text-gray-500">{{ activity.time }}</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Low Stock Alerts -->
-      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-        <h2 class="text-xl font-semibold text-gray-900 mb-4">
-          Low Stock Alerts
-        </h2>
-        <div class="space-y-4">
-          <div
-            *ngFor="let product of lowStockProducts.slice(0, 5)"
-            class="flex items-center justify-between p-3 bg-yellow-50 rounded-lg"
-          >
-            <div class="flex items-center space-x-3">
-              <div
-                class="w-10 h-10 bg-gray-200 rounded-lg flex items-center justify-center"
-              >
-                <svg
-                  class="w-5 h-5 text-gray-500"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
-                  />
-                </svg>
-              </div>
-              <div>
-                <p class="text-sm font-medium text-gray-900">
-                  {{ product.name }}
-                </p>
-                <p class="text-sm text-gray-500">
-                  {{ product.category?.name || "No Category" }}
-                </p>
-              </div>
-            </div>
-            <div class="text-right">
-              <p class="text-sm font-medium text-yellow-600">
-                {{ product.stock }} left
-              </p>
-              <button
-                (click)="editProduct(product.id)"
-                class="text-xs text-blue-600 hover:text-blue-800 font-medium"
-              >
-                Restock
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Products Management -->
-    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-      <div class="flex justify-between items-center mb-6">
-        <h2 class="text-xl font-semibold text-gray-900">Products Management</h2>
-        <div class="flex items-center space-x-4">
-          <div class="relative">
-            <input
-              type="text"
-              [(ngModel)]="searchTerm"
-              placeholder="Search products..."
-              class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 6v6m0 0v6m0-6h6m-6 0H6"
             />
-            <svg
-              class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
-            </svg>
+          </svg>
+          Add Product
+        </button>
+      </div>
+    </div>
+
+    <!-- Dashboard Content -->
+    <div class="p-6">
+      <!-- Stats Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <!-- Total Products -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-gray-600">Total Products</p>
+              <p class="text-3xl font-bold text-gray-900">
+                {{ products.length }}
+              </p>
+            </div>
+            <div class="bg-blue-100 p-3 rounded-lg">
+              <svg
+                class="w-8 h-8 text-blue-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+                />
+              </svg>
+            </div>
           </div>
-          <select
-            [(ngModel)]="selectedCategory"
-            class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          >
-            <option value="">All Categories</option>
-            <option *ngFor="let category of categories" [value]="category.id">
-              {{ category.name }}
-            </option>
-          </select>
+          <div class="mt-4">
+            <span class="text-sm text-green-600 font-medium">+12%</span>
+            <span class="text-sm text-gray-500 ml-1">from last month</span>
+          </div>
+        </div>
+
+        <!-- Total Categories -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-gray-600">Categories</p>
+              <p class="text-3xl font-bold text-gray-900">
+                {{ categories.length }}
+              </p>
+            </div>
+            <div class="bg-green-100 p-3 rounded-lg">
+              <svg
+                class="w-8 h-8 text-green-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
+                />
+              </svg>
+            </div>
+          </div>
+          <div class="mt-4">
+            <span class="text-sm text-green-600 font-medium">+5%</span>
+            <span class="text-sm text-gray-500 ml-1">from last month</span>
+          </div>
+        </div>
+
+        <!-- Low Stock Products -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-gray-600">Low Stock</p>
+              <p class="text-3xl font-bold text-gray-900">
+                {{ lowStockProducts.length }}
+              </p>
+            </div>
+            <div class="bg-yellow-100 p-3 rounded-lg">
+              <svg
+                class="w-8 h-8 text-yellow-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z"
+                />
+              </svg>
+            </div>
+          </div>
+          <div class="mt-4">
+            <span class="text-sm text-yellow-600 font-medium">+3</span>
+            <span class="text-sm text-gray-500 ml-1">since yesterday</span>
+          </div>
+        </div>
+
+        <!-- Total Revenue -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-gray-600">Total Revenue</p>
+              <p class="text-3xl font-bold text-gray-900">
+                ${{ totalRevenue | number : "1.0-0" }}
+              </p>
+            </div>
+            <div class="bg-purple-100 p-3 rounded-lg">
+              <svg
+                class="w-8 h-8 text-purple-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"
+                />
+              </svg>
+            </div>
+          </div>
+          <div class="mt-4">
+            <span class="text-sm text-green-600 font-medium">+8.2%</span>
+            <span class="text-sm text-gray-500 ml-1">from last month</span>
+          </div>
         </div>
       </div>
 
-      <!-- Products Grid -->
-      <div
-        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
-      >
-        <div
-          *ngFor="let product of filteredProducts"
-          class="bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow"
-        >
-          <div class="p-4">
-            <div class="flex items-center justify-between mb-2">
-              <span
-                class="text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded"
-                >{{ product.category?.name || "No Category" }}</span
-              >
-              <div class="flex items-center space-x-2">
-                <button
-                  (click)="editProduct(product.id)"
-                  class="text-blue-600 hover:text-blue-800 p-1"
-                >
-                  <svg
-                    class="w-4 h-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                    />
-                  </svg>
-                </button>
-                <button
-                  (click)="deleteProduct(product.id)"
-                  class="text-red-600 hover:text-red-800 p-1"
-                >
-                  <svg
-                    class="w-4 h-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                    />
-                  </svg>
-                </button>
-              </div>
-            </div>
-            <h3 class="font-semibold text-gray-900 mb-1">{{ product.name }}</h3>
-            <p class="text-sm text-gray-600 mb-2 line-clamp-2">
-              {{ product.description }}
-            </p>
-            <div class="flex items-center justify-between">
-              <span class="text-lg font-bold text-gray-900"
-                >${{ product.price }}</span
-              >
-              <span class="text-sm text-gray-500"
-                >Stock: {{ product.stock }}</span
-              >
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Empty State -->
-      <div *ngIf="filteredProducts.length === 0" class="text-center py-12">
-        <svg
-          class="mx-auto h-12 w-12 text-gray-400"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
-          />
-        </svg>
-        <h3 class="mt-2 text-sm font-medium text-gray-900">
-          No products found
-        </h3>
-        <p class="mt-1 text-sm text-gray-500">
-          Get started by creating a new product.
-        </p>
-        <div class="mt-6">
+      <!-- Quick Actions -->
+      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-8">
+        <h2 class="text-xl font-semibold text-gray-900 mb-4">Quick Actions</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <button
             (click)="createProduct()"
-            class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
-          >
-            <svg
-              class="w-4 h-4 mr-2"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-              />
-            </svg>
-            Add Product
+            class="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+            <div class="bg-blue-100 p-2 rounded-lg mr-4">
+              <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                      d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+              </svg>
+            </div>
+            <div class="text-left">
+              <p class="font-medium text-gray-900">Add Product</p>
+              <p class="text-sm text-gray-500">Create a new product</p>
+            </div>
           </button>
+
+          <button
+            (click)="manageCategories()"
+            class="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+            <div class="bg-green-100 p-2 rounded-lg mr-4">
+              <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                      d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
+              </svg>
+            </div>
+            <div class="text-left">
+              <p class="font-medium text-gray-900">Manage Categories</p>
+              <p class="text-sm text-gray-500">Organize products</p>
+            </div>
+          </button>
+
+          <button
+            (click)="viewAnalytics()"
+            class="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+            <div class="bg-purple-100 p-2 rounded-lg mr-4">
+              <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                      d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+              </svg>
+            </div>
+            <div class="text-left">
+              <p class="font-medium text-gray-900">View Analytics</p>
+              <p class="text-sm text-gray-500">Sales & performance</p>
+            </div>
+          </button>
+        </div>
+      </div>
+
+      <!-- Recent Activity & Low Stock Alerts -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+        <!-- Recent Activity -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <h2 class="text-xl font-semibold text-gray-900 mb-4">
+            Recent Activity
+          </h2>
+          <div class="space-y-4">
+            <div
+              *ngFor="let activity of recentActivities"
+              class="flex items-center space-x-3">
+              <div class="flex-shrink-0">
+                <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
+                  <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                          d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                  </svg>
+                </div>
+              </div>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm font-medium text-gray-900">
+                  {{ activity.title }}
+                </p>
+                <p class="text-sm text-gray-500">{{ activity.time }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Low Stock Alerts -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <h2 class="text-xl font-semibold text-gray-900 mb-4">
+            Low Stock Alerts
+          </h2>
+          <div class="space-y-4">
+            <div
+              *ngFor="let product of lowStockProducts.slice(0, 5)"
+              class="flex items-center justify-between p-3 bg-yellow-50 rounded-lg">
+              <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-gray-200 rounded-lg flex items-center justify-center">
+                  <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                          d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+                  </svg>
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-gray-900">
+                    {{ product.name }}
+                  </p>
+                  <p class="text-sm text-gray-500">
+                    {{ product.category?.name || "No Category" }}
+                  </p>
+                </div>
+              </div>
+              <div class="text-right">
+                <p class="text-sm font-medium text-yellow-600">
+                  {{ product.stock }} left
+                </p>
+                <button
+                  (click)="editProduct(product.id)"
+                  class="text-xs text-blue-600 hover:text-blue-800 font-medium">
+                  Restock
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Products Management -->
+      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-xl font-semibold text-gray-900">Products Management</h2>
+          <div class="flex items-center space-x-4">
+            <div class="relative">
+              <input
+                type="text"
+                [(ngModel)]="searchTerm"
+                placeholder="Search products..."
+                class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              />
+              <svg
+                class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
+              </svg>
+            </div>
+            <select
+              [(ngModel)]="selectedCategory"
+              class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            >
+              <option value="">All Categories</option>
+              <option *ngFor="let category of categories" [value]="category.id">
+                {{ category.name }}
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Products Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div
+            *ngFor="let product of filteredProducts"
+            class="bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow">
+            <div class="p-4">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded">
+                  {{ product.category?.name || "No Category" }}
+                </span>
+                <div class="flex items-center space-x-2">
+                  <button
+                    (click)="editProduct(product.id)"
+                    class="text-blue-600 hover:text-blue-800 p-1">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                    </svg>
+                  </button>
+                  <button
+                    (click)="deleteProduct(product.id)"
+                    class="text-red-600 hover:text-red-800 p-1">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+              <h3 class="font-semibold text-gray-900 mb-1">{{ product.name }}</h3>
+              <p class="text-sm text-gray-600 mb-2 line-clamp-2">
+                {{ product.description }}
+              </p>
+              <div class="flex items-center justify-between">
+                <span class="text-lg font-bold text-gray-900">${{ product.price }}</span>
+                <span class="text-sm text-gray-500">Stock: {{ product.stock }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Empty State -->
+        <div *ngIf="filteredProducts.length === 0" class="text-center py-12">
+          <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                  d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+          </svg>
+          <h3 class="mt-2 text-sm font-medium text-gray-900">No products found</h3>
+          <p class="mt-1 text-sm text-gray-500">Get started by creating a new product.</p>
+          <div class="mt-6">
+            <button
+              (click)="createProduct()"
+              class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+              <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                      d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+              </svg>
+              Add Product
+            </button>
+          </div>
         </div>
       </div>
     </div>
