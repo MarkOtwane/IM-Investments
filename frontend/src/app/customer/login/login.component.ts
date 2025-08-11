@@ -36,10 +36,7 @@ export class LoginComponent {
         if (this.authService.isAdmin()) {
           this.router.navigate(['/admin']);
         } else {
-          const returnUrl =
-            this.router.parseUrl(this.router.url).queryParams['returnUrl'] ||
-            '/home';
-          this.router.navigateByUrl(returnUrl);
+          this.router.navigate(['/customer/dashboard']);
         }
       },
       error: (err) => {

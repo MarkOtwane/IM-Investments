@@ -1,4 +1,6 @@
 {
 	"vsicons.presets.nestjs": true,
-	"CodeGPT.apiKey": "OpenAI"
+	"CodeGPT.apiKey": "Anthropic",
+	"editor.autoIndentOnPaste": true,
+	"terminal.integrated.ignoreProcessNames": ["starship", "oh-my-posh", "zsh"]
 }
