@@ -6,10 +6,7 @@ import { ProductFormComponent } from './components/product-form/product-form.com
 const routes: Routes = [
   { path: '', component: DashboardComponent },
   { path: 'products', component: DashboardComponent },
-  { path: 'product-form', component: ProductFormComponent },
-  // { path: 'product-form/:id', component: ProductFormComponent },
-
-  // 👇 Add edit route
+  { path: 'products/new', component: ProductFormComponent },
   { path: 'products/:id/edit', component: ProductFormComponent },
 ];
 
