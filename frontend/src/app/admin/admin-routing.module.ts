@@ -1,26 +1,16 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AuthGuard } from '../core/guards/auth.guard';
-import { AdminGuard } from '../core/guards/admin.guard';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { ProductFormComponent } from './components/product-form/product-form.component';
 
 const routes: Routes = [
-  { 
-    path: '', 
-    component: DashboardComponent,
-    canActivate: [AuthGuard, AdminGuard]
-  },
-  { 
-    path: 'products/new', 
-    component: ProductFormComponent,
-    canActivate: [AuthGuard, AdminGuard]
-  },
-  { 
-    path: 'products/:id/edit', 
-    component: ProductFormComponent,
-    canActivate: [AuthGuard, AdminGuard]
-  },
+  { path: '', component: DashboardComponent },
+  { path: 'products', component: DashboardComponent },
+  { path: 'product-form', component: ProductFormComponent },
+  // { path: 'product-form/:id', component: ProductFormComponent },
+
+  // 👇 Add edit route
+  { path: 'products/:id/edit', component: ProductFormComponent },
 ];
 
 @NgModule({

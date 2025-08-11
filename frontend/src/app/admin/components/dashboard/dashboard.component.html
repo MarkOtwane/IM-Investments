@@ -266,7 +266,7 @@
                     {{ product.name }}
                   </p>
                   <p class="text-sm text-gray-500">
-                    {{ product.category?.name || "No Category" }}
+                    {{ product.category.name || "No Category" }}
                   </p>
                 </div>
               </div>
@@ -330,9 +330,9 @@
             class="bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow">
             <div class="p-4">
               <div class="flex items-center justify-between mb-2">
-                <span class="text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded">
-                  {{ product.category?.name || "No Category" }}
-                </span>
+                  <span class="text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded">
+                    {{ product.category.name || "No Category" }}
+                  </span>
                 <div class="flex items-center space-x-2">
                   <button
                     (click)="editProduct(product.id)"

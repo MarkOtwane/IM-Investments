@@ -4,15 +4,27 @@ export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'home' },
   {
     path: 'home',
-    loadChildren: () => import('./customer/customer-routing.module').then(m => m.CustomerRoutingModule)
+    loadChildren: () => import('./customer/customer.module').then(m => m.CustomerModule)
+  },
+  {
+    path: 'home/products',
+    loadChildren: () => import('./customer/customer.module').then(m => m.CustomerModule)
   },
   {
     path: 'customer',
-    loadChildren: () => import('./customer/customer-routing.module').then(m => m.CustomerRoutingModule)
+    loadChildren: () => import('./customer/customer.module').then(m => m.CustomerModule)
+  },
+  {
+    path: 'customer/products',
+    loadChildren: () => import('./customer/customer.module').then(m => m.CustomerModule)
   },
   {
     path: 'admin',
-    loadChildren: () => import('./admin/admin-routing.module').then(m => m.AdminRoutingModule)
+    loadChildren: () => import('./admin/admin.module').then(m => m.AdminModule)
+  },
+  {
+    path: 'admin/products',
+    loadChildren: () => import('./admin/admin.module').then(m => m.AdminModule)
   },
   { path: '**', redirectTo: 'home' },
 ];

@@ -189,7 +189,7 @@ export class DashboardComponent implements OnInit {
   }
 
   createProduct(): void {
-    this.router.navigate(['/admin/product-form']);
+    this.router.navigate(['/admin/products/new']);
   }
 
   manageCategories(): void {

@@ -10,6 +10,7 @@ import { RegisterComponent } from './register/register.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
+  { path: 'products', component: HomeComponent },
   { path: 'products/:id', component: ProductDetailComponent },
   { path: 'cart', component: CartComponent, canActivate: [AuthGuard] },
   { path: 'login', component: LoginComponent },
