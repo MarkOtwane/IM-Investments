@@ -32,15 +32,15 @@
             </a>
           </li>
           <li>
-            <a routerLink="/customer/portfolio" routerLinkActive="active" class="nav-item">
-              <i class="fas fa-chart-pie"></i>
-              <span>My Portfolio</span>
+            <a routerLink="/customer/orders" routerLinkActive="active" class="nav-item">
+              <i class="fas fa-history"></i>
+              <span>My Orders</span>
             </a>
           </li>
           <li>
             <a routerLink="/customer/orders" routerLinkActive="active" class="nav-item">
               <i class="fas fa-history"></i>
-              <span>Transactions</span>
+              <span>Order History</span>
             </a>
           </li>
           <li>
@@ -105,12 +105,12 @@
       <section class="welcome-header">
         <div class="welcome-content">
           <h1>Welcome back, {{ userName }}</h1>
-          <p class="welcome-subtitle">Here's your investment overview for today</p>
+          <p class="welcome-subtitle">Here's your shopping overview for today</p>
         </div>
         <div class="welcome-actions">
-          <button class="btn-primary">
-            <i class="fas fa-plus"></i>
-            New Investment
+          <button class="btn-primary" routerLink="/customer/home">
+            <i class="fas fa-shopping-bag"></i>
+            Shop Now
           </button>
         </div>
       </section>
@@ -120,29 +120,29 @@
         <div class="metrics-grid">
           <div class="metric-card primary">
             <div class="metric-icon">
-              <i class="fas fa-wallet"></i>
+              <i class="fas fa-shopping-cart"></i>
             </div>
             <div class="metric-content">
               <h3>${{ stats.totalSpent | number:'1.2-2' }}</h3>
-              <p>Total Invested</p>
-              <span class="metric-change positive">+12.5%</span>
+              <p>Total Spent</p>
+              <span class="metric-change positive">+12.5% vs last month</span>
             </div>
           </div>
 
           <div class="metric-card success">
             <div class="metric-icon">
-              <i class="fas fa-chart-line"></i>
+              <i class="fas fa-box"></i>
             </div>
             <div class="metric-content">
               <h3>{{ stats.totalOrders }}</h3>
-              <p>Active Investments</p>
+              <p>Total Orders</p>
               <span class="metric-change positive">+3 this month</span>
             </div>
           </div>
 
           <div class="metric-card warning">
             <div class="metric-icon">
-              <i class="fas fa-star"></i>
+              <i class="fas fa-gift"></i>
             </div>
             <div class="metric-content">
               <h3>{{ stats.loyaltyPoints }}</h3>
@@ -153,12 +153,12 @@
 
           <div class="metric-card info">
             <div class="metric-icon">
-              <i class="fas fa-trophy"></i>
+              <i class="fas fa-percent"></i>
             </div>
             <div class="metric-content">
               <h3>{{ Math.floor(stats.loyaltyPoints / 100) }}</h3>
-              <p>Rewards Available</p>
-              <span class="metric-change">Claim Now</span>
+              <p>Discount Coupons</p>
+              <span class="metric-change">Available</span>
             </div>
           </div>
         </div>

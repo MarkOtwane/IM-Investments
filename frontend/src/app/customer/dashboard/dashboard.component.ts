@@ -107,7 +107,7 @@ export class CustomerDashboardComponent implements OnInit {
       },
     });
 
-    // Mock stats
+    // Mock stats - ecommerce metrics
     this.stats = {
       totalOrders: 12,
       totalSpent: 2847.5,
