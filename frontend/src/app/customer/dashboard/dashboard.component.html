@@ -1,53 +1,61 @@
 <div class="dashboard-container">
   <!-- Professional Sidebar -->
   <aside class="sidebar">
-
-    <div class="user-profile">
-      <div class="avatar-container">
-        <div class="avatar">
-          <i class="fas fa-user-circle"></i>
-        </div>
-        <div class="status-indicator"></div>
-      </div>
-      <div class="user-info">
-        <h4 class="user-name">{{ userName }}</h4>
-        <p class="user-email">{{ userEmail }}</p>
-      </div>
-    </div>
-
     <nav class="sidebar-nav">
       <div class="nav-section">
         <h3 class="nav-title">Main Menu</h3>
         <ul class="nav-list">
           <li>
-            <a routerLink="/customer/dashboard" routerLinkActive="active" class="nav-item">
+            <a
+              routerLink="/customer/dashboard"
+              routerLinkActive="active"
+              class="nav-item"
+            >
               <i class="fas fa-tachometer-alt"></i>
               <span>Dashboard</span>
             </a>
           </li>
           <li>
-            <a routerLink="/customer/home" routerLinkActive="active" class="nav-item">
+            <a
+              routerLink="/customer/home"
+              routerLinkActive="active"
+              class="nav-item"
+            >
               <i class="fas fa-store"></i>
               <span>Marketplace</span>
             </a>
           </li>
           <li>
-            <a routerLink="/customer/orders" routerLinkActive="active" class="nav-item">
+            <a
+              routerLink="/customer/orders"
+              routerLinkActive="active"
+              class="nav-item"
+            >
               <i class="fas fa-history"></i>
               <span>My Orders</span>
             </a>
           </li>
           <li>
-            <a routerLink="/customer/orders" routerLinkActive="active" class="nav-item">
+            <a
+              routerLink="/customer/orders"
+              routerLinkActive="active"
+              class="nav-item"
+            >
               <i class="fas fa-history"></i>
               <span>Order History</span>
             </a>
           </li>
           <li>
-            <a routerLink="/customer/cart" routerLinkActive="active" class="nav-item">
+            <a
+              routerLink="/customer/cart"
+              routerLinkActive="active"
+              class="nav-item"
+            >
               <i class="fas fa-shopping-cart"></i>
               <span>Cart</span>
-              <span class="badge" *ngIf="cartItemsCount > 0">{{ cartItemsCount }}</span>
+              <span class="badge" *ngIf="cartItemsCount > 0">{{
+                cartItemsCount
+              }}</span>
             </a>
           </li>
         </ul>
@@ -57,19 +65,31 @@
         <h3 class="nav-title">Account</h3>
         <ul class="nav-list">
           <li>
-            <a routerLink="/customer/profile" routerLinkActive="active" class="nav-item">
+            <a
+              routerLink="/customer/profile"
+              routerLinkActive="active"
+              class="nav-item"
+            >
               <i class="fas fa-user-cog"></i>
               <span>Profile Settings</span>
             </a>
           </li>
           <li>
-            <a routerLink="/customer/wishlist" routerLinkActive="active" class="nav-item">
+            <a
+              routerLink="/customer/wishlist"
+              routerLinkActive="active"
+              class="nav-item"
+            >
               <i class="fas fa-heart"></i>
               <span>Wishlist</span>
             </a>
           </li>
           <li>
-            <a routerLink="/customer/support" routerLinkActive="active" class="nav-item">
+            <a
+              routerLink="/customer/support"
+              routerLinkActive="active"
+              class="nav-item"
+            >
               <i class="fas fa-headset"></i>
               <span>Support</span>
             </a>
@@ -105,7 +125,9 @@
       <section class="welcome-header">
         <div class="welcome-content">
           <h1>Welcome back, {{ userName }}</h1>
-          <p class="welcome-subtitle">Here's your shopping overview for today</p>
+          <p class="welcome-subtitle">
+            Here's your shopping overview for today
+          </p>
         </div>
         <div class="welcome-actions">
           <button class="btn-primary" routerLink="/customer/home">
@@ -123,7 +145,7 @@
               <i class="fas fa-shopping-cart"></i>
             </div>
             <div class="metric-content">
-              <h3>${{ stats.totalSpent | number:'1.2-2' }}</h3>
+              <h3>${{ stats.totalSpent | number : "1.2-2" }}</h3>
               <p>Total Spent</p>
               <span class="metric-change positive">+12.5% vs last month</span>
             </div>
@@ -172,10 +194,13 @@
             <h2>Recent Activity</h2>
             <a routerLink="/customer/orders" class="view-all-link">View All</a>
           </div>
-          
+
           <div class="activity-list">
             <div *ngFor="let order of recentOrders" class="activity-card">
-              <div class="activity-icon" [class]="'status-' + order.status.toLowerCase()">
+              <div
+                class="activity-icon"
+                [class]="'status-' + order.status.toLowerCase()"
+              >
                 <i [class]="getStatusIcon(order.status)"></i>
               </div>
               <div class="activity-content">
@@ -184,44 +209,23 @@
                   <span class="activity-date">{{ order.date }}</span>
                 </div>
                 <p class="activity-description">
-                  {{ order.items }} items • ${{ order.total | number:'1.2-2' }}
+                  {{ order.items }} items • ${{
+                    order.total | number : "1.2-2"
+                  }}
                 </p>
-                <span class="activity-status" [class]="'status-' + order.status.toLowerCase()">
+                <span
+                  class="activity-status"
+                  [class]="'status-' + order.status.toLowerCase()"
+                >
                   {{ order.status }}
                 </span>
               </div>
-              <button class="btn-outline" routerLink="/customer/orders/{{ order.id }}">
+              <button
+                class="btn-outline"
+                routerLink="/customer/orders/{{ order.id }}"
+              >
                 Details
               </button>
-            </div>
-          </div>
-        </section>
-
-        <!-- Investment Opportunities -->
-        <section class="opportunities-section">
-          <div class="section-header">
-            <h2>Recommended Opportunities</h2>
-            <a routerLink="/customer/home" class="view-all-link">Explore All</a>
-          </div>
-          
-          <div class="opportunities-grid">
-            <div *ngFor="let product of recommendedProducts" class="opportunity-card">
-              <div class="opportunity-image">
-                <img [src]="product.image || 'assets/images/placeholder.jpg'" [alt]="product.name">
-                <div class="opportunity-badge">Hot</div>
-              </div>
-              <div class="opportunity-content">
-                <h3>{{ product.name }}</h3>
-                <p class="opportunity-price">${{ product.price | number:'1.2-2' }}</p>
-                <div class="opportunity-stats">
-                  <span class="roi">ROI: 15-25%</span>
-                  <span class="risk">Low Risk</span>
-                </div>
-                <button class="btn-primary" (click)="addToCart(product)">
-                  <i class="fas fa-plus"></i>
-                  Add to Portfolio
-                </button>
-              </div>
             </div>
           </div>
         </section>
