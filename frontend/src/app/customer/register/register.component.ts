@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
+import { CartService } from '../../core/services/cart.service';
 
 @Component({
   selector: 'app-register',
@@ -20,7 +21,12 @@ export class RegisterComponent {
   loading: boolean = false;
   error: string | null = null;
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    public route: ActivatedRoute,
+    private cartService: CartService
+  ) {}
 
   onSubmit(): void {
     this.error = null;
@@ -58,12 +64,25 @@ export class RegisterComponent {
     this.authService.register(this.email, this.password).subscribe({
       next: () => {
         this.loading = false;
-        // Show success message and redirect to login
-        this.router.navigate(['/customer/login'], {
-          queryParams: {
-            message: 'Account created successfully! Please sign in.',
-          },
-        });
+        
+        // Check if there's a pending cart item to add
+        const pendingCartItemStr = localStorage.getItem('pendingCartItem');
+        if (pendingCartItemStr) {
+          // Redirect to login with a special message
+          this.router.navigate(['/customer/login'], {
+            queryParams: {
+              message: 'Account created successfully! Please sign in to add your item to cart.',
+              pendingCart: 'true'
+            },
+          });
+        } else {
+          // Show success message and redirect to login
+          this.router.navigate(['/customer/login'], {
+            queryParams: {
+              message: 'Account created successfully! Please sign in.',
+            },
+          });
+        }
       },
       error: (err) => {
         this.loading = false;

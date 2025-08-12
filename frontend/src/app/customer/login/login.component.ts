@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
+import { CartService } from '../../core/services/cart.service';
 
 @Component({
   selector: 'app-login',
@@ -18,7 +19,12 @@ export class LoginComponent {
   loading: boolean = false;
   error: string | null = null;
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    public route: ActivatedRoute,
+    private cartService: CartService
+  ) {}
 
   onSubmit(): void {
     if (!this.email || !this.password) {
@@ -32,11 +38,50 @@ export class LoginComponent {
     this.authService.login(this.email, this.password).subscribe({
       next: () => {
         this.loading = false;
-        // Check if user is admin and redirect accordingly
-        if (this.authService.isAdmin()) {
-          this.router.navigate(['/admin']);
+        
+        // Check if there's a pending cart item to add
+        const pendingCartItemStr = localStorage.getItem('pendingCartItem');
+        const pendingCartQueryParam = this.route.snapshot.queryParams['pendingCart'];
+        
+        if (pendingCartItemStr) {
+          try {
+            const pendingCartItem = JSON.parse(pendingCartItemStr);
+            // Add the pending item to cart
+            this.cartService.addToCart(pendingCartItem.productId, pendingCartItem.quantity).subscribe({
+              next: () => {
+                // Clear the pending cart item
+                localStorage.removeItem('pendingCartItem');
+                
+                // Show success message
+                alert(`Added ${pendingCartItem.quantity} ${pendingCartItem.productName} to your cart!`);
+                
+                // Redirect to products page
+                this.router.navigate(['/customer/products']);
+              },
+              error: (err) => {
+                console.error('Failed to add pending item to cart:', err);
+                // Still redirect to dashboard even if adding to cart failed
+                this.router.navigate(['/customer/dashboard']);
+              }
+            });
+          } catch (e) {
+            // If parsing fails, redirect to dashboard
+            this.router.navigate(['/customer/dashboard']);
+          }
+        } else if (pendingCartQueryParam === 'true') {
+          // User just registered and has a pending cart item
+          // Redirect to products page with a message
+          alert('Login successful! Please select an item to add to your cart.');
+          this.router.navigate(['/customer/products']);
         } else {
-          this.router.navigate(['/customer/dashboard']);
+          // Check if user is admin and redirect accordingly
+          if (this.authService.isAdmin()) {
+            this.router.navigate(['/admin']);
+          } else {
+            // Check for returnUrl in query params
+            const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/customer/dashboard';
+            this.router.navigate([returnUrl]);
+          }
         }
       },
       error: (err) => {

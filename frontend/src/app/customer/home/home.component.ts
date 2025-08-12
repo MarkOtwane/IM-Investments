@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { Product } from '../../core/models/product.model';
+import { AuthService } from '../../core/services/auth.service';
 import { CartService } from '../../core/services/cart.service';
 import { ProductService } from '../../core/services/products.service';
 
@@ -24,7 +25,9 @@ export class HomeComponent implements OnInit {
 
   constructor(
     private productService: ProductService,
-    private cartService: CartService
+    private cartService: CartService,
+    private authService: AuthService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -58,6 +61,26 @@ export class HomeComponent implements OnInit {
   addToCart(productId: number, quantity: number): void {
     const product = this.products.find((p) => p.id === productId);
     if (!product) return;
+
+    // Check if user is logged in
+    if (!this.authService.isLoggedIn()) {
+      // Store product info in localStorage for after login
+      const pendingCartItem = {
+        productId: productId,
+        quantity: quantity,
+        productName: product.name
+      };
+      localStorage.setItem('pendingCartItem', JSON.stringify(pendingCartItem));
+
+      // Redirect to login with message
+      this.router.navigate(['/customer/login'], {
+        queryParams: {
+          message: 'Please sign in to add items to your cart',
+          returnUrl: '/customer/products'
+        }
+      });
+      return;
+    }
 
     this.cartService.addToCart(productId, quantity).subscribe({
       next: () => {
