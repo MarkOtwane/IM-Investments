@@ -3,9 +3,8 @@ import {
   IsNotEmpty,
   IsNumber,
   Min,
-  IsUrl,
   IsOptional,
-  ValidateIf,
+  IsInt,
 } from 'class-validator';
 
 export class CreateProductDto {
@@ -17,19 +16,18 @@ export class CreateProductDto {
   @IsNotEmpty()
   description: string;
 
-  @IsNumber()
+  @IsNumber({}, { message: 'Price must be a valid number' })
   @Min(0)
   price: number;
 
   @IsOptional()
-  @ValidateIf((object: CreateProductDto) => object.imageUrl !== '')
-  @IsUrl()
+  @IsString()
   imageUrl?: string;
 
-  @IsNumber()
+  @IsInt({ message: 'Stock must be a valid integer' })
   @Min(0)
   stock: number;
 
-  @IsNumber()
+  @IsInt({ message: 'Category ID must be a valid integer' })
   categoryId: number;
 }

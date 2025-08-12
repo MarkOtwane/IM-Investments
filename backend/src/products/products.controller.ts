@@ -13,6 +13,7 @@ import {
   UseGuards,
   UseInterceptors,
   ValidationPipe,
+  BadRequestException,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -22,6 +23,7 @@ import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductsService } from './products.service';
+import * as multer from 'multer';
 
 @Controller('products')
 export class ProductsController {
@@ -33,18 +35,49 @@ export class ProductsController {
   @Post()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('ADMIN')
-  @UseInterceptors(FileInterceptor('image'))
+  @UseInterceptors(FileInterceptor('image', {
+    limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
+    fileFilter: (req, file, cb) => {
+      if (file.mimetype.match(/\/(jpg|jpeg|png|gif)$/)) {
+        cb(null, true);
+      } else {
+        cb(new BadRequestException('Only image files are allowed!'), false);
+      }
+    },
+  }))
   async create(
     @Body(ValidationPipe) createProductDto: CreateProductDto,
-    @UploadedFile() file: any,
+    @UploadedFile() file?: Express.Multer.File,
   ) {
+    console.log('Received product data:', createProductDto);
+    console.log('Received file:', file);
+
+    // Convert string values to appropriate types
+    const productData = {
+      ...createProductDto,
+      price: typeof createProductDto.price === 'string' ? 
+        parseFloat(createProductDto.price) : createProductDto.price,
+      stock: typeof createProductDto.stock === 'string' ? 
+        parseInt(createProductDto.stock, 10) : createProductDto.stock,
+      categoryId: typeof createProductDto.categoryId === 'string' ? 
+        parseInt(createProductDto.categoryId, 10) : createProductDto.categoryId,
+    };
+
     // If an image file is uploaded, upload it to Cloudinary and update the imageUrl
     if (file) {
-      const imageUrl = await this.cloudinaryService.uploadImage(file);
-      createProductDto.imageUrl = imageUrl;
+      try {
+        const imageUrl = await this.cloudinaryService.uploadImage(file);
+        productData.imageUrl = imageUrl;
+      } catch (error) {
+        console.error('Cloudinary upload error:', error);
+        throw new BadRequestException('Failed to upload image');
+      }
+    } else if (!productData.imageUrl) {
+      // Set a default image URL if no image is provided
+      productData.imageUrl = 'https://via.placeholder.com/300x200?text=No+Image';
     }
 
-    return this.productsService.create(createProductDto);
+    return this.productsService.create(productData);
   }
 
   @Get()
@@ -66,19 +99,47 @@ export class ProductsController {
   @Patch(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('ADMIN')
-  @UseInterceptors(FileInterceptor('image'))
+  @UseInterceptors(FileInterceptor('image', {
+    limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
+    fileFilter: (req, file, cb) => {
+      if (file.mimetype.match(/\/(jpg|jpeg|png|gif)$/)) {
+        cb(null, true);
+      } else {
+        cb(new BadRequestException('Only image files are allowed!'), false);
+      }
+    },
+  }))
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body(ValidationPipe) updateProductDto: UpdateProductDto,
-    @UploadedFile() file: any,
+    @UploadedFile() file?: Express.Multer.File,
   ) {
+    console.log('Updating product:', id, updateProductDto);
+    console.log('Update file:', file);
+
+    // Convert string values to appropriate types
+    const updateData = {
+      ...updateProductDto,
+      price: updateProductDto.price && typeof updateProductDto.price === 'string' ? 
+        parseFloat(updateProductDto.price) : updateProductDto.price,
+      stock: updateProductDto.stock && typeof updateProductDto.stock === 'string' ? 
+        parseInt(updateProductDto.stock, 10) : updateProductDto.stock,
+      categoryId: updateProductDto.categoryId && typeof updateProductDto.categoryId === 'string' ? 
+        parseInt(updateProductDto.categoryId, 10) : updateProductDto.categoryId,
+    };
+
     // If an image file is uploaded, upload it to Cloudinary and update the imageUrl
     if (file) {
-      const imageUrl = await this.cloudinaryService.uploadImage(file);
-      updateProductDto.imageUrl = imageUrl;
+      try {
+        const imageUrl = await this.cloudinaryService.uploadImage(file);
+        updateData.imageUrl = imageUrl;
+      } catch (error) {
+        console.error('Cloudinary upload error:', error);
+        throw new BadRequestException('Failed to upload image');
+      }
     }
 
-    return this.productsService.update(id, updateProductDto);
+    return this.productsService.update(id, updateData);
   }
 
   @Delete(':id')

@@ -11,6 +11,17 @@ export class ProductsService {
   constructor(private prisma: PrismaService) {}
 
   async create(createProductDto: CreateProductDto) {
+    console.log('Creating product with data:', createProductDto);
+
+    // Validate that category exists
+    const category = await this.prisma.category.findUnique({
+      where: { id: createProductDto.categoryId },
+    });
+
+    if (!category) {
+      throw new NotFoundException(`Category with ID ${createProductDto.categoryId} not found`);
+    }
+
     // Build the data object dynamically
     const data: any = {
       name: createProductDto.name,
@@ -21,6 +32,8 @@ export class ProductsService {
       // Set a default empty string for imageUrl if not provided
       imageUrl: createProductDto.imageUrl || '',
     };
+
+    console.log('Final product data for creation:', data);
 
     return this.prisma.product.create({
       data,
@@ -72,9 +85,22 @@ export class ProductsService {
   }
 
   async update(id: number, updateProductDto: UpdateProductDto) {
+    console.log('Updating product with ID:', id, 'Data:', updateProductDto);
+
     const product = await this.prisma.product.findUnique({ where: { id } });
     if (!product) {
       throw new NotFoundException(`Product with ID ${id} not found`);
+    }
+
+    // Validate category if provided
+    if (updateProductDto.categoryId) {
+      const category = await this.prisma.category.findUnique({
+        where: { id: updateProductDto.categoryId },
+      });
+
+      if (!category) {
+        throw new NotFoundException(`Category with ID ${updateProductDto.categoryId} not found`);
+      }
     }
 
     // Transform UpdateProductDto to match Prisma's expected input
@@ -98,6 +124,8 @@ export class ProductsService {
     if (updateProductDto.categoryId) {
       updateData.categoryId = updateProductDto.categoryId;
     }
+
+    console.log('Final update data:', updateData);
 
     return this.prisma.product.update({
       where: { id },
