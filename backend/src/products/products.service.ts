@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/require-await */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable prefer-const */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
@@ -21,12 +18,9 @@ export class ProductsService {
       price: createProductDto.price,
       stock: createProductDto.stock,
       categoryId: createProductDto.categoryId,
+      // Set a default empty string for imageUrl if not provided
+      imageUrl: createProductDto.imageUrl || '',
     };
-
-    // Only add imageUrl if it's provided
-    if (createProductDto.imageUrl !== undefined) {
-      data.imageUrl = createProductDto.imageUrl;
-    }
 
     return this.prisma.product.create({
       data,
@@ -65,7 +59,7 @@ export class ProductsService {
   }
 
   async findOne(id: number) {
-    const product = await this.prisma.product.findUnique({ 
+    const product = await this.prisma.product.findUnique({
       where: { id },
       include: {
         category: true,

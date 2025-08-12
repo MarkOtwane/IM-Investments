@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import {
   IsString,
   IsNotEmpty,
@@ -6,6 +5,7 @@ import {
   Min,
   IsUrl,
   IsOptional,
+  ValidateIf,
 } from 'class-validator';
 
 export class CreateProductDto {
@@ -21,8 +21,9 @@ export class CreateProductDto {
   @Min(0)
   price: number;
 
-  @IsUrl()
   @IsOptional()
+  @ValidateIf((object: CreateProductDto) => object.imageUrl !== '')
+  @IsUrl()
   imageUrl?: string;
 
   @IsNumber()
