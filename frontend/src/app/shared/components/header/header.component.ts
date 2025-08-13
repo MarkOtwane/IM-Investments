@@ -1,5 +1,5 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { CartService } from '../../../core/services/cart.service';
@@ -18,11 +18,13 @@ export class HeaderComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private cartService: CartService,
-    private router: Router
+    private router: Router,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
   ngOnInit(): void {
-    if (this.authService.isLoggedIn()) {
+    // Only initialize cart on the browser side
+    if (isPlatformBrowser(this.platformId) && this.authService.isLoggedIn()) {
       this.cartService.getCart().subscribe({
         next: (cart) => (this.cart = cart),
         error: (err) => console.error('Failed to load cart', err),
@@ -31,10 +33,19 @@ export class HeaderComponent implements OnInit {
   }
 
   get isLoggedIn(): boolean {
+    // Don't check auth status during server-side rendering
+    if (!isPlatformBrowser(this.platformId)) {
+      return false;
+    }
     return this.authService.isLoggedIn();
   }
 
   get userEmail(): string | null {
+    // Don't check user data during server-side rendering
+    if (!isPlatformBrowser(this.platformId)) {
+      return null;
+    }
+    
     const token = this.authService.getToken();
     if (!token) return null;
     const payload = this.authService['decodeToken'](token);
@@ -42,6 +53,10 @@ export class HeaderComponent implements OnInit {
   }
 
   get isAdmin(): boolean {
+    // Don't check admin status during server-side rendering
+    if (!isPlatformBrowser(this.platformId)) {
+      return false;
+    }
     return this.authService.getUserRole() === 'ADMIN';
   }
 

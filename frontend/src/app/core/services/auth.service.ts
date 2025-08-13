@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { environment } from '../../../enviroments/enviroment';
@@ -49,10 +50,25 @@ export class AuthService {
   }
 
   isLoggedIn(): boolean {
-    return !!this.getToken();
+    // Don't check token during server-side rendering
+    if (!isPlatformBrowser(this.platformId)) {
+      return false;
+    }
+    
+    const token = this.getToken();
+    console.log('AuthService: Checking if user is logged in', token);
+    if (!token) return false;
+    const isExpired = this.isTokenExpired(token);
+    console.log('AuthService: Token is expired', isExpired);
+    return !isExpired;
   }
 
   getUserRole(): 'ADMIN' | 'CUSTOMER' | null {
+    // Don't check token during server-side rendering
+    if (!isPlatformBrowser(this.platformId)) {
+      return null;
+    }
+    
     const token = this.getToken();
     if (!token) return null;
     const payload = this.decodeToken(token);
@@ -64,29 +80,48 @@ export class AuthService {
   }
 
   logout(): void {
-    if (typeof window !== 'undefined') {
+    if (isPlatformBrowser(this.platformId)) {
       localStorage.removeItem('token');
     }
   }
 
   public getToken(): string | null {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem('token');
+    if (isPlatformBrowser(this.platformId)) {
+      const token = localStorage.getItem('token');
+      console.log('AuthService: Getting token from localStorage', token);
+      return token;
     }
+    console.log('AuthService: Not in browser environment');
     return null;
   }
 
   private setToken(token: string): void {
-    if (typeof window !== 'undefined') {
+    if (isPlatformBrowser(this.platformId)) {
       localStorage.setItem('token', token);
     }
   }
 
   private decodeToken(token: string): JwtPayload | null {
     try {
-      return JSON.parse(atob(token.split('.')[1])) as JwtPayload;
+      console.log('AuthService: Decoding token', token);
+      const payload = JSON.parse(atob(token.split('.')[1])) as JwtPayload;
+      console.log('AuthService: Decoded token payload', payload);
+      return payload;
     } catch (e) {
+      console.error('AuthService: Failed to decode token', e);
       return null;
     }
+  }
+
+  private isTokenExpired(token: string): boolean {
+    const payload = this.decodeToken(token);
+    console.log('AuthService: Decoded token payload', payload);
+    if (!payload) return true;
+    
+    const currentTime = Math.floor(Date.now() / 1000);
+    console.log('AuthService: Current time', currentTime, 'Token expiration', payload.exp);
+    const isExpired = payload.exp < currentTime;
+    console.log('AuthService: Token is expired', isExpired);
+    return isExpired;
   }
 }

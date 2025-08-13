@@ -83,7 +83,8 @@ export class HomeComponent implements OnInit {
     }
 
     this.cartService.addToCart(productId, quantity).subscribe({
-      next: () => {
+      next: (cartItem) => {
+        console.log('Successfully added to cart', cartItem);
         this.showSuccessMessage = true;
         this.successMessage = `Added ${quantity} ${
           quantity === 1 ? 'item' : 'items'
@@ -126,7 +127,7 @@ export class HomeComponent implements OnInit {
   }
 
   onImageError(event: any): void {
-    event.target.src = 'https://via.placeholder.com/300x200?text=No+Image';
+    event.target.src = 'https://placehold.co/300x200?text=No+Image';
   }
 
   clearError(): void {

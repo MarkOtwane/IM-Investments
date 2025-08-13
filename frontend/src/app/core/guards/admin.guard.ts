@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import {
   ActivatedRouteSnapshot,
   CanActivate,
@@ -13,7 +14,11 @@ import { AuthService } from '../services/auth.service';
   providedIn: 'root',
 })
 export class AdminGuard implements CanActivate {
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) {}
 
   canActivate(
     route: ActivatedRouteSnapshot,
@@ -23,6 +28,12 @@ export class AdminGuard implements CanActivate {
     | Promise<boolean | UrlTree>
     | boolean
     | UrlTree {
+    // During server-side rendering, allow navigation to proceed
+    // The actual admin check will happen on the client side
+    if (!isPlatformBrowser(this.platformId)) {
+      return true;
+    }
+    
     if (this.authService.isAdmin()) {
       return true;
     }
