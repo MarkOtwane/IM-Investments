@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { Cart, CartItem } from '../../core/models/cart.model';
 import { CartService } from '../../core/services/cart.service';
 import { CurrencyPipe } from '../../shared/pipes/currency.pipe';
@@ -13,7 +14,10 @@ import { CurrencyPipe } from '../../shared/pipes/currency.pipe';
 export class CartComponent implements OnInit {
   cart: Cart | null = null;
 
-  constructor(private cartService: CartService) {}
+  constructor(
+    private cartService: CartService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.loadCart();
@@ -48,5 +52,9 @@ export class CartComponent implements OnInit {
       (total, item) => total + (item.product?.price || 0) * item.quantity,
       0
     );
+  }
+
+  proceedToCheckout(): void {
+    this.router.navigate(['/checkout']);
   }
 }

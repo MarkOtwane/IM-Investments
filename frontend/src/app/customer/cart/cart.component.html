@@ -97,7 +97,9 @@
         <span class="text-lg font-bold text-gray-800">Total</span>
         <span class="text-lg font-bold text-gray-800">{{ getTotalPrice() | currency }}</span>
       </div>
-      <button class="w-full mt-6 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg transition duration-300 font-medium">
+      <button 
+        (click)="proceedToCheckout()"
+        class="w-full mt-6 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg transition duration-300 font-medium">
         Proceed to Checkout
       </button>
     </div>

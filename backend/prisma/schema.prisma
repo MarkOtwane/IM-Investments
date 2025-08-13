@@ -16,6 +16,7 @@ model User {
   resetTokenExpiresAt DateTime?
   id                  Int       @id @default(autoincrement())
   cart                Cart?
+  orders              Order[]
 }
 
 model Category {
@@ -36,6 +37,7 @@ model Product {
   categoryId  Int
   cartItems   CartItem[]
   category    Category   @relation(fields: [categoryId], references: [id])
+  orderItems  OrderItem[]
 }
 
 model Cart {
@@ -54,7 +56,59 @@ model CartItem {
   product   Product @relation(fields: [productId], references: [id])
 }
 
+model Order {
+  id          Int           @id @default(autoincrement())
+  userId      Int
+  user        User          @relation(fields: [userId], references: [id])
+  totalAmount Float
+  status      OrderStatus   @default(PENDING)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  items       OrderItem[]
+  payment     Payment?
+}
+
+model OrderItem {
+  id        Int     @id @default(autoincrement())
+  orderId   Int
+  order     Order   @relation(fields: [orderId], references: [id])
+  productId Int
+  product   Product @relation(fields: [productId], references: [id])
+  quantity  Int
+  price     Float
+}
+
+model Payment {
+  id                Int           @id @default(autoincrement())
+  orderId           Int           @unique
+  order             Order         @relation(fields: [orderId], references: [id])
+  amount            Float
+  phoneNumber       String
+  transactionId     String?       @unique
+  checkoutRequestId String?       @unique
+  status            PaymentStatus @default(PENDING)
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+  mpesaResponse     Json?
+}
+
 enum Role {
   ADMIN
   CUSTOMER
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  CANCELLED
 }
