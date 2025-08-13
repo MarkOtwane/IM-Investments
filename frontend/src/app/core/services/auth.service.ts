@@ -56,10 +56,8 @@ export class AuthService {
     }
     
     const token = this.getToken();
-    console.log('AuthService: Checking if user is logged in', token);
     if (!token) return false;
     const isExpired = this.isTokenExpired(token);
-    console.log('AuthService: Token is expired', isExpired);
     return !isExpired;
   }
 
@@ -87,11 +85,8 @@ export class AuthService {
 
   public getToken(): string | null {
     if (isPlatformBrowser(this.platformId)) {
-      const token = localStorage.getItem('token');
-      console.log('AuthService: Getting token from localStorage', token);
-      return token;
+      return localStorage.getItem('token');
     }
-    console.log('AuthService: Not in browser environment');
     return null;
   }
 
@@ -103,25 +98,17 @@ export class AuthService {
 
   private decodeToken(token: string): JwtPayload | null {
     try {
-      console.log('AuthService: Decoding token', token);
-      const payload = JSON.parse(atob(token.split('.')[1])) as JwtPayload;
-      console.log('AuthService: Decoded token payload', payload);
-      return payload;
+      return JSON.parse(atob(token.split('.')[1])) as JwtPayload;
     } catch (e) {
-      console.error('AuthService: Failed to decode token', e);
       return null;
     }
   }
 
   private isTokenExpired(token: string): boolean {
     const payload = this.decodeToken(token);
-    console.log('AuthService: Decoded token payload', payload);
     if (!payload) return true;
     
     const currentTime = Math.floor(Date.now() / 1000);
-    console.log('AuthService: Current time', currentTime, 'Token expiration', payload.exp);
-    const isExpired = payload.exp < currentTime;
-    console.log('AuthService: Token is expired', isExpired);
-    return isExpired;
+    return payload.exp < currentTime;
   }
 }
