@@ -1,13 +1,13 @@
 import { RenderMode, ServerRoute } from '@angular/ssr';
 
 export const serverRoutes: ServerRoute[] = [
-  // Product detail pages → SSR (no prerender)
-  { path: 'home/products/:id', renderMode: RenderMode.Server },
-  { path: 'home/products/products/:id', renderMode: RenderMode.Server },
-  { path: 'customer/products/:id', renderMode: RenderMode.Server },
-  { path: 'customer/products/products/:id', renderMode: RenderMode.Server },
-  { path: 'admin/products/products/:id/edit', renderMode: RenderMode.Server },
+  // Admin edit page → SSR (dynamic)
+  { path: 'admin/products/:id/edit', renderMode: RenderMode.Server },
 
-  // All other pages → prerender
+  // If you have other dynamic product pages:
+  { path: 'home/products/:id', renderMode: RenderMode.Server },
+  { path: 'customer/products/:id', renderMode: RenderMode.Server },
+
+  // Everything else stays prerendered
   { path: '**', renderMode: RenderMode.Prerender },
 ];
