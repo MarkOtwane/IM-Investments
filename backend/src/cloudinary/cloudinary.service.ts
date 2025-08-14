@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { v2 as cloudinary } from 'cloudinary';
+import * as Multer from 'multer';
 import { Readable } from 'stream';
 
 @Injectable()
@@ -17,13 +19,15 @@ export class CloudinaryService {
         api_secret: apiSecret,
       });
     } else {
-      console.warn('Cloudinary credentials not configured. Image uploads will use default images.');
+      console.warn(
+        'Cloudinary credentials not configured. Image uploads will use default images.',
+      );
     }
   }
 
-  async uploadImage(file: Express.Multer.File): Promise<string> {
+  async uploadImage(file: Multer.File): Promise<string> {
     const cloudName = this.configService.get<string>('CLOUDINARY_CLOUD_NAME');
-    
+
     if (!cloudName) {
       console.warn('Cloudinary not configured, using default image');
       return 'https://images.pexels.com/photos/4041392/pexels-photo-4041392.jpeg?auto=compress&cs=tinysrgb&w=300&h=200&fit=crop';
