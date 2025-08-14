@@ -25,65 +25,55 @@ export class AuthInterceptor implements HttpInterceptor {
     req: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
-    console.log('AuthInterceptor: Intercepting request', req.url);
+    console.log('AuthInterceptor: Intercepting request to', req.url);
+    
     // Only add JWT to requests targeting the backend API
     if (req.url.startsWith(environment.apiUrl)) {
       console.log('AuthInterceptor: Request targets backend API');
-      // During server-side rendering, we can't access localStorage
-      // So we skip adding the token on the server
+      
+      // During server-side rendering, skip adding the token
       if (isPlatformBrowser(this.platformId)) {
         const token = this.authService.getToken();
         if (token) {
-          console.log('AuthInterceptor: Token found', token);
-          // Clone request and add Authorization header
+          console.log('AuthInterceptor: Adding token to request');
           const authReq = req.clone({
             headers: req.headers.set('Authorization', `Bearer ${token}`),
           });
-          console.log('AuthInterceptor: Sending authenticated request', authReq);
-          return next
-            .handle(authReq)
-            .pipe(
-              catchError((error: HttpErrorResponse) => this.handleError(error))
-            );
+          return next.handle(authReq).pipe(
+            catchError((error: HttpErrorResponse) => this.handleError(error))
+          );
         } else {
           console.log('AuthInterceptor: No token found');
         }
       } else {
         console.log('AuthInterceptor: Running on server, skipping token');
       }
-    } else {
-      console.log('AuthInterceptor: Request does not target backend API');
     }
-    // Pass through requests without modification if no token or not API URL
-    console.log('AuthInterceptor: Sending unauthenticated request', req);
-    return next
-      .handle(req)
-      .pipe(catchError((error: HttpErrorResponse) => this.handleError(error)));
+    
+    return next.handle(req).pipe(
+      catchError((error: HttpErrorResponse) => this.handleError(error))
+    );
   }
 
   private handleError(error: HttpErrorResponse): Observable<never> {
+    console.error('AuthInterceptor: HTTP Error', error);
+    
     // Only handle errors on the browser side
     if (!isPlatformBrowser(this.platformId)) {
       return throwError(() => error);
     }
     
     if (error.status === 401) {
-      // Unauthorized: Clear token and redirect to login
+      console.log('AuthInterceptor: Unauthorized, logging out');
       this.authService.logout();
       this.router.navigate(['/customer/login'], {
-        queryParams: { returnUrl: this.router.routerState.snapshot.url },
+        queryParams: { message: 'Session expired. Please log in again.' },
       });
-      return throwError(
-        () => new Error('Session expired. Please log in again.')
-      );
     } else if (error.status === 403) {
-      // Forbidden: Notify user of insufficient permissions
+      console.log('AuthInterceptor: Forbidden');
       this.router.navigate(['/customer']);
-      return throwError(
-        () => new Error('You do not have permission to perform this action.')
-      );
     }
-    // Rethrow other errors
+    
     return throwError(() => error);
   }
 }

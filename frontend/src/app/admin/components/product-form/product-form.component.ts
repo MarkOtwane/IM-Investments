@@ -20,7 +20,7 @@ export class ProductFormComponent implements OnInit {
     price: 0,
     imageUrl: '',
     stock: 0,
-    categoryId: 1, // Default to first category
+    categoryId: 1,
   };
 
   categories: Category[] = [];
@@ -40,7 +40,6 @@ export class ProductFormComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Load categories first
     this.loadCategories();
 
     const idParam = this.route.snapshot.paramMap.get('id');
@@ -48,26 +47,7 @@ export class ProductFormComponent implements OnInit {
 
     if (this.productId) {
       this.isEdit = true;
-      this.loading = true;
-      this.productService.getProductById(this.productId.toString()).subscribe({
-        next: (product) => {
-          // Strip off id and createdAt for editing form
-          this.product = {
-            name: product.name,
-            description: product.description,
-            price: product.price,
-            imageUrl: product.imageUrl,
-            stock: product.stock,
-            categoryId: product.categoryId,
-          };
-          this.loading = false;
-        },
-        error: (err) => {
-          console.error('Failed to load product', err);
-          this.error = 'Failed to load product for editing';
-          this.loading = false;
-        },
-      });
+      this.loadProductForEdit();
     }
   }
 
@@ -75,6 +55,7 @@ export class ProductFormComponent implements OnInit {
     this.categoriesService.getAllCategories().subscribe({
       next: (categories) => {
         this.categories = categories;
+        console.log('Categories loaded:', categories);
         if (categories.length > 0 && !this.isEdit) {
           this.product.categoryId = categories[0].id;
         }
@@ -82,6 +63,30 @@ export class ProductFormComponent implements OnInit {
       error: (err) => {
         console.error('Failed to load categories', err);
         this.error = 'Failed to load categories';
+      },
+    });
+  }
+
+  loadProductForEdit(): void {
+    if (!this.productId) return;
+    
+    this.loading = true;
+    this.productService.getProductById(this.productId.toString()).subscribe({
+      next: (product) => {
+        this.product = {
+          name: product.name,
+          description: product.description,
+          price: product.price,
+          imageUrl: product.imageUrl,
+          stock: product.stock,
+          categoryId: product.categoryId,
+        };
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Failed to load product', err);
+        this.error = 'Failed to load product for editing';
+        this.loading = false;
       },
     });
   }
@@ -132,11 +137,12 @@ export class ProductFormComponent implements OnInit {
   }
 
   onSubmit(): void {
+    console.log('Form submitted');
     this.error = null;
     this.successMessage = null;
 
     if (!this.isFormValid()) {
-      this.error = 'Please fill in all required fields';
+      this.error = 'Please fill in all required fields correctly';
       return;
     }
 
@@ -170,7 +176,7 @@ export class ProductFormComponent implements OnInit {
           this.loading = false;
           this.successMessage = 'Product created successfully!';
           setTimeout(() => {
-            this.router.navigate(['/admin']);
+            this.router.navigate(['/admin/dashboard']);
           }, 1500);
         },
         error: (err: any) => {
@@ -188,7 +194,7 @@ export class ProductFormComponent implements OnInit {
           this.loading = false;
           this.successMessage = 'Product created successfully!';
           setTimeout(() => {
-            this.router.navigate(['/admin']);
+            this.router.navigate(['/admin/dashboard']);
           }, 1500);
         },
         error: (err: any) => {
@@ -204,7 +210,6 @@ export class ProductFormComponent implements OnInit {
     if (!this.productId) return;
 
     console.log('Updating product:', this.productId, this.product);
-    console.log('Selected file:', this.selectedFile);
 
     if (this.selectedFile) {
       // Use FormData for file upload
@@ -222,7 +227,7 @@ export class ProductFormComponent implements OnInit {
           this.loading = false;
           this.successMessage = 'Product updated successfully!';
           setTimeout(() => {
-            this.router.navigate(['/admin']);
+            this.router.navigate(['/admin/dashboard']);
           }, 1500);
         },
         error: (err: any) => {
@@ -246,7 +251,7 @@ export class ProductFormComponent implements OnInit {
           this.loading = false;
           this.successMessage = 'Product updated successfully!';
           setTimeout(() => {
-            this.router.navigate(['/admin']);
+            this.router.navigate(['/admin/dashboard']);
           }, 1500);
         },
         error: (err: any) => {
@@ -259,6 +264,6 @@ export class ProductFormComponent implements OnInit {
   }
 
   goBack(): void {
-    this.router.navigate(['/admin']);
+    this.router.navigate(['/admin/dashboard']);
   }
 }

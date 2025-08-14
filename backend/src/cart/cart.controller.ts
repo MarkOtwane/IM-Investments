@@ -1,7 +1,7 @@
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseIntPipe,
@@ -21,35 +21,37 @@ export class CartController {
 
   @Post()
   @UseGuards(JwtAuthGuard)
-  addToCart(@Request() req, @Body(ValidationPipe) addToCartDto: AddToCartDto) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-    const userId = req.user.userId; // Extracted from JWT payload
+  addToCart(@Request() req: any, @Body(ValidationPipe) addToCartDto: AddToCartDto) {
+    console.log('Adding to cart:', addToCartDto, 'User:', req.user);
+    const userId = req.user.userId;
     return this.cartService.addToCart(userId, addToCartDto);
   }
 
   @Put(':cartItemId')
   @UseGuards(JwtAuthGuard)
   updateCartItem(
-    @Request() req,
+    @Request() req: any,
     @Param('cartItemId', ParseIntPipe) cartItemId: number,
     @Body('quantity', ParseIntPipe) quantity: number,
   ) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-    const userId = req.user.userId; // Extracted from JWT payload
+    const userId = req.user.userId;
     return this.cartService.updateCartItem(userId, cartItemId, quantity);
+  }
+
+  @Delete(':cartItemId')
+  @UseGuards(JwtAuthGuard)
+  removeCartItem(
+    @Request() req: any,
+    @Param('cartItemId', ParseIntPipe) cartItemId: number,
+  ) {
+    const userId = req.user.userId;
+    return this.cartService.removeCartItem(userId, cartItemId);
   }
 
   @Get()
   @UseGuards(JwtAuthGuard)
-  getCart(@Request() req) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-    const userId = req.user.userId; // Extracted from JWT payload
+  getCart(@Request() req: any) {
+    const userId = req.user.userId;
     return this.cartService.getCart(userId);
   }
 }
-
-// Test endpoints in Postman:
-
-//     POST http://localhost:3000/cart (with JWT) with { "productId": 1, "quantity": 2 }.
-//     GET http://localhost:3000/cart (with JWT) to retrieve cart contents.
-//     PUT http://localhost:3000/cart/:cartItemId (with JWT) with { "quantity": 3 }.

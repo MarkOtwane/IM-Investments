@@ -1,6 +1,3 @@
-/* eslint-disable prefer-const */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -13,39 +10,41 @@ export class ProductsService {
   async create(createProductDto: CreateProductDto) {
     console.log('Creating product with data:', createProductDto);
 
-    // Validate that category exists
-    const category = await this.prisma.category.findUnique({
-      where: { id: createProductDto.categoryId },
-    });
+    try {
+      // Validate that category exists
+      const category = await this.prisma.category.findUnique({
+        where: { id: createProductDto.categoryId },
+      });
 
-    if (!category) {
-      throw new NotFoundException(`Category with ID ${createProductDto.categoryId} not found`);
+      if (!category) {
+        throw new NotFoundException(`Category with ID ${createProductDto.categoryId} not found`);
+      }
+
+      const product = await this.prisma.product.create({
+        data: {
+          name: createProductDto.name,
+          description: createProductDto.description,
+          price: createProductDto.price,
+          stock: createProductDto.stock,
+          categoryId: createProductDto.categoryId,
+          imageUrl: createProductDto.imageUrl || 'https://images.pexels.com/photos/4041392/pexels-photo-4041392.jpeg?auto=compress&cs=tinysrgb&w=300&h=200&fit=crop',
+        },
+        include: {
+          category: true,
+        },
+      });
+
+      console.log('Product created successfully:', product);
+      return product;
+    } catch (error) {
+      console.error('Error creating product:', error);
+      throw error;
     }
-
-    // Build the data object dynamically
-    const data: any = {
-      name: createProductDto.name,
-      description: createProductDto.description,
-      price: createProductDto.price,
-      stock: createProductDto.stock,
-      categoryId: createProductDto.categoryId,
-      // Set a default empty string for imageUrl if not provided
-      imageUrl: createProductDto.imageUrl || '',
-    };
-
-    console.log('Final product data for creation:', data);
-
-    return this.prisma.product.create({
-      data,
-      include: {
-        category: true,
-      },
-    });
   }
 
   async findAll(search?: string, page = 1, limit = 10, categoryId?: number) {
     const skip = (page - 1) * limit;
-    let where: any = {};
+    const where: any = {};
 
     // Optional search filter
     if (search) {
@@ -103,25 +102,24 @@ export class ProductsService {
       }
     }
 
-    // Transform UpdateProductDto to match Prisma's expected input
     const updateData: any = {};
 
-    if (updateProductDto.name) {
+    if (updateProductDto.name !== undefined) {
       updateData.name = updateProductDto.name;
     }
-    if (updateProductDto.description) {
+    if (updateProductDto.description !== undefined) {
       updateData.description = updateProductDto.description;
     }
     if (updateProductDto.price !== undefined) {
       updateData.price = updateProductDto.price;
     }
-    if (updateProductDto.imageUrl) {
+    if (updateProductDto.imageUrl !== undefined) {
       updateData.imageUrl = updateProductDto.imageUrl;
     }
     if (updateProductDto.stock !== undefined) {
       updateData.stock = updateProductDto.stock;
     }
-    if (updateProductDto.categoryId) {
+    if (updateProductDto.categoryId !== undefined) {
       updateData.categoryId = updateProductDto.categoryId;
     }
 

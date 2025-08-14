@@ -18,14 +18,17 @@ export class CartService {
   }
 
   updateCartItem(cartItemId: number, quantity: number): Observable<CartItem> {
+    console.log('CartService: Updating cart item', { cartItemId, quantity });
     return this.http.put<CartItem>(`${this.apiUrl}/${cartItemId}`, { quantity });
   }
 
-  removeFromCart(cartItemId: number): Observable<CartItem> {
-    return this.http.delete<CartItem>(`${this.apiUrl}/${cartItemId}`);
+  removeFromCart(cartItemId: number): Observable<void> {
+    console.log('CartService: Removing from cart', { cartItemId });
+    return this.http.delete<void>(`${this.apiUrl}/${cartItemId}`);
   }
 
   getCart(): Observable<Cart> {
+    console.log('CartService: Getting cart');
     return this.http.get<Cart>(this.apiUrl);
   }
 }

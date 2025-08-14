@@ -14,7 +14,10 @@ interface PasswordResetResponse {
   message: string;
 }
 
-interface JwtPayload extends User {
+interface JwtPayload {
+  sub: number;
+  email: string;
+  role: 'ADMIN' | 'CUSTOMER';
   iat: number;
   exp: number;
 }
@@ -31,15 +34,27 @@ export class AuthService {
   ) {}
 
   login(email: string, password: string): Observable<AuthResponse> {
+    console.log('AuthService: Logging in user', email);
     return this.http
       .post<AuthResponse>(`${this.apiUrl}/login`, { email, password })
-      .pipe(tap((response) => this.setToken(response.access_token)));
+      .pipe(
+        tap((response) => {
+          console.log('AuthService: Login successful', response);
+          this.setToken(response.access_token);
+        })
+      );
   }
 
   register(email: string, password: string): Observable<AuthResponse> {
+    console.log('AuthService: Registering user', email);
     return this.http
       .post<AuthResponse>(`${this.apiUrl}/register`, { email, password })
-      .pipe(tap((response) => this.setToken(response.access_token)));
+      .pipe(
+        tap((response) => {
+          console.log('AuthService: Registration successful', response);
+          this.setToken(response.access_token);
+        })
+      );
   }
 
   requestPasswordReset(email: string): Observable<PasswordResetResponse> {
@@ -50,25 +65,26 @@ export class AuthService {
   }
 
   isLoggedIn(): boolean {
-    // Don't check token during server-side rendering
     if (!isPlatformBrowser(this.platformId)) {
       return false;
     }
     
     const token = this.getToken();
     if (!token) return false;
+    
     const isExpired = this.isTokenExpired(token);
+    console.log('AuthService: Token expired?', isExpired);
     return !isExpired;
   }
 
   getUserRole(): 'ADMIN' | 'CUSTOMER' | null {
-    // Don't check token during server-side rendering
     if (!isPlatformBrowser(this.platformId)) {
       return null;
     }
     
     const token = this.getToken();
     if (!token) return null;
+    
     const payload = this.decodeToken(token);
     return payload ? payload.role : null;
   }
@@ -80,6 +96,7 @@ export class AuthService {
   logout(): void {
     if (isPlatformBrowser(this.platformId)) {
       localStorage.removeItem('token');
+      console.log('AuthService: User logged out');
     }
   }
 
@@ -93,13 +110,17 @@ export class AuthService {
   private setToken(token: string): void {
     if (isPlatformBrowser(this.platformId)) {
       localStorage.setItem('token', token);
+      console.log('AuthService: Token stored');
     }
   }
 
-  private decodeToken(token: string): JwtPayload | null {
+  public decodeToken(token: string): JwtPayload | null {
     try {
-      return JSON.parse(atob(token.split('.')[1])) as JwtPayload;
+      const payload = JSON.parse(atob(token.split('.')[1])) as JwtPayload;
+      console.log('AuthService: Decoded token payload', payload);
+      return payload;
     } catch (e) {
+      console.error('AuthService: Failed to decode token', e);
       return null;
     }
   }
