@@ -1,8 +1,6 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { v2 as cloudinary } from 'cloudinary';
-import * as Multer from 'multer';
 import { Readable } from 'stream';
 
 @Injectable()
@@ -25,7 +23,7 @@ export class CloudinaryService {
     }
   }
 
-  async uploadImage(file: Multer.File): Promise<string> {
+  async uploadImage(file: Express.Multer.File): Promise<string> {
     const cloudName = this.configService.get<string>('CLOUDINARY_CLOUD_NAME');
 
     if (!cloudName) {
