@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import {
   BadRequestException,
   Body,
@@ -10,6 +12,7 @@ import {
   Patch,
   Post,
   Query,
+  Request,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -54,7 +57,10 @@ export class ProductsController {
     @UploadedFile() file?: Express.Multer.File,
   ) {
     console.log('ProductsController: Create request from user:', req.user);
-    console.log('ProductsController: Request headers:', req.headers.authorization);
+    console.log(
+      'ProductsController: Request headers:',
+      req.headers.authorization,
+    );
     console.log('Received product data:', createProductDto);
     console.log('Received file:', file);
 
@@ -63,15 +69,18 @@ export class ProductsController {
       const productData = {
         name: createProductDto.name,
         description: createProductDto.description,
-        price: typeof createProductDto.price === 'string' 
-          ? parseFloat(createProductDto.price) 
-          : createProductDto.price,
-        stock: typeof createProductDto.stock === 'string' 
-          ? parseInt(createProductDto.stock, 10) 
-          : createProductDto.stock,
-        categoryId: typeof createProductDto.categoryId === 'string' 
-          ? parseInt(createProductDto.categoryId, 10) 
-          : createProductDto.categoryId,
+        price:
+          typeof createProductDto.price === 'string'
+            ? parseFloat(createProductDto.price)
+            : createProductDto.price,
+        stock:
+          typeof createProductDto.stock === 'string'
+            ? parseInt(createProductDto.stock, 10)
+            : createProductDto.stock,
+        categoryId:
+          typeof createProductDto.categoryId === 'string'
+            ? parseInt(createProductDto.categoryId, 10)
+            : createProductDto.categoryId,
         imageUrl: createProductDto.imageUrl || '',
       };
 
@@ -83,18 +92,22 @@ export class ProductsController {
         } catch (error) {
           console.error('Cloudinary upload error:', error);
           // Don't fail the entire request, just use default image
-          productData.imageUrl = 'https://images.pexels.com/photos/4041392/pexels-photo-4041392.jpeg?auto=compress&cs=tinysrgb&w=300&h=200&fit=crop';
+          productData.imageUrl =
+            'https://images.pexels.com/photos/4041392/pexels-photo-4041392.jpeg?auto=compress&cs=tinysrgb&w=300&h=200&fit=crop';
         }
       } else if (!productData.imageUrl) {
         // Set a default image URL if no image is provided
-        productData.imageUrl = 'https://images.pexels.com/photos/4041392/pexels-photo-4041392.jpeg?auto=compress&cs=tinysrgb&w=300&h=200&fit=crop';
+        productData.imageUrl =
+          'https://images.pexels.com/photos/4041392/pexels-photo-4041392.jpeg?auto=compress&cs=tinysrgb&w=300&h=200&fit=crop';
       }
 
       console.log('Final product data:', productData);
       return this.productsService.create(productData);
     } catch (error) {
       console.error('Product creation error:', error);
-      throw new BadRequestException('Failed to create product: ' + error.message);
+      throw new BadRequestException(
+        'Failed to create product: ' + error.message,
+      );
     }
   }
 
@@ -142,15 +155,19 @@ export class ProductsController {
     try {
       const updateData = {
         ...updateProductDto,
-        price: updateProductDto.price && typeof updateProductDto.price === 'string'
-          ? parseFloat(updateProductDto.price)
-          : updateProductDto.price,
-        stock: updateProductDto.stock && typeof updateProductDto.stock === 'string'
-          ? parseInt(updateProductDto.stock, 10)
-          : updateProductDto.stock,
-        categoryId: updateProductDto.categoryId && typeof updateProductDto.categoryId === 'string'
-          ? parseInt(updateProductDto.categoryId, 10)
-          : updateProductDto.categoryId,
+        price:
+          updateProductDto.price && typeof updateProductDto.price === 'string'
+            ? parseFloat(updateProductDto.price)
+            : updateProductDto.price,
+        stock:
+          updateProductDto.stock && typeof updateProductDto.stock === 'string'
+            ? parseInt(updateProductDto.stock, 10)
+            : updateProductDto.stock,
+        categoryId:
+          updateProductDto.categoryId &&
+          typeof updateProductDto.categoryId === 'string'
+            ? parseInt(updateProductDto.categoryId, 10)
+            : updateProductDto.categoryId,
       };
 
       if (file) {
@@ -166,7 +183,9 @@ export class ProductsController {
       return this.productsService.update(id, updateData);
     } catch (error) {
       console.error('Product update error:', error);
-      throw new BadRequestException('Failed to update product: ' + error.message);
+      throw new BadRequestException(
+        'Failed to update product: ' + error.message,
+      );
     }
   }
 
