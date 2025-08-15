@@ -15,6 +15,7 @@ export class AuthController {
 
   @Post('login')
   login(@Body(ValidationPipe) loginDto: LoginDto) {
+    console.log('AuthController: Login attempt for:', loginDto.email);
     return this.authService.login(loginDto);
   }
 

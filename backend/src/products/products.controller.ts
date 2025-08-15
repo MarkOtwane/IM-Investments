@@ -49,9 +49,12 @@ export class ProductsController {
     }),
   )
   async create(
+    @Request() req: any,
     @Body(ValidationPipe) createProductDto: CreateProductDto,
     @UploadedFile() file?: Express.Multer.File,
   ) {
+    console.log('ProductsController: Create request from user:', req.user);
+    console.log('ProductsController: Request headers:', req.headers.authorization);
     console.log('Received product data:', createProductDto);
     console.log('Received file:', file);
 

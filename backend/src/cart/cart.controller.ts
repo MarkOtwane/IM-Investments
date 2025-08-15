@@ -22,7 +22,9 @@ export class CartController {
   @Post()
   @UseGuards(JwtAuthGuard)
   addToCart(@Request() req: any, @Body(ValidationPipe) addToCartDto: AddToCartDto) {
-    console.log('Adding to cart:', addToCartDto, 'User:', req.user);
+    console.log('CartController: Adding to cart:', addToCartDto);
+    console.log('CartController: User from request:', req.user);
+    console.log('CartController: Request headers:', req.headers.authorization);
     const userId = req.user.userId;
     return this.cartService.addToCart(userId, addToCartDto);
   }

@@ -38,6 +38,7 @@ export class LoginComponent {
     this.authService.login(this.email, this.password).subscribe({
       next: () => {
         this.loading = false;
+        console.log('LoginComponent: Login successful, token stored');
         
         // Check if there's a pending cart item to add
         const pendingCartItemStr = localStorage.getItem('pendingCartItem');

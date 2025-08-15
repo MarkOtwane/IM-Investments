@@ -82,6 +82,9 @@ export class HomeComponent implements OnInit {
       return;
     }
 
+    console.log('HomeComponent: Adding to cart - User is logged in');
+    console.log('HomeComponent: Token exists:', !!this.authService.getToken());
+    
     this.cartService.addToCart(productId, quantity).subscribe({
       next: (cartItem) => {
         console.log('Successfully added to cart', cartItem);
@@ -101,7 +104,13 @@ export class HomeComponent implements OnInit {
       },
       error: (err) => {
         console.error('Failed to add to cart', err);
-        this.error = 'Failed to add item to cart. Please try again.';
+        if (err.status === 401) {
+          this.error = 'Please log in again to add items to cart.';
+          this.authService.logout();
+          this.router.navigate(['/customer/login']);
+        } else {
+          this.error = 'Failed to add item to cart. Please try again.';
+        }
 
         // Hide error message after 5 seconds
         setTimeout(() => {
