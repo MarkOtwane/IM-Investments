@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
@@ -11,7 +11,7 @@ import { CartService } from '../../core/services/cart.service';
   styleUrls: ['./login.component.css'],
   imports: [FormsModule, CommonModule],
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   email: string = '';
   password: string = '';
   rememberMe: boolean = false;
@@ -26,6 +26,14 @@ export class LoginComponent {
     private cartService: CartService
   ) {}
 
+  ngOnInit(): void {
+    const savedEmail = localStorage.getItem('savedEmail');
+    if (savedEmail) {
+      this.email = savedEmail;
+      this.rememberMe = true;
+    }
+  }
+
   onSubmit(): void {
     if (!this.email || !this.password) {
       this.error = 'Please fill in all required fields';
@@ -39,6 +47,13 @@ export class LoginComponent {
       next: () => {
         this.loading = false;
         console.log('LoginComponent: Login successful, token stored');
+
+        // Persist email if remember me is enabled
+        if (this.rememberMe) {
+          localStorage.setItem('savedEmail', this.email);
+        } else {
+          localStorage.removeItem('savedEmail');
+        }
         
         // Check if there's a pending cart item to add
         const pendingCartItemStr = localStorage.getItem('pendingCartItem');

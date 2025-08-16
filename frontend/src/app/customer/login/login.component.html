@@ -89,6 +89,7 @@
               name="email"
               type="email"
               required
+              autocomplete="email"
               placeholder="Enter your email"
               class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
               [class.border-red-300]="error && !email"
@@ -128,6 +129,7 @@
               name="password"
               [type]="showPassword ? 'text' : 'password'"
               required
+              autocomplete="current-password"
               placeholder="Enter your password"
               class="block w-full pl-10 pr-12 py-3 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
               [class.border-red-300]="error && !password"
