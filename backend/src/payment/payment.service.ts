@@ -52,9 +52,12 @@ export class PaymentService {
         },
       });
 
+      // Clear cart items immediately after initiating payment (simulate auto-removal upon payment)
+      await this.cartService.clearCart(userId);
+
       return {
         orderId: order.id,
-        message: 'Payment initiated successfully',
+        message: 'Payment initiated successfully. Cart cleared.',
       };
     } catch (error) {
       throw new HttpException(
