@@ -9,6 +9,8 @@ import { PasswordResetComponent } from './password-reset/password-reset.componen
 import { ProductDetailComponent } from './product-details/product-details.component';
 import { RegisterComponent } from './register/register.component';
 import { CheckoutComponent } from './checkout/checkout.component';
+import { CustomerOrdersComponent } from './orders/orders.component';
+import { CustomerProfileComponent } from './profile/profile.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -20,6 +22,10 @@ const routes: Routes = [
   { path: 'register', component: RegisterComponent },
   { path: 'password-reset', component: PasswordResetComponent },
   { path: 'dashboard', component: CustomerDashboardComponent, canActivate: [AuthGuard] },
+  { path: 'orders', component: CustomerOrdersComponent, canActivate: [AuthGuard] },
+  { path: 'profile', component: CustomerProfileComponent, canActivate: [AuthGuard] },
+  { path: 'wishlist', component: CustomerOrdersComponent, canActivate: [AuthGuard] }, // Placeholder
+  { path: 'support', component: CustomerOrdersComponent, canActivate: [AuthGuard] }, // Placeholder
 ];
 
 @NgModule({
