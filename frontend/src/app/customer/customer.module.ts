@@ -12,6 +12,8 @@ import { LoginComponent } from './login/login.component';
 import { PasswordResetComponent } from './password-reset/password-reset.component';
 import { ProductDetailComponent } from './product-details/product-details.component';
 import { RegisterComponent } from './register/register.component';
+import { CustomerLayoutComponent } from './layout/customer-layout.component';
+import { CustomerMarketplaceComponent } from './customer-marketplace/customer-marketplace.component';
 
 @NgModule({
   declarations: [],
@@ -29,6 +31,8 @@ import { RegisterComponent } from './register/register.component';
     RegisterComponent,
     PasswordResetComponent,
     ProductDetailComponent,
+    CustomerLayoutComponent,
+    CustomerMarketplaceComponent,
   ],
   exports: [],
 })

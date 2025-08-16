@@ -11,21 +11,30 @@ import { RegisterComponent } from './register/register.component';
 import { CheckoutComponent } from './checkout/checkout.component';
 import { CustomerOrdersComponent } from './orders/orders.component';
 import { CustomerProfileComponent } from './profile/profile.component';
+import { CustomerLayoutComponent } from './layout/customer-layout.component';
+import { CustomerMarketplaceComponent } from './customer-marketplace/customer-marketplace.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'products', component: HomeComponent },
   { path: 'products/:id', component: ProductDetailComponent },
-  { path: 'cart', component: CartComponent, canActivate: [AuthGuard] },
-  { path: 'checkout', component: CheckoutComponent, canActivate: [AuthGuard] },
+  {
+    path: '',
+    component: CustomerLayoutComponent,
+    children: [
+      { path: 'cart', component: CartComponent, canActivate: [AuthGuard] },
+      { path: 'orders', component: CustomerOrdersComponent, canActivate: [AuthGuard] },
+      { path: 'marketplace', component: CustomerMarketplaceComponent },
+      { path: 'order-history', component: CustomerOrdersComponent, canActivate: [AuthGuard] },
+      { path: 'checkout', component: CheckoutComponent, canActivate: [AuthGuard] },
+      { path: 'dashboard', component: CustomerDashboardComponent, canActivate: [AuthGuard] },
+      { path: 'profile', component: CustomerProfileComponent, canActivate: [AuthGuard] },
+      { path: 'wishlist', component: CustomerOrdersComponent, canActivate: [AuthGuard] }, // Placeholder
+    ]
+  },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'password-reset', component: PasswordResetComponent },
-  { path: 'dashboard', component: CustomerDashboardComponent, canActivate: [AuthGuard] },
-  { path: 'orders', component: CustomerOrdersComponent, canActivate: [AuthGuard] },
-  { path: 'profile', component: CustomerProfileComponent, canActivate: [AuthGuard] },
-  { path: 'wishlist', component: CustomerOrdersComponent, canActivate: [AuthGuard] }, // Placeholder
-  { path: 'support', component: CustomerOrdersComponent, canActivate: [AuthGuard] }, // Placeholder
 ];
 
 @NgModule({

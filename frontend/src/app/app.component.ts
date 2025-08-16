@@ -27,12 +27,16 @@ export class AppComponent {
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
-        // Hide header and footer for login, register, admin, and dashboard pages
+        // Hide header and footer for login, register, admin, and customer pages
         const hiddenRoutes = [
           '/customer/login',
           '/customer/register',
           '/admin',
           '/customer/dashboard',
+          '/customer/cart',
+          '/customer/orders',
+          '/customer/marketplace',
+          '/customer/order-history',
         ];
         this.showHeader = !hiddenRoutes.some((route) =>
           event.url.includes(route)
