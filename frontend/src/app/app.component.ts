@@ -5,6 +5,7 @@ import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { FooterComponent } from './shared/components/footer/footer.component';
 import { HeaderComponent } from './shared/components/header/header.component';
+import { AuthService } from './core/services/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -23,27 +24,21 @@ export class AppComponent {
   showHeader = true;
   showFooter = true;
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private authService: AuthService) {
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
-        // Hide header and footer for login, register, admin, and customer pages
-        const hiddenRoutes = [
-          '/customer/login',
-          '/customer/register',
-          '/admin',
-          '/customer/dashboard',
-          '/customer/cart',
-          '/customer/orders',
-          '/customer/marketplace',
-          '/customer/order-history',
-        ];
-        this.showHeader = !hiddenRoutes.some((route) =>
-          event.url.includes(route)
-        );
-        this.showFooter = !hiddenRoutes.some((route) =>
-          event.url.includes(route)
-        );
+        const url = event.url;
+        const isLoggedIn = this.authService.isLoggedIn();
+        const isAdminRoute = url.startsWith('/admin');
+        const isCustomerRoute = url.startsWith('/customer');
+
+        const hideForAdmin = isAdminRoute;
+        const hideForCustomer = isCustomerRoute && isLoggedIn;
+
+        const shouldHide = hideForAdmin || hideForCustomer;
+        this.showHeader = !shouldHide;
+        this.showFooter = !shouldHide;
       });
   }
 }

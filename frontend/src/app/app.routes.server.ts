@@ -17,6 +17,13 @@ export const serverRoutes: ServerRoute[] = [
     getPrerenderParams: getProductPrerenderParams,
     fallback: PrerenderFallback.Server
   },
+  // Some route configurations generate a duplicate segment; include it to satisfy prerender
+  {
+    path: 'admin/products/products/:id/edit',
+    renderMode: RenderMode.Prerender,
+    getPrerenderParams: getProductPrerenderParams,
+    fallback: PrerenderFallback.Server
+  },
   {
     path: 'home/products/:id',
     renderMode: RenderMode.Prerender,
