@@ -154,4 +154,13 @@ export class CartService {
 
     return cart;
   }
+
+  async clearCart(userId: number) {
+    const cart = await this.prisma.cart.findUnique({ where: { userId }, select: { id: true } });
+    if (!cart) {
+      return { cleared: 0 };
+    }
+    const result = await this.prisma.cartItem.deleteMany({ where: { cartId: cart.id } });
+    return { cleared: result.count };
+  }
 }

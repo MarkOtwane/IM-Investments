@@ -31,4 +31,9 @@ export class CartService {
     console.log('CartService: Getting cart');
     return this.http.get<Cart>(this.apiUrl);
   }
+
+  clearCart(): Observable<{ cleared: number }> {
+    console.log('CartService: Clearing cart');
+    return this.http.delete<{ cleared: number }>(`${this.apiUrl}/clear/all`);
+  }
 }

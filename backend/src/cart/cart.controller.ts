@@ -56,4 +56,11 @@ export class CartController {
     const userId = req.user.userId;
     return this.cartService.getCart(userId);
   }
+
+  @Delete('clear/all')
+  @UseGuards(JwtAuthGuard)
+  clearCart(@Request() req: any) {
+    const userId = req.user.userId;
+    return this.cartService.clearCart(userId);
+  }
 }
