@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { CartService } from '../../core/services/cart.service';
 
@@ -64,15 +64,16 @@ export class RegisterComponent {
     this.authService.register(this.email, this.password).subscribe({
       next: () => {
         this.loading = false;
-        
+
         // Check if there's a pending cart item to add
         const pendingCartItemStr = localStorage.getItem('pendingCartItem');
         if (pendingCartItemStr) {
           // Redirect to login with a special message
           this.router.navigate(['/customer/login'], {
             queryParams: {
-              message: 'Account created successfully! Please sign in to add your item to cart.',
-              pendingCart: 'true'
+              message:
+                'Account created successfully! Please sign in to add your item to cart.',
+              pendingCart: 'true',
             },
           });
         } else {

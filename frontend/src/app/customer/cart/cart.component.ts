@@ -16,10 +16,7 @@ export class CartComponent implements OnInit {
   loading = true;
   error: string | null = null;
 
-  constructor(
-    private cartService: CartService,
-    private router: Router
-  ) {}
+  constructor(private cartService: CartService, private router: Router) {}
 
   ngOnInit(): void {
     this.loadCart();
@@ -28,7 +25,7 @@ export class CartComponent implements OnInit {
   loadCart(): void {
     this.loading = true;
     this.error = null;
-    
+
     this.cartService.getCart().subscribe({
       next: (cart) => {
         console.log('Cart loaded:', cart);
@@ -45,7 +42,7 @@ export class CartComponent implements OnInit {
 
   updateQuantity(cartItem: CartItem, quantity: number): void {
     if (quantity < 1) return;
-    
+
     this.cartService.updateCartItem(cartItem.id, quantity).subscribe({
       next: () => {
         console.log('Cart item updated successfully');
@@ -86,6 +83,6 @@ export class CartComponent implements OnInit {
   }
 
   continueShopping(): void {
-    this.router.navigate(['/customer/products']);
+    this.router.navigate(['/customer/marketplace']);
   }
 }

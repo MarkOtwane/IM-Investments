@@ -20,11 +20,11 @@ import { AuthService } from '../../../core/services/auth.service';
 
           <!-- Navigation -->
           <nav class="hidden md:flex items-center space-x-8">
-            <a routerLink="/customer/home" 
+            <!-- <a routerLink="/customer/home" 
                routerLinkActive="text-blue-600 border-b-2 border-blue-600"
                class="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors">
               Home
-            </a>
+            </a> -->
             <a routerLink="/customer/marketplace" 
                routerLinkActive="text-blue-600 border-b-2 border-blue-600"
                class="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors">
