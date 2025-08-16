@@ -34,9 +34,10 @@ export class AppComponent {
         const isCustomerRoute = url.startsWith('/customer');
 
         const hideForAdmin = isAdminRoute;
+        const hideForAuthPages = url.startsWith('/customer/login') || url.startsWith('/customer/register');
         const hideForCustomer = isCustomerRoute && isLoggedIn;
 
-        const shouldHide = hideForAdmin || hideForCustomer;
+        const shouldHide = hideForAdmin || hideForCustomer || hideForAuthPages;
         this.showHeader = !shouldHide;
         this.showFooter = !shouldHide;
       });
