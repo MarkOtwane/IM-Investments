@@ -56,13 +56,14 @@ export class ProductsController {
     @Body(ValidationPipe) createProductDto: CreateProductDto,
     @UploadedFile() file?: Express.Multer.File,
   ) {
-    console.log('ProductsController: Create request from user:', req.user);
-    console.log(
-      'ProductsController: Request headers:',
-      req.headers.authorization,
-    );
+    console.log('ProductsController: Create request from user:', req.user?.email);
     console.log('Received product data:', createProductDto);
-    console.log('Received file:', file);
+    console.log('Received file:', file ? {
+      originalname: file.originalname,
+      mimetype: file.mimetype,
+      size: file.size,
+      hasBuffer: !!file.buffer
+    } : 'No file');
 
     try {
       // Convert string values to appropriate types if needed
@@ -87,18 +88,20 @@ export class ProductsController {
       // If an image file is uploaded, upload it to Cloudinary
       if (file) {
         try {
+          console.log('Uploading image to Cloudinary...');
           const imageUrl = await this.cloudinaryService.uploadImage(file);
+          console.log('Cloudinary upload successful:', imageUrl);
           productData.imageUrl = imageUrl;
         } catch (error) {
           console.error('Cloudinary upload error:', error);
-          // Don't fail the entire request, just use default image
+          // Use fallback image if Cloudinary fails
           productData.imageUrl =
-            'https://images.pexels.com/photos/4041392/pexels-photo-4041392.jpeg?auto=compress&cs=tinysrgb&w=300&h=200&fit=crop';
+            'https://images.pexels.com/photos/4041392/pexels-photo-4041392.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop';
         }
       } else if (!productData.imageUrl) {
         // Set a default image URL if no image is provided
         productData.imageUrl =
-          'https://images.pexels.com/photos/4041392/pexels-photo-4041392.jpeg?auto=compress&cs=tinysrgb&w=300&h=200&fit=crop';
+          'https://images.pexels.com/photos/4041392/pexels-photo-4041392.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop';
       }
 
       console.log('Final product data:', productData);
@@ -172,11 +175,13 @@ export class ProductsController {
 
       if (file) {
         try {
+          console.log('Updating image via Cloudinary...');
           const imageUrl = await this.cloudinaryService.uploadImage(file);
+          console.log('Cloudinary update successful:', imageUrl);
           updateData.imageUrl = imageUrl;
         } catch (error) {
           console.error('Cloudinary upload error:', error);
-          // Continue without updating image if upload fails
+          // Continue without updating image if Cloudinary fails
         }
       }
 

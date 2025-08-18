@@ -5,11 +5,12 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { CartService } from '../../core/services/cart.service';
 import { ProductService } from '../../core/services/products.service';
+import { CurrencyPipe } from '../../shared/pipes/currency.pipe';
 
 @Component({
   selector: 'app-customer-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, CurrencyPipe],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'],
 })
@@ -23,11 +24,6 @@ export class CustomerDashboardComponent implements OnInit {
     totalSpent: 0,
     loyaltyPoints: 0,
   };
-
-  // Add Math for template usage
-  Math = Math;
-
-  isSidebarOpen: boolean = false;
 
   constructor(
     private authService: AuthService,
@@ -49,28 +45,13 @@ export class CustomerDashboardComponent implements OnInit {
     return this.user?.email || '';
   }
 
-  getStatusIcon(status: string): string {
-    const statusIcons: { [key: string]: string } = {
-      'Delivered': 'fas fa-check-circle',
-      'Processing': 'fas fa-sync-alt',
-      'Shipped': 'fas fa-truck',
-      'Cancelled': 'fas fa-times-circle',
-      'Pending': 'fas fa-clock'
-    };
-    return statusIcons[status] || 'fas fa-question-circle';
-  }
-
-  toggleSidebar(): void {
-    this.isSidebarOpen = !this.isSidebarOpen;
-  }
-
   getCurrentUser(): any {
     const token = this.authService.getToken();
     if (token) {
       try {
         const payload = JSON.parse(atob(token.split('.')[1]));
         return {
-          name: payload.name || payload.email || 'Customer',
+          name: payload.name || payload.email?.split('@')[0] || 'Customer',
           email: payload.email,
           role: payload.role,
         };
@@ -107,7 +88,15 @@ export class CustomerDashboardComponent implements OnInit {
       },
     });
 
-    // Mock stats - ecommerce metrics
+    // Load cart count
+    this.cartService.getCart().subscribe({
+      next: (cart) => {
+        this.cartItemsCount = cart.items?.reduce((total, item) => total + item.quantity, 0) || 0;
+      },
+      error: (err) => console.error('Failed to load cart', err)
+    });
+
+    // Mock stats
     this.stats = {
       totalOrders: 12,
       totalSpent: 2847.5,
@@ -119,8 +108,42 @@ export class CustomerDashboardComponent implements OnInit {
     this.cartService.addToCart(product.id, 1).subscribe({
       next: () => {
         this.cartItemsCount++;
+        // Show success message
+        alert(`Added ${product.name} to cart!`);
+        // Show success message
+        alert(`Added ${product.name} to cart!`);
       },
+      error: (err) => {
+        console.error('Failed to add to cart', err);
+        alert('Failed to add item to cart. Please try again.');
+      }
+      error: (err) => {
+        console.error('Failed to add to cart', err);
+        alert('Failed to add item to cart. Please try again.');
+      }
     });
+  }
+
+  getStatusClass(status: string): string {
+    const statusClasses: { [key: string]: string } = {
+      'Delivered': 'bg-green-100 text-green-800',
+      'Processing': 'bg-blue-100 text-blue-800',
+      'Shipped': 'bg-yellow-100 text-yellow-800',
+      'Cancelled': 'bg-red-100 text-red-800',
+      'Pending': 'bg-yellow-100 text-yellow-800'
+    };
+    return statusClasses[status] || 'bg-gray-100 text-gray-800';
+  }
+
+  getStatusIcon(status: string): string {
+    const statusIcons: { [key: string]: string } = {
+      'Delivered': 'fas fa-check-circle',
+      'Processing': 'fas fa-sync-alt',
+      'Shipped': 'fas fa-truck',
+      'Cancelled': 'fas fa-times-circle',
+      'Pending': 'fas fa-clock'
+    };
+    return statusIcons[status] || 'fas fa-question-circle';
   }
 
   logout(): void {
