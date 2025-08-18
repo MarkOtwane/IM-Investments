@@ -37,9 +37,18 @@ export class AppComponent {
         const isPublicCustomerRoute = url.startsWith('/home') || url.startsWith('/customer/login') || 
                                      url.startsWith('/customer/register') || url.startsWith('/customer/password-reset');
 
+
         // Hide header/footer for admin routes and customer dashboard routes
         this.showHeader = !isAdminRoute && !isCustomerDashboardRoute;
         this.showFooter = !isAdminRoute && !isCustomerDashboardRoute;
+      
+        const hideForAdmin = isAdminRoute;
+        const hideForAuthPages = url.startsWith('/customer/login') || url.startsWith('/customer/register');
+        const hideForCustomer = isCustomerRoute && isLoggedIn;
+
+        const shouldHide = hideForAdmin || hideForCustomer || hideForAuthPages;
+        this.showHeader = !shouldHide;
+        this.showFooter = !shouldHide;
       });
   }
 }
