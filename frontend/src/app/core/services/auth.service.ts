@@ -40,8 +40,12 @@ export class AuthService {
       .pipe(
         tap((response) => {
           console.log('AuthService: Login successful', response);
-          console.log('AuthService: Token received:', response.access_token.substring(0, 20) + '...');
+          console.log('AuthService: Token received (first 30 chars):', response.access_token.substring(0, 30) + '...');
           this.setToken(response.access_token);
+          
+          // Verify token was stored
+          const storedToken = this.getToken();
+          console.log('AuthService: Token verification after storage:', storedToken ? 'Success' : 'Failed');
         })
       );
   }
@@ -104,7 +108,7 @@ export class AuthService {
   public getToken(): string | null {
     if (isPlatformBrowser(this.platformId)) {
       const token = localStorage.getItem('token');
-      console.log('AuthService: Getting token from localStorage:', token ? 'Token exists' : 'No token');
+      console.log('AuthService: Getting token from localStorage:', token ? `Token exists (${token.length} chars)` : 'No token');
       return token;
     }
     return null;
@@ -113,7 +117,7 @@ export class AuthService {
   private setToken(token: string): void {
     if (isPlatformBrowser(this.platformId)) {
       localStorage.setItem('token', token);
-      console.log('AuthService: Token stored in localStorage');
+      console.log('AuthService: Token stored in localStorage, length:', token.length);
     }
   }
 

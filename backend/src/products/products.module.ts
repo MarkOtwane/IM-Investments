@@ -11,7 +11,7 @@ import { memoryStorage } from 'multer';
     CloudinaryModule,
     MulterModule.register({
       limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
-      storage: memoryStorage(),
+      storage: memoryStorage(), // Use memory storage for Cloudinary
     }),
   ],
   controllers: [ProductsController],

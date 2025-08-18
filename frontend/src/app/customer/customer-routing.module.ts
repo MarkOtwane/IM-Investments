@@ -15,23 +15,25 @@ import { CustomerLayoutComponent } from './layout/customer-layout.component';
 import { CustomerMarketplaceComponent } from './customer-marketplace/customer-marketplace.component';
 
 const routes: Routes = [
-  { path: '', component: HomeComponent },
-  { path: 'products', component: HomeComponent },
-  { path: 'products/:id', component: ProductDetailComponent },
   {
     path: '',
     component: CustomerLayoutComponent,
     children: [
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+      { path: 'dashboard', component: CustomerDashboardComponent, canActivate: [AuthGuard] },
       { path: 'cart', component: CartComponent, canActivate: [AuthGuard] },
       { path: 'orders', component: CustomerOrdersComponent, canActivate: [AuthGuard] },
       { path: 'marketplace', component: CustomerMarketplaceComponent },
       { path: 'order-history', component: CustomerOrdersComponent, canActivate: [AuthGuard] },
       { path: 'checkout', component: CheckoutComponent, canActivate: [AuthGuard] },
-      { path: 'dashboard', component: CustomerDashboardComponent, canActivate: [AuthGuard] },
       { path: 'profile', component: CustomerProfileComponent, canActivate: [AuthGuard] },
       { path: 'wishlist', component: CustomerOrdersComponent, canActivate: [AuthGuard] }, // Placeholder
+      { path: 'products/:id', component: ProductDetailComponent },
     ]
   },
+  { path: 'home', component: HomeComponent },
+  { path: 'products', component: HomeComponent },
+  { path: 'products/:id', component: ProductDetailComponent },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'password-reset', component: PasswordResetComponent },

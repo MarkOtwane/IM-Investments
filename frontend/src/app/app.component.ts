@@ -29,16 +29,17 @@ export class AppComponent {
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
         const url = event.url;
-        const isLoggedIn = this.authService.isLoggedIn();
         const isAdminRoute = url.startsWith('/admin');
-        const isCustomerRoute = url.startsWith('/customer');
+        const isCustomerDashboardRoute = url.startsWith('/customer') && 
+                                       !url.includes('/login') && 
+                                       !url.includes('/register') && 
+                                       !url.includes('/password-reset');
+        const isPublicCustomerRoute = url.startsWith('/home') || url.startsWith('/customer/login') || 
+                                     url.startsWith('/customer/register') || url.startsWith('/customer/password-reset');
 
-        const hideForAdmin = isAdminRoute;
-        const hideForCustomer = isCustomerRoute && isLoggedIn;
-
-        const shouldHide = hideForAdmin || hideForCustomer;
-        this.showHeader = !shouldHide;
-        this.showFooter = !shouldHide;
+        // Hide header/footer for admin routes and customer dashboard routes
+        this.showHeader = !isAdminRoute && !isCustomerDashboardRoute;
+        this.showFooter = !isAdminRoute && !isCustomerDashboardRoute;
       });
   }
 }
