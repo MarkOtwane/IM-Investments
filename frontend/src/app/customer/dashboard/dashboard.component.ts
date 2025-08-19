@@ -110,13 +110,7 @@ export class CustomerDashboardComponent implements OnInit {
         this.cartItemsCount++;
         // Show success message
         alert(`Added ${product.name} to cart!`);
-        // Show success message
-        alert(`Added ${product.name} to cart!`);
       },
-      error: (err) => {
-        console.error('Failed to add to cart', err);
-        alert('Failed to add item to cart. Please try again.');
-      }
       error: (err) => {
         console.error('Failed to add to cart', err);
         alert('Failed to add item to cart. Please try again.');

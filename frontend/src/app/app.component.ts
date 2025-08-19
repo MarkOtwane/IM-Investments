@@ -30,23 +30,12 @@ export class AppComponent {
       .subscribe((event: NavigationEnd) => {
         const url = event.url;
         const isAdminRoute = url.startsWith('/admin');
-        const isCustomerDashboardRoute = url.startsWith('/customer') && 
-                                       !url.includes('/login') && 
-                                       !url.includes('/register') && 
-                                       !url.includes('/password-reset');
-        const isPublicCustomerRoute = url.startsWith('/home') || url.startsWith('/customer/login') || 
-                                     url.startsWith('/customer/register') || url.startsWith('/customer/password-reset');
-
-
-        // Hide header/footer for admin routes and customer dashboard routes
-        this.showHeader = !isAdminRoute && !isCustomerDashboardRoute;
-        this.showFooter = !isAdminRoute && !isCustomerDashboardRoute;
-      
-        const hideForAdmin = isAdminRoute;
-        const hideForAuthPages = url.startsWith('/customer/login') || url.startsWith('/customer/register');
-        const hideForCustomer = isCustomerRoute && isLoggedIn;
-
-        const shouldHide = hideForAdmin || hideForCustomer || hideForAuthPages;
+        const isAuthPage = url.startsWith('/customer/login') || 
+                          url.startsWith('/customer/register') || 
+                          url.startsWith('/customer/password-reset');
+        
+        // Hide header/footer for admin routes and auth pages
+        const shouldHide = isAdminRoute || isAuthPage;
         this.showHeader = !shouldHide;
         this.showFooter = !shouldHide;
       });
