@@ -33,9 +33,15 @@ export class AppComponent {
         const isAuthPage = url.startsWith('/customer/login') || 
                           url.startsWith('/customer/register') || 
                           url.startsWith('/customer/password-reset');
+        const isCustomerDashboard = url.startsWith('/customer/dashboard') || 
+                                   url.startsWith('/customer/cart') || 
+                                   url.startsWith('/customer/orders') || 
+                                   url.startsWith('/customer/marketplace') || 
+                                   url.startsWith('/customer/profile') || 
+                                   url.startsWith('/customer/checkout');
         
-        // Hide header/footer for admin routes and auth pages
-        const shouldHide = isAdminRoute || isAuthPage;
+        // Hide header/footer for admin routes, auth pages, and customer dashboard
+        const shouldHide = isAdminRoute || isAuthPage || isCustomerDashboard;
         this.showHeader = !shouldHide;
         this.showFooter = !shouldHide;
       });

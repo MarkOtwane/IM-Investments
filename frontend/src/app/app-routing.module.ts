@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './core/guards/auth.guard';
 import { AdminGuard } from './core/guards/admin.guard';
+import { LandingPageGuard } from './core/guards/landing-page.guard';
 
 const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
@@ -9,6 +10,7 @@ const routes: Routes = [
     path: 'home',
     loadChildren: () =>
       import('./customer/customer.module').then((m) => m.CustomerModule),
+    canActivate: [LandingPageGuard],
   },
   {
     path: 'admin',
