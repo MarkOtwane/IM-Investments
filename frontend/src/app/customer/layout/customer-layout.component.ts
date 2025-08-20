@@ -229,10 +229,13 @@ export class CustomerLayoutComponent {
     private authService: AuthService,
     private cartService: CartService
   ) {
-    this.checkScreenSize();
-    window.addEventListener('resize', () => this.checkScreenSize());
+    // Only run browser-specific code when window is available
+    if (typeof window !== 'undefined') {
+      this.checkScreenSize();
+      window.addEventListener('resize', () => this.checkScreenSize());
+    }
     
-    // Track route changes
+    // Track route changes (works in both SSR and browser)
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe((event: NavigationEnd) => {
@@ -244,9 +247,11 @@ export class CustomerLayoutComponent {
   }
 
   checkScreenSize(): void {
-    this.isMobile = window.innerWidth < 768;
-    if (!this.isMobile) {
-      this.sidebarOpen = false;
+    if (typeof window !== 'undefined') {
+      this.isMobile = window.innerWidth < 768;
+      if (!this.isMobile) {
+        this.sidebarOpen = false;
+      }
     }
   }
 
