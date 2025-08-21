@@ -24,6 +24,8 @@ export class CustomerDashboardComponent implements OnInit {
     totalSpent: 0,
     loyaltyPoints: 0,
   };
+  showErrorToast = false;
+  errorMessage = '';
 
   constructor(
     private authService: AuthService,
@@ -108,12 +110,11 @@ export class CustomerDashboardComponent implements OnInit {
     this.cartService.addToCart(product.id, 1).subscribe({
       next: () => {
         this.cartItemsCount++;
-        // Show success message
-        alert(`Added ${product.name} to cart!`);
+        this.showSuccessMessage(`Added ${product.name} to cart!`);
       },
       error: (err) => {
         console.error('Failed to add to cart', err);
-        alert('Failed to add item to cart. Please try again.');
+        this.showErrorMessage('Failed to add item to cart. Please try again.');
       }
     });
   }
@@ -127,6 +128,32 @@ export class CustomerDashboardComponent implements OnInit {
       'Pending': 'bg-yellow-100 text-yellow-800'
     };
     return statusClasses[status] || 'bg-gray-100 text-gray-800';
+  }
+
+  showSuccessMessage(message: string): void {
+    this.successMessage = message;
+    this.showSuccessToast = true;
+    setTimeout(() => {
+      this.hideSuccessToast();
+    }, 4000);
+  }
+
+  showErrorMessage(message: string): void {
+    this.errorMessage = message;
+    this.showErrorToast = true;
+    setTimeout(() => {
+      this.hideErrorToast();
+    }, 4000);
+  }
+
+  hideSuccessToast(): void {
+    this.showSuccessToast = false;
+    this.successMessage = '';
+  }
+
+  hideErrorToast(): void {
+    this.showErrorToast = false;
+    this.errorMessage = '';
   }
 
   getStatusIcon(status: string): string {

@@ -1,131 +1,87 @@
 /* Modern Customer Dashboard Styles */
-.dashboard-container {
-  background-color: #f8fafc;
-  min-height: 100vh;
+
+/* Animation for toast notifications */
+@keyframes slide-in {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
 }
 
-/* Stats Cards */
-.stats-card {
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
-  border: 1px solid #e2e8f0;
+.animate-slide-in {
+  animation: slide-in 0.3s ease-out;
+}
+
+/* Card hover effects */
+.card-hover {
   transition: all 0.3s ease;
 }
 
-.stats-card:hover {
+.card-hover:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-}
-
-/* Welcome Section */
-.welcome-section {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border-radius: 16px;
-  padding: 2rem;
-  margin-bottom: 2rem;
-}
-
-/* Quick Actions */
-.quick-action-card {
-  background: white;
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
-  padding: 1.5rem;
-  transition: all 0.3s ease;
-  cursor: pointer;
-}
-
-.quick-action-card:hover {
-  background-color: #f8fafc;
-  border-color: #cbd5e1;
-  transform: translateY(-2px);
-}
-
-/* Product Cards */
-.product-card {
-  background: white;
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
-  overflow: hidden;
-  transition: all 0.3s ease;
-}
-
-.product-card:hover {
-  transform: translateY(-4px);
   box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
 }
 
-.product-image {
-  width: 100%;
-  height: 200px;
-  object-fit: cover;
+/* Button animations */
+.btn-animate {
+  transition: all 0.2s ease;
 }
 
-/* Buttons */
-.btn-primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  padding: 12px 24px;
-  border-radius: 8px;
-  font-weight: 600;
-  transition: all 0.3s ease;
-  border: none;
-  cursor: pointer;
+.btn-animate:hover {
+  transform: translateY(-1px);
 }
 
-.btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+/* Status badge styles */
+.status-delivered { 
+  background-color: #dcfce7; 
+  color: #166534; 
 }
 
-.btn-secondary {
-  background: white;
-  color: #374151;
-  padding: 12px 24px;
-  border-radius: 8px;
-  font-weight: 600;
-  transition: all 0.3s ease;
-  border: 1px solid #d1d5db;
-  cursor: pointer;
+.status-processing { 
+  background-color: #dbeafe; 
+  color: #1d4ed8; 
 }
 
-.btn-secondary:hover {
-  background-color: #f9fafb;
-  border-color: #9ca3af;
+.status-shipped { 
+  background-color: #fef3c7; 
+  color: #92400e; 
 }
 
-/* Status Badges */
-.status-delivered { background-color: #dcfce7; color: #166534; }
-.status-processing { background-color: #dbeafe; color: #1d4ed8; }
-.status-shipped { background-color: #fef3c7; color: #92400e; }
-.status-cancelled { background-color: #fee2e2; color: #dc2626; }
-.status-pending { background-color: #fef3c7; color: #92400e; }
-
-/* Responsive Design */
-@media (max-width: 768px) {
-  .dashboard-container {
-    padding: 1rem;
-  }
-  
-  .welcome-section {
-    padding: 1.5rem;
-  }
-  
-  .stats-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .main-grid {
-    grid-template-columns: 1fr;
-  }
+.status-cancelled { 
+  background-color: #fee2e2; 
+  color: #dc2626; 
 }
 
-/* Loading States */
+.status-pending { 
+  background-color: #fef3c7; 
+  color: #92400e; 
+}
+
+/* Line clamp utility */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Gradient backgrounds */
+.gradient-blue {
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+}
+
+.gradient-emerald {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+/* Loading states */
 .loading-spinner {
   border: 2px solid #f3f4f6;
-  border-top: 2px solid #667eea;
+  border-top: 2px solid #3b82f6;
   border-radius: 50%;
   width: 2rem;
   height: 2rem;
@@ -137,18 +93,57 @@
   100% { transform: rotate(360deg); }
 }
 
-/* Animations */
-.fade-in {
-  animation: fadeIn 0.5s ease-in;
+/* Responsive design */
+@media (max-width: 768px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .main-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .products-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
+@media (max-width: 480px) {
+  .products-grid {
+    grid-template-columns: 1fr;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+}
+
+/* Smooth transitions */
+* {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+/* Focus states for accessibility */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
 }

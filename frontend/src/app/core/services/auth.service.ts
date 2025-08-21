@@ -124,7 +124,13 @@ export class AuthService {
   public decodeToken(token: string): JwtPayload | null {
     try {
       const payload = JSON.parse(atob(token.split('.')[1])) as JwtPayload;
-      console.log('AuthService: Decoded token payload', payload);
+      console.log('AuthService: Decoded token payload', {
+        sub: payload.sub,
+        email: payload.email,
+        role: payload.role,
+        exp: payload.exp,
+        iat: payload.iat
+      });
       return payload;
     } catch (e) {
       console.error('AuthService: Failed to decode token', e);
