@@ -6,6 +6,7 @@ import { filter } from 'rxjs/operators';
 import { FooterComponent } from './shared/components/footer/footer.component';
 import { HeaderComponent } from './shared/components/header/header.component';
 import { AuthService } from './core/services/auth.service';
+import { NotificationComponent } from './shared/components/notification/notification.component';
 
 @Component({
   selector: 'app-root',
@@ -16,6 +17,7 @@ import { AuthService } from './core/services/auth.service';
     ReactiveFormsModule,
     FooterComponent,
     HeaderComponent,
+    NotificationComponent,
   ],
   templateUrl: './app.component.html',
 })
@@ -33,15 +35,10 @@ export class AppComponent {
         const isAuthPage = url.startsWith('/customer/login') || 
                           url.startsWith('/customer/register') || 
                           url.startsWith('/customer/password-reset');
-        const isCustomerDashboard = url.startsWith('/customer/dashboard') || 
-                                   url.startsWith('/customer/cart') || 
-                                   url.startsWith('/customer/orders') || 
-                                   url.startsWith('/customer/marketplace') || 
-                                   url.startsWith('/customer/profile') || 
-                                   url.startsWith('/customer/checkout');
+        const isCustomerRoute = url.startsWith('/customer/');
         
-        // Hide header/footer for admin routes, auth pages, and customer dashboard
-        const shouldHide = isAdminRoute || isAuthPage || isCustomerDashboard;
+        // Hide header/footer for admin routes, auth pages, and customer routes
+        const shouldHide = isAdminRoute || isAuthPage || isCustomerRoute;
         this.showHeader = !shouldHide;
         this.showFooter = !shouldHide;
       });

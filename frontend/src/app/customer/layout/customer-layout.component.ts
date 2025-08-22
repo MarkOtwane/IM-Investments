@@ -331,6 +331,7 @@ export class CustomerLayoutComponent implements OnInit {
 
   getPageTitle(): string {
     const routeTitles: { [key: string]: string } = {
+      '/customer/home': 'Home',
       '/customer/dashboard': 'Dashboard',
       '/customer/marketplace': 'Marketplace',
       '/customer/cart': 'Shopping Cart',
@@ -338,7 +339,8 @@ export class CustomerLayoutComponent implements OnInit {
       '/customer/order-history': 'Order History',
       '/customer/wishlist': 'Wishlist',
       '/customer/profile': 'Profile Settings',
-      '/customer/checkout': 'Checkout'
+      '/customer/checkout': 'Checkout',
+      '/customer/products': 'Products'
     };
     
     return routeTitles[this.currentRoute] || 'Customer Portal';
@@ -346,6 +348,7 @@ export class CustomerLayoutComponent implements OnInit {
 
   getPageSubtitle(): string {
     const routeSubtitles: { [key: string]: string } = {
+      '/customer/home': 'Welcome to IM Investments',
       '/customer/dashboard': 'Welcome to your personal dashboard',
       '/customer/marketplace': 'Discover amazing products',
       '/customer/cart': 'Review your selected items',
@@ -353,7 +356,8 @@ export class CustomerLayoutComponent implements OnInit {
       '/customer/order-history': 'View your past purchases',
       '/customer/wishlist': 'Your saved items',
       '/customer/profile': 'Manage your account information',
-      '/customer/checkout': 'Complete your purchase'
+      '/customer/checkout': 'Complete your purchase',
+      '/customer/products': 'Browse our product catalog'
     };
     
     return routeSubtitles[this.currentRoute] || 'Manage your shopping experience';

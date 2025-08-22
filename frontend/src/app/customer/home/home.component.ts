@@ -6,6 +6,7 @@ import { Product } from '../../core/models/product.model';
 import { AuthService } from '../../core/services/auth.service';
 import { CartService } from '../../core/services/cart.service';
 import { ProductService } from '../../core/services/products.service';
+import { NotificationService } from '../../core/services/notification.service';
 
 @Component({
   selector: 'app-home',
@@ -20,13 +21,12 @@ export class HomeComponent implements OnInit {
   productQuantities: { [key: number]: number } = {};
   loading = true;
   error: string | null = null;
-  showSuccessMessage = false;
-  successMessage = '';
 
   constructor(
     private productService: ProductService,
     private cartService: CartService,
     private authService: AuthService,
+    private notificationService: NotificationService,
     private router: Router
   ) {}
 
@@ -53,6 +53,7 @@ export class HomeComponent implements OnInit {
       error: (err: any) => {
         console.error('Failed to load products', err);
         this.error = 'Failed to load products. Please try again later.';
+        this.notificationService.showError('Failed to load products. Please try again later.');
         this.loading = false;
       },
     });
@@ -88,34 +89,24 @@ export class HomeComponent implements OnInit {
     this.cartService.addToCart(productId, quantity).subscribe({
       next: (cartItem) => {
         console.log('Successfully added to cart', cartItem);
-        this.showSuccessMessage = true;
-        this.successMessage = `Added ${quantity} ${
+        this.notificationService.showSuccess(`Added ${quantity} ${
           quantity === 1 ? 'item' : 'items'
-        } of ${product.name} to cart!`;
+        } of ${product.name} to cart!`);
 
         // Reset quantity to 1 after adding to cart
         this.productQuantities[productId] = 1;
-
-        // Hide success message after 3 seconds
-        setTimeout(() => {
-          this.showSuccessMessage = false;
-          this.successMessage = '';
-        }, 3000);
       },
       error: (err) => {
         console.error('Failed to add to cart', err);
         if (err.status === 401) {
           this.error = 'Please log in again to add items to cart.';
+          this.notificationService.showError('Please log in again to add items to cart.');
           this.authService.logout();
           this.router.navigate(['/customer/login']);
         } else {
           this.error = 'Failed to add item to cart. Please try again.';
+          this.notificationService.showError('Failed to add item to cart. Please try again.');
         }
-
-        // Hide error message after 5 seconds
-        setTimeout(() => {
-          this.error = null;
-        }, 5000);
       },
     });
   }
@@ -141,10 +132,5 @@ export class HomeComponent implements OnInit {
 
   clearError(): void {
     this.error = null;
-  }
-
-  clearSuccessMessage(): void {
-    this.showSuccessMessage = false;
-    this.successMessage = '';
   }
 }

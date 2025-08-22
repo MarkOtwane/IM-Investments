@@ -19,7 +19,8 @@ const routes: Routes = [
     path: '',
     component: CustomerLayoutComponent,
     children: [
-      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+      { path: '', redirectTo: 'home', pathMatch: 'full' },
+      { path: 'home', component: HomeComponent },
       { path: 'dashboard', component: CustomerDashboardComponent, canActivate: [AuthGuard] },
       { path: 'cart', component: CartComponent, canActivate: [AuthGuard] },
       { path: 'orders', component: CustomerOrdersComponent, canActivate: [AuthGuard] },
@@ -28,12 +29,10 @@ const routes: Routes = [
       { path: 'checkout', component: CheckoutComponent, canActivate: [AuthGuard] },
       { path: 'profile', component: CustomerProfileComponent, canActivate: [AuthGuard] },
       { path: 'wishlist', component: CustomerOrdersComponent, canActivate: [AuthGuard] }, // Placeholder
+      { path: 'products', component: HomeComponent },
       { path: 'products/:id', component: ProductDetailComponent },
     ]
   },
-  { path: 'home', component: HomeComponent },
-  { path: 'products', component: HomeComponent },
-  { path: 'products/:id', component: ProductDetailComponent },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'password-reset', component: PasswordResetComponent },
