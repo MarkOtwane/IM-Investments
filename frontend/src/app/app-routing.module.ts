@@ -2,15 +2,15 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './core/guards/auth.guard';
 import { AdminGuard } from './core/guards/admin.guard';
-import { LandingPageGuard } from './core/guards/landing-page.guard';
+import { HomeComponent } from './customer/home/home.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'home', pathMatch: 'full' },
+  { path: '', component: HomeComponent },
+  { path: 'home', component: HomeComponent },
   {
-    path: 'home',
+    path: 'customer',
     loadChildren: () =>
       import('./customer/customer.module').then((m) => m.CustomerModule),
-    canActivate: [LandingPageGuard],
   },
   {
     path: 'admin',
@@ -18,7 +18,7 @@ const routes: Routes = [
       import('./admin/admin.module').then((m) => m.AdminModule),
     canActivate: [AuthGuard, AdminGuard],
   },
-  { path: '**', redirectTo: 'home' },
+  { path: '**', redirectTo: '' },
 ];
 
 @NgModule({

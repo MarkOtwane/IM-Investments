@@ -26,6 +26,8 @@ export class CustomerDashboardComponent implements OnInit {
   };
   showErrorToast = false;
   errorMessage = '';
+  successMessage!: string;
+  showSuccessToast: boolean = false;
 
   constructor(
     private authService: AuthService,
