@@ -314,8 +314,18 @@ export class CustomerLayoutComponent implements OnInit {
         next: (cart) => {
           this.cartItemsCount = cart.items?.reduce((total, item) => total + item.quantity, 0) || 0;
         },
-        error: (err) => console.error('Failed to load cart count', err)
+        error: (err) => {
+          console.error('Failed to load cart count', err);
+          // If we get a 401 error, the token might be invalid
+          if (err.status === 401) {
+            console.log('Authentication failed, logging out user');
+            this.authService.logout();
+            this.cartItemsCount = 0;
+          }
+        }
       });
+    } else {
+      this.cartItemsCount = 0;
     }
   }
 

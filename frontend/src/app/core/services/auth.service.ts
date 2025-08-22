@@ -75,11 +75,27 @@ export class AuthService {
     }
     
     const token = this.getToken();
-    if (!token) return false;
+    if (!token) {
+      console.log('AuthService: No token found - user not logged in');
+      return false;
+    }
     
-    const isExpired = this.isTokenExpired(token);
-    console.log('AuthService: Token expired?', isExpired);
-    return !isExpired;
+    try {
+      const isExpired = this.isTokenExpired(token);
+      console.log('AuthService: Token expired?', isExpired);
+      
+      if (isExpired) {
+        console.log('AuthService: Token is expired, logging out user');
+        this.logout(); // Clean up expired token
+        return false;
+      }
+      
+      return true;
+    } catch (error) {
+      console.error('AuthService: Error validating token', error);
+      this.logout(); // Clean up invalid token
+      return false;
+    }
   }
 
   getUserRole(): 'ADMIN' | 'CUSTOMER' | null {
