@@ -16,9 +16,8 @@ import { NotificationComponent } from './shared/components/notification/notifica
     RouterModule,
     ReactiveFormsModule,
     FooterComponent,
-    HeaderComponent,
-    NotificationComponent,
-  ],
+    HeaderComponent
+],
   templateUrl: './app.component.html',
 })
 export class AppComponent {

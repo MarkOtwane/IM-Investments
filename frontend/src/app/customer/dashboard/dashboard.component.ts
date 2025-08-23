@@ -26,6 +26,12 @@ export class CustomerDashboardComponent implements OnInit {
     loyaltyPoints: 0,
   };
 
+  // Toast notification properties
+  hideSuccessToast: boolean = true;
+  showSuccessMessage: string = '';
+  showErrorToast: boolean = false;
+  errorMessage: string = '';
+
   constructor(
     private authService: AuthService,
     private productService: ProductService,
@@ -151,5 +157,16 @@ export class CustomerDashboardComponent implements OnInit {
   logout(): void {
     this.authService.logout();
     this.router.navigate(['/customer/login']);
+  }
+
+  // Toast notification methods
+  closeSuccessToast(): void {
+    this.hideSuccessToast = true;
+    this.showSuccessMessage = '';
+  }
+
+  closeErrorToast(): void {
+    this.showErrorToast = false;
+    this.errorMessage = '';
   }
 }

@@ -22,6 +22,10 @@ export class HomeComponent implements OnInit {
   loading = true;
   error: string | null = null;
 
+  // Success notification properties
+  showSuccessMessage: boolean = false;
+  successMessage: string = '';
+
   constructor(
     private productService: ProductService,
     private cartService: CartService,
@@ -132,5 +136,11 @@ export class HomeComponent implements OnInit {
 
   clearError(): void {
     this.error = null;
+  }
+
+  // Success notification method
+  clearSuccessMessage(): void {
+    this.showSuccessMessage = false;
+    this.successMessage = '';
   }
 }
