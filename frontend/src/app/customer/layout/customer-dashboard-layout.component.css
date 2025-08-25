@@ -20,6 +20,10 @@
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
 }
 
+.sidebar.hidden {
+  display: none;
+}
+
 .sidebar-header {
   padding: 20px;
   display: flex;
@@ -142,6 +146,10 @@
   flex-direction: column;
   margin-left: 260px;
   transition: margin-left 0.3s ease;
+}
+
+.main-wrapper.full-width {
+  margin-left: 0;
 }
 
 .topbar {
@@ -380,6 +388,11 @@
   
   .search-box input {
     width: 200px;
+  }
+  
+  /* Hide menu toggle button on home page */
+  .main-wrapper.full-width .menu-toggle {
+    display: none;
   }
 }
 

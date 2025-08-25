@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule, Router } from '@angular/router';
+import { RouterModule, Router, NavigationEnd } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { CartService } from '../../core/services/cart.service';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-customer-dashboard-layout',
@@ -10,8 +11,8 @@ import { CartService } from '../../core/services/cart.service';
   imports: [CommonModule, RouterModule],
   template: `
     <div class="dashboard-layout">
-      <!-- Sidebar -->
-      <aside class="sidebar" [class.sidebar-open]="isSidebarOpen">
+      <!-- Sidebar - Hidden on home page -->
+      <aside class="sidebar" [class.sidebar-open]="isSidebarOpen" [class.hidden]="isHomePage">
         <div class="sidebar-header">
           <h2 class="logo">
             <i class="fas fa-chart-line"></i>
@@ -100,7 +101,7 @@ import { CartService } from '../../core/services/cart.service';
       </aside>
       
       <!-- Main Content -->
-      <div class="main-wrapper">
+      <div class="main-wrapper" [class.full-width]="isHomePage">
         <!-- Topbar -->
         <header class="topbar">
           <div class="topbar-left">
@@ -177,6 +178,7 @@ export class CustomerDashboardLayoutComponent implements OnInit {
   cartItemsCount = 0;
   user: any;
   showNotifications = false;
+  isHomePage = false;
 
   constructor(
     private authService: AuthService,
@@ -187,6 +189,17 @@ export class CustomerDashboardLayoutComponent implements OnInit {
   ngOnInit(): void {
     this.user = this.getCurrentUser();
     this.loadCartItemsCount();
+    
+    // Subscribe to route changes to detect if we're on the home page
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe((event: NavigationEnd) => {
+      this.isHomePage = this.isCurrentRouteHome(event.urlAfterRedirects);
+      console.log('Current Route:', event.urlAfterRedirects, 'Is Home Page:', this.isHomePage);
+    });
+
+    // Check initial route
+    this.isHomePage = this.isCurrentRouteHome(this.router.url);
   }
 
   get userName(): string {
@@ -230,5 +243,13 @@ export class CustomerDashboardLayoutComponent implements OnInit {
   logout(): void {
     this.authService.logout();
     this.router.navigate(['/customer/login']);
+  }
+
+  private isCurrentRouteHome(url: string): boolean {
+    // Check if the current route is the home page
+    console.log('Checking URL:', url);
+    const isHome = url === '/customer/home' || url === '/customer/home/' || url === '/customer';
+    console.log('Is Home Page:', isHome);
+    return isHome;
   }
 }
