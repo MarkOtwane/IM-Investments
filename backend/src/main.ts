@@ -22,8 +22,9 @@ async function bootstrap(): Promise<void> {
   app.enableCors({
     origin: [
       'http://localhost:4200',
+      'https://im-investments.onrender.com',
+      'https://im-investments.vercel.app/',
       'http://localhost:3000',
-      'http://127.0.0.1:4200',
     ],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
