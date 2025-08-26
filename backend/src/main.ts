@@ -1,10 +1,25 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 
 async function bootstrap(): Promise<void> {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    // Configure body parser options
+    bodyParser: true,
+  });
+
+  // Get the underlying Express instance to configure payload size
+  const expressInstance = app.getHttpAdapter().getInstance();
+  // Increase payload size limit for JSON and URL-encoded data
+  expressInstance.use(require('body-parser').json({ limit: '10mb' }));
+  expressInstance.use(
+    require('body-parser').urlencoded({ limit: '10mb', extended: true }),
+  );
 
   // Enable validation globally with transformation
   app.useGlobalPipes(
