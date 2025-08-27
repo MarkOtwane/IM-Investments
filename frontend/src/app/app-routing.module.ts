@@ -3,10 +3,11 @@ import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './core/guards/auth.guard';
 import { AdminGuard } from './core/guards/admin.guard';
 import { HomeComponent } from './customer/home/home.component';
+import { GuestGuard } from './core/guards/guest.guard';
 
 const routes: Routes = [
-  { path: '', component: HomeComponent },
-  { path: 'home', component: HomeComponent },
+  { path: '', component: HomeComponent, canActivate: [GuestGuard] },
+  { path: 'home', component: HomeComponent, canActivate: [GuestGuard] },
   {
     path: 'customer',
     loadChildren: () =>

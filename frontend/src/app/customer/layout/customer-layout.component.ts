@@ -17,7 +17,7 @@ import { CartService } from '../../core/services/cart.service';
            (click)="closeSidebar()"></div>
 
       <!-- Sidebar -->
-      <aside *ngIf="!isHomeRoute()" class="fixed top-0 left-0 z-50 w-72 h-screen bg-white shadow-xl border-r border-gray-200 transform transition-transform duration-300 ease-in-out"
+      <aside *ngIf="shouldShowSidebar()" class="fixed top-0 left-0 z-50 w-72 h-screen bg-white shadow-xl border-r border-gray-200 transform transition-transform duration-300 ease-in-out"
              [class.translate-x-0]="!isMobile || sidebarOpen"
              [class.-translate-x-full]="isMobile && !sidebarOpen">
         
@@ -184,7 +184,7 @@ import { CartService } from '../../core/services/cart.service';
       </aside>
 
       <!-- Main Content -->
-      <div class="transition-all duration-300 ease-in-out" [class.ml-72]="!isMobile && !isHomeRoute()">
+      <div class="transition-all duration-300 ease-in-out" [class.ml-72]="!isMobile && shouldShowSidebar()">
         <!-- Top Header -->
         <header class="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-30">
           <div class="px-6 py-4">
@@ -349,6 +349,17 @@ export class CustomerLayoutComponent implements OnInit {
 
   isHomeRoute(): boolean {
     return this.currentRoute === '/customer/home' || this.currentRoute === '/customer' || this.currentRoute === '/home/home' || this.currentRoute === '/home';
+  }
+
+  private isMarketplaceRoute(): boolean {
+    return this.currentRoute === '/customer/marketplace';
+  }
+
+  shouldShowSidebar(): boolean {
+    // Hide on home always; show on marketplace only if logged in
+    if (this.isHomeRoute()) return false;
+    if (this.isMarketplaceRoute()) return this.authService.isLoggedIn();
+    return true;
   }
 
   getPageSubtitle(): string {

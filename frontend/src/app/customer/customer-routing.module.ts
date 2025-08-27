@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from '../core/guards/auth.guard';
+import { GuestGuard } from '../core/guards/guest.guard';
 import { CartComponent } from './cart/cart.component';
 import { CustomerDashboardComponent } from './dashboard/dashboard.component';
 import { HomeComponent } from './home/home.component';
@@ -20,11 +21,11 @@ const routes: Routes = [
     component: CustomerLayoutComponent,
     children: [
       { path: '', redirectTo: 'home', pathMatch: 'full' },
-      { path: 'home', component: HomeComponent },
+      { path: 'home', component: HomeComponent, canActivate: [GuestGuard] },
       { path: 'dashboard', component: CustomerDashboardComponent, canActivate: [AuthGuard] },
       { path: 'cart', component: CartComponent, canActivate: [AuthGuard] },
       { path: 'orders', component: CustomerOrdersComponent, canActivate: [AuthGuard] },
-      { path: 'marketplace', component: CustomerMarketplaceComponent, canActivate: [AuthGuard] },
+      { path: 'marketplace', component: CustomerMarketplaceComponent },
       { path: 'order-history', component: CustomerOrdersComponent, canActivate: [AuthGuard] },
       { path: 'checkout', component: CheckoutComponent, canActivate: [AuthGuard] },
       { path: 'profile', component: CustomerProfileComponent, canActivate: [AuthGuard] },
