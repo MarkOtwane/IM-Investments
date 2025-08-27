@@ -7,6 +7,7 @@ import { AuthService } from '../../core/services/auth.service';
 import { CartService } from '../../core/services/cart.service';
 import { ProductService } from '../../core/services/products.service';
 import { CategoriesService } from '../../core/services/categories.service';
+import { OrdersService } from '../../core/services/orders.service';
 import { Category } from '../../core/models/product.model';
 import { CurrencyPipe } from '../../shared/pipes/currency.pipe';
 import { NotificationService } from '../../core/services/notification.service';
@@ -46,7 +47,8 @@ export class CustomerDashboardComponent implements OnInit {
     private categoriesService: CategoriesService,
     private cartService: CartService,
     private notificationService: NotificationService,
-    private router: Router
+    private router: Router,
+    private ordersService: OrdersService
   ) {}
 
   ngOnInit(): void {
@@ -81,23 +83,24 @@ export class CustomerDashboardComponent implements OnInit {
   }
 
   loadDashboardData(): void {
-    // Load recent orders (mock data)
-    this.recentOrders = [
-      {
-        id: 'ORD-001',
-        date: '2024-01-15',
-        status: 'Delivered',
-        total: 299.99,
-        items: 3,
+    // Load recent orders (real data)
+    this.ordersService.getOrders().subscribe({
+      next: (orders) => {
+        this.recentOrders = orders.slice(0, 5).map(o => ({
+          id: `ORD-${o.id}`,
+          date: new Date(o.createdAt).toISOString().slice(0,10),
+          status: o.status,
+          total: o.totalAmount,
+          items: o.items?.reduce((t, it) => t + it.quantity, 0) || 0,
+        }));
+        this.stats.totalOrders = orders.length;
+        this.stats.totalSpent = orders.reduce((sum, o) => sum + Number(o.totalAmount), 0);
+        this.stats.loyaltyPoints = Math.floor(this.stats.totalSpent / 10);
       },
-      {
-        id: 'ORD-002',
-        date: '2024-01-10',
-        status: 'Processing',
-        total: 149.5,
-        items: 2,
-      },
-    ];
+      error: (err) => {
+        console.error('Failed to load orders', err);
+      }
+    });
 
     // Load recommended products
     this.productService.getAllProducts().subscribe({
@@ -121,12 +124,7 @@ export class CustomerDashboardComponent implements OnInit {
       }
     });
 
-    // Mock stats
-    this.stats = {
-      totalOrders: 12,
-      totalSpent: 2847.5,
-      loyaltyPoints: 284,
-    };
+    // Stats now computed from real orders above
   }
 
   loadCategories(): void {

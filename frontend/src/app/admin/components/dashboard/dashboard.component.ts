@@ -3,6 +3,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Category, Product } from '../../../core/models/product.model';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../../enviroments/enviroment';
 import { AuthService } from '../../../core/services/auth.service';
 import { CategoriesService } from '../../../core/services/categories.service';
 import { ProductService } from '../../../core/services/products.service';
@@ -50,7 +52,8 @@ export class DashboardComponent implements OnInit {
     private productService: ProductService,
     private categoriesService: CategoriesService,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private http: HttpClient
   ) {}
 
   ngOnInit(): void {
@@ -68,13 +71,10 @@ export class DashboardComponent implements OnInit {
         this.lowStockProducts = products.filter((p) => p.stock < 10);
         this.stats.totalProducts = products.length;
         this.stats.lowStockProducts = this.lowStockProducts.length;
-        this.stats.totalRevenue = this.calculateTotalRevenue(products);
-        this.loading = false;
       },
       error: (err: any) => {
         console.error('Failed to load products', err);
         this.error = 'Failed to load products';
-        this.loading = false;
       },
     });
 
@@ -89,8 +89,18 @@ export class DashboardComponent implements OnInit {
       },
     });
 
-    // Load recent activities
-    this.loadRecentActivities();
+    // Load analytics summary from backend
+    this.http.get<{ totalRevenue: number; totalOrders: number; totalProducts: number; totalCategories: number; lowStockProducts: number }>(`${environment.apiUrl}/analytics/summary`).subscribe({
+      next: (summary) => {
+        this.stats.totalRevenue = summary.totalRevenue;
+        this.stats.totalProducts = summary.totalProducts;
+        this.stats.totalCategories = summary.totalCategories;
+        this.lowStockProducts = this.products.filter(p => p.stock < 10);
+      },
+      error: (err) => {
+        console.error('Failed to load analytics summary', err);
+      }
+    });
   }
 
   get filteredProducts(): Product[] {
