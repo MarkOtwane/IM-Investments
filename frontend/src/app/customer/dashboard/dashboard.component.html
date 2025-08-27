@@ -237,7 +237,7 @@
     
     <div class="p-6">
       <div *ngIf="recommendedProducts.length > 0; else noProducts" 
-           class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+           class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <div *ngFor="let product of recommendedProducts" 
              class="group bg-gray-50 rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
           <div class="aspect-w-1 aspect-h-1 relative overflow-hidden">
@@ -289,14 +289,14 @@
     </div>
   </div>
 
-  <!-- Special Offers -->
-  <div class="bg-gradient-to-r from-emerald-500 to-teal-600 rounded-xl p-6 text-white shadow-lg">
+  <!-- Promotions / Deals (clean card) -->
+  <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
     <div class="flex items-center justify-between">
       <div>
-        <h3 class="text-xl font-bold mb-2">Special Offers</h3>
-        <p class="text-emerald-100 mb-4">Get up to 30% off on selected items</p>
+        <h3 class="text-xl font-bold text-gray-900 mb-2">Exclusive Deals</h3>
+        <p class="text-gray-600 mb-4">Save on curated picks just for you</p>
         <a routerLink="/customer/marketplace" 
-           class="inline-flex items-center bg-white bg-opacity-20 hover:bg-opacity-30 text-white px-4 py-2 rounded-lg font-semibold transition-all duration-200 backdrop-blur-sm">
+           class="inline-flex items-center px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors">
           Shop Deals
           <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
@@ -304,8 +304,8 @@
         </a>
       </div>
       <div class="hidden md:block">
-        <div class="w-20 h-20 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
-          <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div class="w-20 h-20 bg-blue-50 rounded-full flex items-center justify-center">
+          <svg class="w-10 h-10 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"/>
           </svg>
         </div>

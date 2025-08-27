@@ -228,10 +228,10 @@
     </div>
 
     <div
-      class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"
+      class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-8"
     >
       <div
-        *ngFor="let product of products"
+        *ngFor="let product of products | slice:0:3"
         class="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 group"
       >
         <div class="relative overflow-hidden">
@@ -331,6 +331,18 @@
           </button>
         </div>
       </div>
+    </div>
+
+    <div class="mt-10 flex justify-center">
+      <a
+        routerLink="/customer/products"
+        class="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 transition-colors shadow"
+      >
+        Read More
+        <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+        </svg>
+      </a>
     </div>
   </div>
 </section>
