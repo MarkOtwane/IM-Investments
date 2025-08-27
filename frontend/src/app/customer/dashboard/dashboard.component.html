@@ -236,9 +236,19 @@
     </div>
     
     <div class="p-6">
-      <div *ngIf="recommendedProducts.length > 0; else noProducts" 
+      <div class="mb-6 grid grid-cols-1 md:grid-cols-4 gap-3">
+        <select [(ngModel)]="selectedCategoryId" class="border border-gray-300 rounded-xl px-4 py-2">
+          <option [ngValue]="'all'">All Categories</option>
+          <option *ngFor="let c of categories" [ngValue]="c.id">{{ c.name }}</option>
+        </select>
+        <input [(ngModel)]="searchTerm" placeholder="Search products" class="border border-gray-300 rounded-xl px-4 py-2" />
+        <input [(ngModel)]="minPrice" type="number" placeholder="Min price" class="border border-gray-300 rounded-xl px-4 py-2" />
+        <input [(ngModel)]="maxPrice" type="number" placeholder="Max price" class="border border-gray-300 rounded-xl px-4 py-2" />
+      </div>
+
+      <div *ngIf="filteredRecommended.length > 0; else noProducts" 
            class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div *ngFor="let product of recommendedProducts" 
+        <div *ngFor="let product of filteredRecommended" 
              class="group bg-gray-50 rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
           <div class="aspect-w-1 aspect-h-1 relative overflow-hidden">
             <img [src]="product.imageUrl" 

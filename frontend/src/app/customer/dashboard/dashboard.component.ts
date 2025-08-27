@@ -1,17 +1,20 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { CartService } from '../../core/services/cart.service';
 import { ProductService } from '../../core/services/products.service';
+import { CategoriesService } from '../../core/services/categories.service';
+import { Category } from '../../core/models/product.model';
 import { CurrencyPipe } from '../../shared/pipes/currency.pipe';
 import { NotificationService } from '../../core/services/notification.service';
 
 @Component({
   selector: 'app-customer-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule, CurrencyPipe],
+  imports: [CommonModule, RouterModule, FormsModule, CurrencyPipe],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'],
 })
@@ -19,6 +22,11 @@ export class CustomerDashboardComponent implements OnInit {
   user: any;
   recentOrders: any[] = [];
   recommendedProducts: any[] = [];
+  categories: Category[] = [];
+  selectedCategoryId: number | 'all' = 'all';
+  searchTerm: string = '';
+  minPrice: number | null = null;
+  maxPrice: number | null = null;
   cartItemsCount: number = 0;
   stats = {
     totalOrders: 0,
@@ -35,6 +43,7 @@ export class CustomerDashboardComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private productService: ProductService,
+    private categoriesService: CategoriesService,
     private cartService: CartService,
     private notificationService: NotificationService,
     private router: Router
@@ -43,6 +52,7 @@ export class CustomerDashboardComponent implements OnInit {
   ngOnInit(): void {
     this.user = this.getCurrentUser();
     this.loadDashboardData();
+    this.loadCategories();
   }
 
   get userName(): string {
@@ -92,7 +102,7 @@ export class CustomerDashboardComponent implements OnInit {
     // Load recommended products
     this.productService.getAllProducts().subscribe({
       next: (products) => {
-        this.recommendedProducts = products.slice(0, 4);
+        this.recommendedProducts = products;
       },
       error: (err) => {
         console.error('Failed to load products', err);
@@ -117,6 +127,31 @@ export class CustomerDashboardComponent implements OnInit {
       totalSpent: 2847.5,
       loyaltyPoints: 284,
     };
+  }
+
+  loadCategories(): void {
+    this.categoriesService.getAllCategories().subscribe({
+      next: (categories) => this.categories = categories,
+      error: () => {}
+    });
+  }
+
+  get filteredRecommended(): any[] {
+    let filtered = [...this.recommendedProducts];
+    if (this.selectedCategoryId !== 'all') {
+      filtered = filtered.filter(p => p.categoryId === this.selectedCategoryId);
+    }
+    const term = this.searchTerm.trim().toLowerCase();
+    if (term) {
+      filtered = filtered.filter(p =>
+        p.name.toLowerCase().includes(term) ||
+        p.description.toLowerCase().includes(term) ||
+        (p.category?.name || '').toLowerCase().includes(term)
+      );
+    }
+    if (this.minPrice !== null) filtered = filtered.filter(p => p.price >= (this.minPrice as number));
+    if (this.maxPrice !== null) filtered = filtered.filter(p => p.price <= (this.maxPrice as number));
+    return filtered.slice(0, 8);
   }
 
   addToCart(product: any): void {
