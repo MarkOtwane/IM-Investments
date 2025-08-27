@@ -2,11 +2,12 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { Product } from '../../core/models/product.model';
+import { Category, Product } from '../../core/models/product.model';
 import { AuthService } from '../../core/services/auth.service';
 import { CartService } from '../../core/services/cart.service';
 import { ProductService } from '../../core/services/products.service';
 import { NotificationService } from '../../core/services/notification.service';
+import { CategoriesService } from '../../core/services/categories.service';
 
 @Component({
   selector: 'app-home',
@@ -22,6 +23,13 @@ export class HomeComponent implements OnInit {
   loading = true;
   error: string | null = null;
 
+  // Filtering/search state
+  categories: Category[] = [];
+  selectedCategoryId: number | 'all' = 'all';
+  searchTerm: string = '';
+  minPrice: number | null = null;
+  maxPrice: number | null = null;
+
   // Success notification properties
   showSuccessMessage: boolean = false;
   successMessage: string = '';
@@ -31,11 +39,13 @@ export class HomeComponent implements OnInit {
     private cartService: CartService,
     private authService: AuthService,
     private notificationService: NotificationService,
-    private router: Router
+    private router: Router,
+    private categoriesService: CategoriesService
   ) {}
 
   ngOnInit(): void {
     this.loadProducts();
+    this.loadCategories();
   }
 
   loadProducts(): void {
@@ -61,6 +71,43 @@ export class HomeComponent implements OnInit {
         this.loading = false;
       },
     });
+  }
+
+  loadCategories(): void {
+    this.categoriesService.getAllCategories().subscribe({
+      next: (categories: Category[]) => {
+        this.categories = categories;
+      },
+      error: (err: any) => {
+        console.error('Failed to load categories', err);
+      },
+    });
+  }
+
+  get filteredProducts(): Product[] {
+    let filtered = [...this.products];
+
+    if (this.selectedCategoryId !== 'all') {
+      filtered = filtered.filter(p => p.categoryId === this.selectedCategoryId);
+    }
+
+    const term = this.searchTerm.trim().toLowerCase();
+    if (term) {
+      filtered = filtered.filter(p =>
+        p.name.toLowerCase().includes(term) ||
+        p.description.toLowerCase().includes(term) ||
+        (p.category?.name || '').toLowerCase().includes(term)
+      );
+    }
+
+    if (this.minPrice !== null) {
+      filtered = filtered.filter(p => p.price >= (this.minPrice as number));
+    }
+    if (this.maxPrice !== null) {
+      filtered = filtered.filter(p => p.price <= (this.maxPrice as number));
+    }
+
+    return filtered;
   }
 
   addToCart(productId: number, quantity: number): void {

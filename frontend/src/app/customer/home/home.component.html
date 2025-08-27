@@ -201,37 +201,31 @@
 <!-- Featured Products Section -->
 <section class="py-16 bg-gray-50">
   <div class="container mx-auto px-4">
-    <div class="flex justify-between items-center mb-12">
+    <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-12">
       <div>
         <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
           Featured Products
         </h2>
         <p class="text-gray-600">Handpicked items just for you</p>
       </div>
-      <a
-        routerLink="/customer/products"
-        class="text-blue-600 hover:text-blue-800 font-semibold flex items-center group"
-      >
-        View All
-        <svg
-          class="w-4 h-4 ml-2 transform group-hover:translate-x-1 transition-transform"
-          fill="currentColor"
-          viewBox="0 0 20 20"
-        >
-          <path
-            fill-rule="evenodd"
-            d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
-            clip-rule="evenodd"
-          />
-        </svg>
-      </a>
+      <div class="w-full lg:w-auto">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+          <select [(ngModel)]="selectedCategoryId" class="border border-gray-300 rounded-xl px-4 py-2">
+            <option [ngValue]="'all'">All Categories</option>
+            <option *ngFor="let c of categories" [ngValue]="c.id">{{ c.name }}</option>
+          </select>
+          <input [(ngModel)]="searchTerm" placeholder="Search products" class="border border-gray-300 rounded-xl px-4 py-2" />
+          <input [(ngModel)]="minPrice" type="number" placeholder="Min price" class="border border-gray-300 rounded-xl px-4 py-2" />
+          <input [(ngModel)]="maxPrice" type="number" placeholder="Max price" class="border border-gray-300 rounded-xl px-4 py-2" />
+        </div>
+      </div>
     </div>
 
     <div
       class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-8"
     >
       <div
-        *ngFor="let product of products | slice:0:3"
+        *ngFor="let product of (filteredProducts | slice:0:3)"
         class="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 group"
       >
         <div class="relative overflow-hidden">
