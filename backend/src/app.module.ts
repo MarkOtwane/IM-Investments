@@ -10,6 +10,7 @@ import { MailerModule } from './mailer/mailer.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { ProductsModule } from './products/products.module';
 import { PaymentModule } from './payment/payment.module';
+import { AnalyticsModule } from './analytics/analytics.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { PaymentModule } from './payment/payment.module';
     CategoriesModule,
     CloudinaryModule,
     PaymentModule,
+    AnalyticsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
