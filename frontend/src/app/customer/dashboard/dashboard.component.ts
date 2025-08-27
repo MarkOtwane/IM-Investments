@@ -114,15 +114,23 @@ export class CustomerDashboardComponent implements OnInit {
     });
 
     // Load cart count
-    this.cartService.getCart().subscribe({
-      next: (cart) => {
-        this.cartItemsCount = cart.items?.reduce((total, item) => total + item.quantity, 0) || 0;
-      },
-      error: (err) => {
-        console.error('Failed to load cart', err);
-        this.notificationService.showError('Failed to load cart information.');
-      }
-    });
+    if (this.authService.isLoggedIn()) {
+      this.cartService.getCart().subscribe({
+        next: (cart) => {
+          this.cartItemsCount = cart.items?.reduce((total, item) => total + item.quantity, 0) || 0;
+        },
+        error: (err) => {
+          console.error('Failed to load cart', err);
+          if (err.status === 401) {
+            this.authService.logout();
+          } else {
+            this.notificationService.showError('Failed to load cart information.');
+          }
+        }
+      });
+    } else {
+      this.cartItemsCount = 0;
+    }
 
     // Stats now computed from real orders above
   }

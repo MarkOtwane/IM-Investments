@@ -67,6 +67,13 @@ export const AuthInterceptor: HttpInterceptorFn = (req, next) => {
   // For API endpoints that require auth but no token is present
   if (req.url.includes('/cart') || req.url.includes('/orders') || req.url.includes('/profile')) {
     console.log('⚠️ AuthInterceptor: API endpoint requires authentication but no token found');
+    // Avoid calling protected endpoints without a token
+    return throwError(() => new HttpErrorResponse({
+      url: req.url,
+      status: 401,
+      statusText: 'Unauthorized',
+      error: { message: 'Authentication required' }
+    }));
   }
   
   return next(req).pipe(
