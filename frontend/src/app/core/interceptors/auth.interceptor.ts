@@ -23,11 +23,16 @@ export const AuthInterceptor: HttpInterceptorFn = (req, next) => {
   
   if (token) {
     console.log('🔑 AuthInterceptor: Adding token to request headers');
+    // Do not set Content-Type for FormData; the browser must set the multipart boundary automatically
+    const isFormData = (req.body instanceof FormData);
+    const headers: Record<string, string> = {
+      'Authorization': `Bearer ${token}`
+    };
+    if (!isFormData) {
+      headers['Content-Type'] = req.headers.get('Content-Type') || 'application/json';
+    }
     const authReq = req.clone({
-      setHeaders: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': req.headers.get('Content-Type') || 'application/json'
-      }
+      setHeaders: headers
     });
     
     return next(authReq).pipe(
