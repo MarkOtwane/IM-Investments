@@ -274,14 +274,45 @@
     </div>
     
     <div class="p-6">
-      <div class="mb-6 grid grid-cols-1 md:grid-cols-4 gap-3">
-        <select [(ngModel)]="selectedCategoryId" class="border border-gray-300 rounded-xl px-4 py-2">
+      <div class="mb-6 grid grid-cols-1 md:grid-cols-5 gap-3">
+        <select [(ngModel)]="selectedCategoryId" 
+                (ngModelChange)="logFilterState()"
+                class="border border-gray-300 rounded-xl px-4 py-2">
           <option [ngValue]="'all'">All Categories</option>
           <option *ngFor="let c of categories" [ngValue]="c.id">{{ c.name }}</option>
         </select>
-        <input [(ngModel)]="searchTerm" placeholder="Search products" class="border border-gray-300 rounded-xl px-4 py-2" />
-        <input [(ngModel)]="minPrice" type="number" placeholder="Min price" class="border border-gray-300 rounded-xl px-4 py-2" />
-        <input [(ngModel)]="maxPrice" type="number" placeholder="Max price" class="border border-gray-300 rounded-xl px-4 py-2" />
+        <input [(ngModel)]="searchTerm" 
+               (ngModelChange)="logFilterState()"
+               placeholder="Search products" 
+               class="border border-gray-300 rounded-xl px-4 py-2" />
+        <input [(ngModel)]="minPrice" 
+               (ngModelChange)="logFilterState()"
+               type="number" 
+               placeholder="Min price" 
+               class="border border-gray-300 rounded-xl px-4 py-2" />
+        <input [(ngModel)]="maxPrice" 
+               (ngModelChange)="logFilterState()"
+               type="number" 
+               placeholder="Max price" 
+               class="border border-gray-300 rounded-xl px-4 py-2" />
+        <button (click)="clearFilters()" 
+                class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-xl font-medium transition-colors">
+          Clear Filters
+        </button>
+              </div>
+
+      <!-- Filter Results Summary -->
+      <div class="mb-4 flex items-center justify-between text-sm text-gray-600">
+        <span>
+          Showing {{ filteredRecommended.length }} of {{ recommendedProducts.length }} products
+          <span *ngIf="searchTerm || selectedCategoryId !== 'all' || minPrice || maxPrice">
+            (filtered)
+          </span>
+        </span>
+        <button (click)="logFilterState()" 
+                class="text-blue-600 hover:text-blue-700 text-xs underline">
+          Debug Filters
+        </button>
       </div>
 
       <div *ngIf="filteredRecommended.length > 0; else noProducts" 
@@ -326,12 +357,25 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
             </svg>
           </div>
-          <h3 class="text-lg font-semibold text-gray-900 mb-2">No products available</h3>
-          <p class="text-gray-500 mb-6">Check back later for new products.</p>
-          <a routerLink="/customer/marketplace" 
-             class="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 transition-colors">
-            Browse Marketplace
-          </a>
+          <h3 class="text-lg font-semibold text-gray-900 mb-2">
+            {{ recommendedProducts.length === 0 ? 'No products available' : 'No products match your filters' }}
+          </h3>
+          <p class="text-gray-500 mb-6">
+            {{ recommendedProducts.length === 0 ? 'Check back later for new products.' : 'Try adjusting your search criteria or clearing the filters.' }}
+          </p>
+          <div class="space-x-4">
+            <button (click)="clearFilters()" 
+                    class="inline-flex items-center px-6 py-3 bg-gray-600 text-white font-semibold rounded-xl hover:bg-gray-700 transition-colors">
+              <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+              </svg>
+              Clear Filters
+            </button>
+            <a routerLink="/customer/marketplace" 
+               class="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 transition-colors">
+              Browse Marketplace
+            </a>
+          </div>
         </div>
       </ng-template>
     </div>
