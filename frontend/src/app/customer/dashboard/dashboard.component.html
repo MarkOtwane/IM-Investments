@@ -287,11 +287,13 @@
                class="border border-gray-300 rounded-xl px-4 py-2" />
         <input [(ngModel)]="minPrice" 
                (ngModelChange)="logFilterState()"
+               (input)="onPriceInputChange()"
                type="number" 
                placeholder="Min price" 
                class="border border-gray-300 rounded-xl px-4 py-2" />
         <input [(ngModel)]="maxPrice" 
                (ngModelChange)="logFilterState()"
+               (input)="onPriceInputChange()"
                type="number" 
                placeholder="Max price" 
                class="border border-gray-300 rounded-xl px-4 py-2" />
