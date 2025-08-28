@@ -167,6 +167,8 @@ export class CustomerDashboardComponent implements OnInit {
       searchTerm: this.searchTerm,
       minPrice: this.minPrice,
       maxPrice: this.maxPrice,
+      minPriceType: typeof this.minPrice,
+      maxPriceType: typeof this.maxPrice,
       totalProducts: this.recommendedProducts.length,
       filteredCount: this.filteredRecommended.length
     });
@@ -182,6 +184,29 @@ export class CustomerDashboardComponent implements OnInit {
         this.minPrice = this.maxPrice;
         this.maxPrice = this.minPrice;
       }
+    }
+  }
+
+  // Method to safely convert input values to numbers
+  private safeNumberValue(value: any): number | null {
+    if (value === null || value === undefined || value === '') {
+      return null;
+    }
+    const num = Number(value);
+    return isNaN(num) ? null : num;
+  }
+
+  // Method to handle price input changes
+  onPriceInputChange(): void {
+    // Validate and convert price inputs
+    this.validatePriceInputs();
+    
+    // Ensure values are properly typed
+    if (this.minPrice === '') {
+      this.minPrice = null;
+    }
+    if (this.maxPrice === '') {
+      this.maxPrice = null;
     }
   }
 
@@ -217,24 +242,20 @@ export class CustomerDashboardComponent implements OnInit {
     }
     
     // Price filtering - convert to numbers for proper comparison
-    if (this.minPrice !== null && this.minPrice !== undefined && this.minPrice !== '') {
-      const minPrice = Number(this.minPrice);
-      if (!isNaN(minPrice) && minPrice >= 0) {
-        filtered = filtered.filter(p => {
-          const productPrice = Number(p.price);
-          return !isNaN(productPrice) && productPrice >= minPrice;
-        });
-      }
+    const minPrice = this.safeNumberValue(this.minPrice);
+    if (minPrice !== null && minPrice >= 0) {
+      filtered = filtered.filter(p => {
+        const productPrice = Number(p.price);
+        return !isNaN(productPrice) && productPrice >= minPrice;
+      });
     }
     
-    if (this.maxPrice !== null && this.maxPrice !== undefined && this.maxPrice !== '') {
-      const maxPrice = Number(this.maxPrice);
-      if (!isNaN(maxPrice) && maxPrice > 0) {
-        filtered = filtered.filter(p => {
-          const productPrice = Number(p.price);
-          return !isNaN(productPrice) && productPrice <= maxPrice;
-        });
-      }
+    const maxPrice = this.safeNumberValue(this.maxPrice);
+    if (maxPrice !== null && maxPrice > 0) {
+      filtered = filtered.filter(p => {
+        const productPrice = Number(p.price);
+        return !isNaN(productPrice) && productPrice <= maxPrice;
+      });
     }
     
     return filtered.slice(0, 8);
