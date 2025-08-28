@@ -283,8 +283,19 @@ export class CustomerLayoutComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadCartCount();
     this.currentRoute = this.router.url;
+    
+    // Use setTimeout to ensure auth service is fully initialized
+    setTimeout(() => {
+      console.log('CustomerLayoutComponent: ngOnInit - Auth status:', this.authService.isLoggedIn());
+      // Only load cart count if user is logged in
+      if (this.authService.isLoggedIn()) {
+        console.log('CustomerLayoutComponent: User is logged in, loading cart count');
+        this.loadCartCount();
+      } else {
+        console.log('CustomerLayoutComponent: User is not logged in, skipping cart count load');
+      }
+    }, 100);
   }
 
   @HostListener('window:resize', ['$event'])
@@ -310,21 +321,38 @@ export class CustomerLayoutComponent implements OnInit {
   }
 
   loadCartCount(): void {
-    if (this.authService.isLoggedIn()) {
-      this.cartService.getCart().subscribe({
-        next: (cart) => {
-          this.cartItemsCount = cart.items?.reduce((total, item) => total + item.quantity, 0) || 0;
-        },
-        error: (err) => {
-          console.error('Failed to load cart count', err);
-          // If we get a 401 error, the token might be invalid
-          if (err.status === 401) {
-            console.log('Authentication failed, logging out user');
-            this.authService.logout();
-            this.cartItemsCount = 0;
-          }
+    console.log('CustomerLayoutComponent: loadCartCount called');
+    // Double-check authentication status before making API call
+    if (!this.authService.isLoggedIn()) {
+      console.log('CustomerLayoutComponent: User not logged in, setting cart count to 0');
+      this.cartItemsCount = 0;
+      return;
+    }
+
+    console.log('CustomerLayoutComponent: User is logged in, calling cart service');
+    this.cartService.getCart().subscribe({
+      next: (cart) => {
+        this.cartItemsCount = cart.items?.reduce((total, item) => total + item.quantity, 0) || 0;
+        console.log('CustomerLayoutComponent: Cart count loaded successfully:', this.cartItemsCount);
+      },
+      error: (err) => {
+        console.error('CustomerLayoutComponent: Failed to load cart count', err);
+        // If we get a 401 error, the token might be invalid
+        if (err.status === 401) {
+          console.log('CustomerLayoutComponent: Authentication failed, logging out user');
+          this.authService.logout();
+          this.cartItemsCount = 0;
         }
-      });
+        // Set cart count to 0 for any error to prevent UI issues
+        this.cartItemsCount = 0;
+      }
+    });
+  }
+
+  // Method to refresh cart count when user logs in
+  refreshCartCount(): void {
+    if (this.authService.isLoggedIn()) {
+      this.loadCartCount();
     } else {
       this.cartItemsCount = 0;
     }
@@ -406,6 +434,12 @@ export class CustomerLayoutComponent implements OnInit {
 
   logout(): void {
     this.authService.logout();
+    this.cartItemsCount = 0; // Clear cart count when logging out
     this.router.navigate(['/customer/login']);
+  }
+
+  // Public method to handle authentication state changes
+  onAuthStateChange(): void {
+    this.refreshCartCount();
   }
 }
