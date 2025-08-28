@@ -356,9 +356,11 @@ export class CustomerLayoutComponent implements OnInit {
   }
 
   shouldShowSidebar(): boolean {
-    // Hide on home always; show on marketplace only if logged in
+    // Hide on home always; show on marketplace and products only if logged in
     if (this.isHomeRoute()) return false;
     if (this.isMarketplaceRoute()) return this.authService.isLoggedIn();
+    if (this.currentRoute === '/customer/products') return this.authService.isLoggedIn();
+    if (this.currentRoute.startsWith('/customer/products/')) return this.authService.isLoggedIn();
     return true;
   }
 
