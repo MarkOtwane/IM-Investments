@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
@@ -24,5 +24,18 @@ export class CategoriesService {
     }
     
     return category;
+  }
+
+  async create(name: string) {
+    const trimmed = (name || '').trim();
+    if (!trimmed) {
+      throw new BadRequestException('Category name is required');
+    }
+    try {
+      return await this.prisma.category.create({ data: { name: trimmed } });
+    } catch (e: any) {
+      // Unique constraint on name
+      throw new BadRequestException('Category already exists');
+    }
   }
 }
