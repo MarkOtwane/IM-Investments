@@ -41,7 +41,7 @@ export class ProductsController {
     FileInterceptor('image', {
       limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
       fileFilter: (req, file, cb) => {
-        if (file && file.mimetype.match(/\/(jpg|jpeg|png|gif)$/)) {
+        if (file && file.mimetype.match(/\/(jpg|jpeg|png|gif|webp)$/)) {
           cb(null, true);
         } else if (file) {
           cb(new BadRequestException('Only image files are allowed!'), false);
@@ -137,7 +137,7 @@ export class ProductsController {
     FileInterceptor('image', {
       limits: { fileSize: 10 * 1024 * 1024 },
       fileFilter: (req, file, cb) => {
-        if (file && file.mimetype.match(/\/(jpg|jpeg|png|gif)$/)) {
+        if (file && file.mimetype.match(/\/(jpg|jpeg|png|gif|webp)$/)) {
           cb(null, true);
         } else if (file) {
           cb(new BadRequestException('Only image files are allowed!'), false);
