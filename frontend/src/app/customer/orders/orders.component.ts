@@ -1,14 +1,16 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { OrdersService } from '../../core/services/orders.service';
+import { Order } from '../../core/models/order.model';
 import { RouterModule } from '@angular/router';
 
-interface Order {
-  id: string;
+type UiOrder = {
+  id: number;
   date: string;
   status: string;
   total: number;
   items: number;
-}
+};
 
 @Component({
   selector: 'app-customer-orders',
@@ -126,7 +128,7 @@ interface Order {
   `,
 })
 export class CustomerOrdersComponent implements OnInit {
-  orders: Order[] = [];
+  orders: UiOrder[] = [];
   loading = true;
 
   ngOnInit(): void {
@@ -134,26 +136,24 @@ export class CustomerOrdersComponent implements OnInit {
   }
 
   loadOrders(): void {
-    // Mock data - replace with actual API call
-    setTimeout(() => {
-      this.orders = [
-        {
-          id: 'ORD-001',
-          date: '2024-01-15',
-          status: 'Delivered',
-          total: 299.99,
-          items: 3,
-        },
-        {
-          id: 'ORD-002',
-          date: '2024-01-10',
-          status: 'Processing',
-          total: 149.5,
-          items: 2,
-        },
-      ];
-      this.loading = false;
-    }, 1000);
+    const svc = (window as any).ng?.injector?.get?.(OrdersService) as OrdersService | undefined;
+    const ordersService = svc ?? new OrdersService((undefined as unknown) as any);
+    ordersService.getOrders().subscribe({
+      next: (apiOrders: Order[]) => {
+        this.orders = apiOrders.map((o) => ({
+          id: o.id,
+          date: new Date(o.createdAt).toLocaleDateString(),
+          status: o.status,
+          total: o.totalAmount,
+          items: o.items.reduce((sum, it) => sum + it.quantity, 0),
+        }));
+        this.loading = false;
+      },
+      error: () => {
+        this.orders = [];
+        this.loading = false;
+      },
+    });
   }
 
   getStatusClass(status: string): string {
