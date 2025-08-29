@@ -1,5 +1,5 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -24,14 +24,17 @@ export class LoginComponent implements OnInit {
     private authService: AuthService,
     private router: Router,
     public route: ActivatedRoute,
-    private cartService: CartService
+    private cartService: CartService,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
   ngOnInit(): void {
-    const savedEmail = localStorage.getItem('savedEmail');
-    if (savedEmail) {
-      this.email = savedEmail;
-      this.rememberMe = true;
+    if (isPlatformBrowser(this.platformId)) {
+      const savedEmail = localStorage.getItem('savedEmail');
+      if (savedEmail) {
+        this.email = savedEmail;
+        this.rememberMe = true;
+      }
     }
   }
 
@@ -50,14 +53,18 @@ export class LoginComponent implements OnInit {
         console.log('LoginComponent: Login successful, token stored');
 
         // Persist email if remember me is enabled
-        if (this.rememberMe) {
-          localStorage.setItem('savedEmail', this.email);
-        } else {
-          localStorage.removeItem('savedEmail');
+        if (isPlatformBrowser(this.platformId)) {
+          if (this.rememberMe) {
+            localStorage.setItem('savedEmail', this.email);
+          } else {
+            localStorage.removeItem('savedEmail');
+          }
         }
         
         // Check if there's a pending cart item to add
-        const pendingCartItemStr = localStorage.getItem('pendingCartItem');
+        const pendingCartItemStr = isPlatformBrowser(this.platformId)
+          ? localStorage.getItem('pendingCartItem')
+          : null;
         const pendingCartQueryParam = this.route.snapshot.queryParams['pendingCart'];
         
         if (pendingCartItemStr) {
@@ -67,7 +74,9 @@ export class LoginComponent implements OnInit {
             this.cartService.addToCart(pendingCartItem.productId, pendingCartItem.quantity).subscribe({
               next: () => {
                 // Clear the pending cart item
-                localStorage.removeItem('pendingCartItem');
+                if (isPlatformBrowser(this.platformId)) {
+                  localStorage.removeItem('pendingCartItem');
+                }
                 
                 // Show success message
                 alert(`Added ${pendingCartItem.quantity} ${pendingCartItem.productName} to your cart!`);

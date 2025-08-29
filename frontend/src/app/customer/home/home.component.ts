@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
@@ -122,7 +122,9 @@ export class HomeComponent implements OnInit {
         quantity: quantity,
         productName: product.name
       };
-      localStorage.setItem('pendingCartItem', JSON.stringify(pendingCartItem));
+      if (isPlatformBrowser(this.authService['platformId'] as any)) {
+        localStorage.setItem('pendingCartItem', JSON.stringify(pendingCartItem));
+      }
 
       // Redirect to login with message
       this.router.navigate(['/customer/login'], {
