@@ -10,9 +10,14 @@ import {
   UseGuards,
   NotFoundException,
   ForbiddenException,
+  Patch,
+  Body,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { OrdersService } from './orders.service';
+import { Roles } from '../auth/roles.decorator';
+import { RolesGuard } from '../auth/roles.guard';
+import { OrderStatus } from '@prisma/client';
 
 @Controller('orders')
 export class OrdersController {
@@ -45,5 +50,24 @@ export class OrdersController {
     }
 
     return order;
+  }
+
+  // Admin: list all orders
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN')
+  @Get('admin/all')
+  async getAllOrders() {
+    return this.ordersService.getAllOrders();
+  }
+
+  // Admin: update order status
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN')
+  @Patch(':orderId/status')
+  async updateOrderStatus(
+    @Param('orderId', ParseIntPipe) orderId: number,
+    @Body('status') status: OrderStatus,
+  ) {
+    return this.ordersService.updateOrderStatus(orderId, status);
   }
 }
