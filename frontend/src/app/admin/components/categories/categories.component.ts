@@ -4,6 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { Category } from '../../../core/models/product.model';
 import { CategoriesService } from '../../../core/services/categories.service';
 import { AdminSidebarComponent } from '../sidebar/sidebar.component';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../../enviroments/enviroment';
 
 @Component({
   selector: 'app-admin-categories',
@@ -23,9 +25,12 @@ import { AdminSidebarComponent } from '../sidebar/sidebar.component';
           <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
             <div class="flex justify-between items-center mb-6">
               <h2 class="text-xl font-semibold text-gray-900">Product Categories</h2>
-              <button class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
-                Add Category
-              </button>
+              <div class="flex items-center space-x-2">
+                <input [(ngModel)]="newCategory" placeholder="New category name" class="border rounded px-3 py-2 text-sm" />
+                <button (click)="addCategory()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                  Add Category
+                </button>
+              </div>
             </div>
             
             <div *ngIf="loading" class="text-center py-8">
@@ -61,8 +66,9 @@ import { AdminSidebarComponent } from '../sidebar/sidebar.component';
 export class AdminCategoriesComponent implements OnInit {
   categories: Category[] = [];
   loading = true;
+  newCategory = '';
 
-  constructor(private categoriesService: CategoriesService) {}
+  constructor(private categoriesService: CategoriesService, private http: HttpClient) {}
 
   ngOnInit(): void {
     this.loadCategories();
@@ -77,6 +83,20 @@ export class AdminCategoriesComponent implements OnInit {
       error: (err) => {
         console.error('Failed to load categories', err);
         this.loading = false;
+      }
+    });
+  }
+
+  addCategory(): void {
+    const name = this.newCategory.trim();
+    if (!name) return;
+    this.http.post<Category>(`${environment.apiUrl}/categories`, { name }).subscribe({
+      next: (cat) => {
+        this.categories = [cat, ...this.categories].sort((a, b) => a.name.localeCompare(b.name));
+        this.newCategory = '';
+      },
+      error: (err) => {
+        alert(err?.error?.message || 'Failed to add category');
       }
     });
   }
