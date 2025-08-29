@@ -198,16 +198,10 @@ export class CustomerDashboardComponent implements OnInit {
 
   // Method to handle price input changes
   onPriceInputChange(): void {
-    // Validate and convert price inputs
+    // Coerce inputs to numbers or null, then validate
+    this.minPrice = this.safeNumberValue(this.minPrice);
+    this.maxPrice = this.safeNumberValue(this.maxPrice);
     this.validatePriceInputs();
-    
-    // Ensure values are properly typed
-    if (this.minPrice === '') {
-      this.minPrice = null;
-    }
-    if (this.maxPrice === '') {
-      this.maxPrice = null;
-    }
   }
 
   get filteredRecommended(): any[] {
