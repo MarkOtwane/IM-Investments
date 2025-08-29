@@ -20,8 +20,8 @@ const routes: Routes = [
     path: '',
     component: CustomerLayoutComponent,
     children: [
-      { path: '', redirectTo: 'home', pathMatch: 'full' },
-      { path: 'home', component: HomeComponent, canActivate: [GuestGuard] },
+      { path: '', component: HomeComponent, canActivate: [GuestGuard] },
+      { path: 'home', redirectTo: '', pathMatch: 'full' },
       { path: 'dashboard', component: CustomerDashboardComponent, canActivate: [AuthGuard] },
       { path: 'cart', component: CartComponent, canActivate: [AuthGuard] },
       { path: 'orders', component: CustomerOrdersComponent, canActivate: [AuthGuard] },
