@@ -1,5 +1,5 @@
-import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { Component, Inject, PLATFORM_ID } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
@@ -25,7 +25,8 @@ export class RegisterComponent {
     private authService: AuthService,
     private router: Router,
     public route: ActivatedRoute,
-    private cartService: CartService
+    private cartService: CartService,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
   onSubmit(): void {
@@ -66,7 +67,9 @@ export class RegisterComponent {
         this.loading = false;
 
         // Check if there's a pending cart item to add
-        const pendingCartItemStr = localStorage.getItem('pendingCartItem');
+        const pendingCartItemStr = isPlatformBrowser(this.platformId)
+          ? localStorage.getItem('pendingCartItem')
+          : null;
         if (pendingCartItemStr) {
           // Redirect to login with a special message
           this.router.navigate(['/customer/login'], {

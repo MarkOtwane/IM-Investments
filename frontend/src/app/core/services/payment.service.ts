@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../enviroments/enviroment';
@@ -9,7 +10,7 @@ import { environment } from '../../../enviroments/enviroment';
 export class PaymentService {
   private apiUrl = `${environment.apiUrl}/payment`;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, @Inject(PLATFORM_ID) private platformId: Object) {}
 
   initiatePayment(phoneNumber: string): Observable<any> {
     const userId = this.getCurrentUserId();
@@ -21,6 +22,9 @@ export class PaymentService {
   }
 
   private getCurrentUserId(): number {
+    if (!isPlatformBrowser(this.platformId)) {
+      return 1;
+    }
     const user = JSON.parse(localStorage.getItem('user') || '{}');
     return user.id || 1;
   }

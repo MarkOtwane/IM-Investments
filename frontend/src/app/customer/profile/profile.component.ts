@@ -1,5 +1,5 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../core/services/auth.service';
 
@@ -253,7 +253,7 @@ export class CustomerProfileComponent implements OnInit {
   successMessage = '';
   errorMessage = '';
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, @Inject(PLATFORM_ID) private platformId: Object) {}
 
   ngOnInit(): void {
     this.loadProfile();
@@ -270,10 +270,12 @@ export class CustomerProfileComponent implements OnInit {
     }
 
     // Load other profile data from localStorage or API
-    const savedProfile = localStorage.getItem('userProfile');
-    if (savedProfile) {
-      const parsed = JSON.parse(savedProfile);
-      this.profile = { ...this.profile, ...parsed };
+    if (isPlatformBrowser(this.platformId)) {
+      const savedProfile = localStorage.getItem('userProfile');
+      if (savedProfile) {
+        const parsed = JSON.parse(savedProfile);
+        this.profile = { ...this.profile, ...parsed };
+      }
     }
   }
 
@@ -286,7 +288,9 @@ export class CustomerProfileComponent implements OnInit {
     setTimeout(() => {
       try {
         // Save to localStorage (in real app, this would be an API call)
-        localStorage.setItem('userProfile', JSON.stringify(this.profile));
+        if (isPlatformBrowser(this.platformId)) {
+          localStorage.setItem('userProfile', JSON.stringify(this.profile));
+        }
         
         this.loading = false;
         this.successMessage = 'Profile updated successfully!';
