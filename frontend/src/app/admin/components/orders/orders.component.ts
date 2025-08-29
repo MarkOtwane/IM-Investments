@@ -1,4 +1,5 @@
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Component, OnInit } from '@angular/core';
 import { AdminSidebarComponent } from '../sidebar/sidebar.component';
 import { HttpClient } from '@angular/common/http';
@@ -7,7 +8,7 @@ import { environment } from '../../../../enviroments/enviroment';
 @Component({
   selector: 'app-admin-orders',
   standalone: true,
-  imports: [CommonModule, AdminSidebarComponent],
+  imports: [CommonModule, FormsModule, AdminSidebarComponent],
   template: `
     <div class="flex min-h-screen bg-gray-50">
       <app-admin-sidebar></app-admin-sidebar>
@@ -50,7 +51,7 @@ import { environment } from '../../../../enviroments/enviroment';
                     </select>
                   </div>
                 </div>
-                <div class="mt-3 text-sm text-gray-700">Items: {{ order.items.reduce((s: number, it: any) => s + it.quantity, 0) }} • Total: ${{ order.totalAmount }}</div>
+                <div class="mt-3 text-sm text-gray-700">Items: {{ countItems(order) }} • Total: ${{ order.totalAmount }}</div>
               </div>
             </div>
           </div>
@@ -85,6 +86,10 @@ export class AdminOrdersComponent implements OnInit {
         this.loading = false;
       }
     });
+  }
+
+  countItems(order: any): number {
+    return (order?.items || []).reduce((s: number, it: any) => s + (it?.quantity || 0), 0);
   }
 
   updateStatus(order: any, newStatus: string): void {
