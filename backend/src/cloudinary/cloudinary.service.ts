@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable prettier/prettier */
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { v2 as cloudinary } from 'cloudinary';
@@ -12,17 +15,31 @@ export class CloudinaryService {
   }
 
   private initializeCloudinary(): void {
+    const cloudinaryUrl = this.configService.get<string>('CLOUDINARY_URL');
     const cloudName = this.configService.get<string>('CLOUDINARY_CLOUD_NAME');
     const apiKey = this.configService.get<string>('CLOUDINARY_API_KEY');
     const apiSecret = this.configService.get<string>('CLOUDINARY_API_SECRET');
 
     console.log('🔧 Cloudinary Configuration Check:', {
+      cloudinaryUrl: cloudinaryUrl ? `✅ Set` : '❌ Missing',
       cloudName: cloudName ? `✅ Set (${cloudName})` : '❌ Missing',
       apiKey: apiKey ? `✅ Set (${apiKey.substring(0, 6)}...)` : '❌ Missing',
       apiSecret: apiSecret ? `✅ Set (${apiSecret.substring(0, 6)}...)` : '❌ Missing',
     });
 
-    if (cloudName && apiKey && apiSecret) {
+    if (cloudinaryUrl) {
+      try {
+        cloudinary.config({
+          cloudinary_url: cloudinaryUrl,
+          secure: true,
+        });
+        this.isConfigured = true;
+        console.log('✅ Cloudinary configured successfully using URL');
+      } catch (error) {
+        console.error('❌ Cloudinary configuration failed:', error);
+        this.isConfigured = false;
+      }
+    } else if (cloudName && apiKey && apiSecret) {
       try {
         cloudinary.config({
           cloud_name: cloudName,
@@ -31,13 +48,13 @@ export class CloudinaryService {
           secure: true,
         });
         this.isConfigured = true;
-        console.log('✅ Cloudinary configured successfully');
+        console.log('✅ Cloudinary configured successfully using separate keys');
       } catch (error) {
         console.error('❌ Cloudinary configuration failed:', error);
         this.isConfigured = false;
       }
     } else {
-      console.warn('⚠️ Cloudinary credentials not configured. Using fallback images.');
+      console.warn('⚠️ Cloudinary credentials not configured.');
       this.isConfigured = false;
     }
   }
@@ -51,10 +68,9 @@ export class CloudinaryService {
       bufferLength: file.buffer?.length,
     });
 
-    // If Cloudinary is not configured, return a high-quality fallback image
+    // If Cloudinary is not configured, throw error
     if (!this.isConfigured) {
-      console.warn('⚠️ Cloudinary not configured, using fallback image');
-      return 'https://images.pexels.com/photos/4041392/pexels-photo-4041392.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop';
+      throw new Error('Cloudinary is not configured. Please check your environment variables.');
     }
 
     // Validate file

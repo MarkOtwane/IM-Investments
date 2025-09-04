@@ -51,7 +51,7 @@ import { environment } from '../../../../enviroments/enviroment';
                     </select>
                   </div>
                 </div>
-                <div class="mt-3 text-sm text-gray-700">Items: {{ countItems(order) }} • Total: ${{ order.totalAmount }}</div>
+                <div class="mt-3 text-sm text-gray-700">Items: {{ countItems(order) }} • Total: {{ order.totalAmount | currency }}</div>
               </div>
             </div>
           </div>

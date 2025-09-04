@@ -4,10 +4,11 @@ const prisma = new PrismaClient();
 
 async function main() {
   const categories = [
-    { name: 'Clothing' },
-    { name: 'Kitchen Appliances' },
     { name: 'Electronics' },
-    { name: 'Sportswear' },
+    { name: 'Kitchen' },
+    { name: 'Clothing' },
+    { name: 'Furniture' },
+    { name: 'Home Appliances' },
   ];
 
   for (const category of categories) {

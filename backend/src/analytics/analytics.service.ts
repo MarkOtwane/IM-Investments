@@ -6,7 +6,13 @@ export class AnalyticsService {
   constructor(private prisma: PrismaService) {}
 
   async getSummary() {
-    const [ordersAgg, totalProducts, totalCategories, lowStockProducts] = await Promise.all([
+    const [
+      ordersAgg,
+      totalProducts,
+      totalCategories,
+      lowStockProducts,
+      totalCustomers,
+    ] = await Promise.all([
       this.prisma.order.aggregate({
         _sum: { totalAmount: true },
         _count: { _all: true },
@@ -14,6 +20,7 @@ export class AnalyticsService {
       this.prisma.product.count(),
       this.prisma.category.count(),
       this.prisma.product.count({ where: { stock: { lt: 10 } } }),
+      this.prisma.user.count({ where: { role: 'CUSTOMER' } }),
     ]);
 
     return {
@@ -22,6 +29,7 @@ export class AnalyticsService {
       totalProducts,
       totalCategories,
       lowStockProducts,
+      totalCustomers,
     };
   }
 
@@ -44,4 +52,3 @@ export class AnalyticsService {
     return Object.entries(byDay).map(([date, total]) => ({ date, total }));
   }
 }
-

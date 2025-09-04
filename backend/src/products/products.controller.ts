@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import {
   BadRequestException,
@@ -87,17 +87,10 @@ export class ProductsController {
 
       // If an image file is uploaded, upload it to Cloudinary
       if (file) {
-        try {
-          console.log('Uploading image to Cloudinary...');
-          const imageUrl = await this.cloudinaryService.uploadImage(file);
-          console.log('Cloudinary upload successful:', imageUrl);
-          productData.imageUrl = imageUrl;
-        } catch (error) {
-          console.error('Cloudinary upload error:', error);
-          // Use fallback image if Cloudinary fails
-          productData.imageUrl =
-            'https://images.pexels.com/photos/4041392/pexels-photo-4041392.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop';
-        }
+        console.log('Uploading image to Cloudinary...');
+        const imageUrl = await this.cloudinaryService.uploadImage(file);
+        console.log('Cloudinary upload successful:', imageUrl);
+        productData.imageUrl = imageUrl;
       } else if (!productData.imageUrl) {
         // Set a default image URL if no image is provided
         productData.imageUrl =
@@ -174,15 +167,10 @@ export class ProductsController {
       };
 
       if (file) {
-        try {
-          console.log('Updating image via Cloudinary...');
-          const imageUrl = await this.cloudinaryService.uploadImage(file);
-          console.log('Cloudinary update successful:', imageUrl);
-          updateData.imageUrl = imageUrl;
-        } catch (error) {
-          console.error('Cloudinary upload error:', error);
-          // Continue without updating image if Cloudinary fails
-        }
+        console.log('Updating image via Cloudinary...');
+        const imageUrl = await this.cloudinaryService.uploadImage(file);
+        console.log('Cloudinary update successful:', imageUrl);
+        updateData.imageUrl = imageUrl;
       }
 
       return this.productsService.update(id, updateData);
