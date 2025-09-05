@@ -38,7 +38,7 @@ async function bootstrap(): Promise<void> {
     origin: [
       'http://localhost:4200',
       'https://im-investments.onrender.com',
-      'https://im-investments.vercel.app/',
+      'https://im-investments.vercel.app',
       'http://localhost:3000',
     ],
     credentials: true,
@@ -53,6 +53,6 @@ async function bootstrap(): Promise<void> {
   });
 
   await app.listen(3000);
-  console.log('🚀 Backend server is running on http://localhost:3000');
+  console.log('🚀 Backend server is running');
 }
 bootstrap();
