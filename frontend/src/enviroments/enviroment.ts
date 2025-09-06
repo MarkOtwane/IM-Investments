@@ -1,4 +1,4 @@
 export const environment = {
   production: false,
-  apiUrl: 'https://im-investments.onrender.com', // Your NestJS backend URL
+  apiUrl: 'http://localhost:3000', // Your NestJS backend URL
 };
