@@ -131,14 +131,14 @@ export class CustomerOrdersComponent implements OnInit {
   orders: UiOrder[] = [];
   loading = true;
 
+  constructor(private ordersService: OrdersService) {}
+
   ngOnInit(): void {
     this.loadOrders();
   }
 
   loadOrders(): void {
-    const svc = (window as any).ng?.injector?.get?.(OrdersService) as OrdersService | undefined;
-    const ordersService = svc ?? new OrdersService((undefined as unknown) as any);
-    ordersService.getOrders().subscribe({
+    this.ordersService.getOrders().subscribe({
       next: (apiOrders: Order[]) => {
         this.orders = apiOrders.map((o) => ({
           id: o.id,

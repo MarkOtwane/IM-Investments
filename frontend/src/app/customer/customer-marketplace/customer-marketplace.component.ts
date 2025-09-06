@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { ProductService } from '../../core/services/products.service';
 import { CartService } from '../../core/services/cart.service';
 import { Product } from '../../core/models/product.model';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-customer-marketplace',
@@ -23,7 +24,8 @@ export class CustomerMarketplaceComponent implements OnInit {
 
   constructor(
     private productService: ProductService,
-    private cartService: CartService
+    private cartService: CartService,
+    private location: Location
   ) {}
 
   ngOnInit(): void {
@@ -55,7 +57,7 @@ export class CustomerMarketplaceComponent implements OnInit {
   }
 
   goBackToDashboard(): void {
-    window.history.back();
+    this.location.back();
   }
 
   addToCart(productId: number, quantity: number = 1): void {
@@ -98,6 +100,9 @@ export class CustomerMarketplaceComponent implements OnInit {
   }
 
   private showSuccessNotification(message: string): void {
+    // Only show notifications on the client side
+    if (typeof document === 'undefined') return;
+
     // Create and show a temporary success notification
     const notification = document.createElement('div');
     notification.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-slide-in';
@@ -110,13 +115,18 @@ export class CustomerMarketplaceComponent implements OnInit {
       </div>
     `;
     document.body.appendChild(notification);
-    
+
     setTimeout(() => {
-      document.body.removeChild(notification);
+      if (document.body.contains(notification)) {
+        document.body.removeChild(notification);
+      }
     }, 3000);
   }
 
   private showErrorNotification(message: string): void {
+    // Only show notifications on the client side
+    if (typeof document === 'undefined') return;
+
     // Create and show a temporary error notification
     const notification = document.createElement('div');
     notification.className = 'fixed top-4 right-4 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-slide-in';
@@ -129,9 +139,11 @@ export class CustomerMarketplaceComponent implements OnInit {
       </div>
     `;
     document.body.appendChild(notification);
-    
+
     setTimeout(() => {
-      document.body.removeChild(notification);
+      if (document.body.contains(notification)) {
+        document.body.removeChild(notification);
+      }
     }, 3000);
   }
 }
