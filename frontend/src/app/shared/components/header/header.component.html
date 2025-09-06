@@ -1,6 +1,6 @@
 <header class="bg-white shadow-lg border-b border-gray-200">
   <!-- Top bar for announcements, contact info, etc. -->
-  <div class="bg-gray-900 text-white py-2">
+  <div class="bg-gray-900 text-white py-2 hidden md:block">
     <div class="container mx-auto px-4">
       <div class="flex justify-between items-center text-sm">
         <div class="flex items-center space-x-4">
@@ -150,7 +150,7 @@
           </svg>
           <span class="text-sm font-medium">Cart</span>
           <span
-            *ngIf="cartItemCount > 0"
+            *ngIf="cartItemCount > 0 && !isCartPage"
             class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold"
           >
             {{ cartItemCount }}
@@ -237,7 +237,7 @@
         <button
           *ngIf="isLoggedIn"
           (click)="logout()"
-          class="text-gray-700 hover:text-red-600 transition-colors font-medium"
+          class="hidden md:flex text-gray-700 hover:text-red-600 transition-colors font-medium"
         >
           Logout
         </button>
@@ -379,7 +379,7 @@
         >
           Cart
           <span
-            *ngIf="cartItemCount > 0"
+            *ngIf="cartItemCount > 0 && !isCartPage"
             class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center"
           >
             {{ cartItemCount }}

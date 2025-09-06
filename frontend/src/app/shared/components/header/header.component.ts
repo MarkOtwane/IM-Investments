@@ -65,6 +65,10 @@ export class HeaderComponent implements OnInit {
     return this.cart.items.reduce((total, item) => total + item.quantity, 0);
   }
 
+  get isCartPage(): boolean {
+    return this.router.url.includes('/customer/cart');
+  }
+
   toggleMenu(): void {
     this.isMenuOpen = !this.isMenuOpen;
   }
