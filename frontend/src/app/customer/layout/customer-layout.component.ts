@@ -17,7 +17,7 @@ import { CartService } from '../../core/services/cart.service';
            (click)="closeSidebar()"></div>
 
       <!-- Sidebar -->
-      <aside *ngIf="shouldShowSidebar()" class="fixed top-0 left-0 z-50 w-72 h-screen bg-white shadow-xl border-r border-gray-200 transform transition-transform duration-300 ease-in-out"
+      <aside *ngIf="shouldShowSidebar()" class="fixed top-0 left-0 z-50 w-72 h-screen min-h-screen bg-white shadow-xl border-r border-gray-200 transform transition-transform duration-300 ease-in-out"
              [class.translate-x-0]="!isMobile || sidebarOpen"
              [class.-translate-x-full]="isMobile && !sidebarOpen">
         
@@ -71,7 +71,7 @@ import { CartService } from '../../core/services/cart.service';
                 Marketplace
               </a>
               
-              <a routerLink="/customer/cart" 
+              <a routerLink="/customer/cart"
                  routerLinkActive="bg-blue-50 text-blue-700 border-r-4 border-blue-600"
                  class="flex items-center px-3 py-3 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-50 transition-all duration-200 group">
                 <div class="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center mr-3 group-hover:bg-orange-200 transition-colors">
@@ -80,7 +80,7 @@ import { CartService } from '../../core/services/cart.service';
                   </svg>
                 </div>
                 My Cart
-                <span *ngIf="cartItemsCount > 0" 
+                <span *ngIf="cartItemsCount > 0 && !isCartPage()"
                       class="ml-auto bg-blue-600 text-white text-xs rounded-full px-2 py-1 min-w-[20px] text-center">
                   {{ cartItemsCount }}
                 </span>
@@ -223,12 +223,12 @@ import { CartService } from '../../core/services/cart.service';
                 </button>
                 
                 <!-- Quick Cart Access -->
-                <a routerLink="/customer/cart" 
+                <a routerLink="/customer/cart"
                    class="relative p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors">
                   <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17"/>
                   </svg>
-                  <span *ngIf="cartItemsCount > 0" 
+                  <span *ngIf="cartItemsCount > 0 && !isCartPage()"
                         class="absolute -top-1 -right-1 bg-blue-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-medium">
                     {{ cartItemsCount }}
                   </span>
@@ -430,6 +430,10 @@ export class CustomerLayoutComponent implements OnInit {
   getUserInitials(): string {
     const name = this.userName;
     return name.charAt(0).toUpperCase();
+  }
+
+  isCartPage(): boolean {
+    return this.currentRoute === '/customer/cart';
   }
 
   logout(): void {
