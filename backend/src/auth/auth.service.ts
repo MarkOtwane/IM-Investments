@@ -46,6 +46,15 @@ export class AuthService {
       },
     });
 
+    // Send welcome email
+    try {
+      await this.mailerService.sendWelcomeEmail(email);
+      console.log('Welcome email sent successfully to:', email);
+    } catch (emailError) {
+      console.error('Failed to send welcome email:', emailError);
+      // Don't fail registration if email fails
+    }
+
     // Generate JWT
     const payload = { sub: user.id, email: user.email, role: user.role };
     return {

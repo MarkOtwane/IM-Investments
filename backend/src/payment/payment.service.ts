@@ -5,12 +5,14 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CartService } from '../cart/cart.service';
 import { PrismaService } from '../prisma/prisma.service';
+import { MailerService } from '../mailer/mailer.service';
 
 @Injectable()
 export class PaymentService {
   constructor(
     private prisma: PrismaService,
     private cartService: CartService,
+    private mailerService: MailerService,
   ) {}
 
   async initiatePayment(userId: number, phoneNumber: string) {
@@ -54,6 +56,41 @@ export class PaymentService {
 
       // Clear cart items immediately after initiating payment (simulate auto-removal upon payment)
       await this.cartService.clearCart(userId);
+
+      // Send payment confirmation email
+      try {
+        // Get user email
+        const user = await this.prisma.user.findUnique({
+          where: { id: userId },
+          select: { email: true },
+        });
+
+        if (user) {
+          const paymentConfirmationData = {
+            customerEmail: user.email,
+            orderId: order.id,
+            totalAmount: totalAmount,
+            items: cart.items.map((item: any) => ({
+              productName: item.product?.name || 'Unknown Product',
+              quantity: item.quantity,
+              price: item.product?.price || 0,
+            })),
+            paymentDate: new Date().toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit',
+            }),
+          };
+
+          await this.mailerService.sendPaymentConfirmationEmail(paymentConfirmationData);
+          console.log('Payment confirmation email sent successfully to:', user.email);
+        }
+      } catch (emailError) {
+        console.error('Failed to send payment confirmation email:', emailError);
+        // Don't fail payment if email fails
+      }
 
       return {
         orderId: order.id,

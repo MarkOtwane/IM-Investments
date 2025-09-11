@@ -12,12 +12,28 @@ export class MailerService {
     this.transporter = nodemailer.createTransport({
       host: this.configService.get<string>('SMTP_HOST'),
       port: this.configService.get<number>('SMTP_PORT'),
-      secure: false, // Use TLS
+      secure: false, // Use STARTTLS
       auth: {
         user: this.configService.get<string>('SMTP_USER'),
         pass: this.configService.get<string>('SMTP_PASS'),
       },
+      tls: {
+        rejectUnauthorized: false, // For development
+      },
     });
+
+    // Test email configuration on startup
+    this.testEmailConfiguration();
+  }
+
+  private async testEmailConfiguration() {
+    try {
+      await this.transporter.verify();
+      console.log('✅ Email service is ready to send emails');
+    } catch (error) {
+      console.error('❌ Email service configuration error:', error);
+      console.log('📧 Email features will be disabled. Please check your SMTP configuration.');
+    }
   }
 
   async sendMail(options: MailOptions) {
@@ -31,9 +47,11 @@ export class MailerService {
 
     try {
       await this.transporter.sendMail(mailOptions);
+      console.log('✅ Email sent successfully to:', options.to);
     } catch (error) {
       console.error('Failed to send email:', error);
-      throw new Error('Failed to send email');
+      // Don't throw error to prevent breaking the main flow
+      console.log('📧 Email sending failed, but continuing with main operation');
     }
   }
 
