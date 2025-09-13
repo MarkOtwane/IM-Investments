@@ -1,8 +1,12 @@
+/* eslint-disable @typescript-eslint/no-floating-promises */
+/* eslint-disable prettier/prettier */
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as nodemailer from 'nodemailer';
 import { MailOptions } from './interface/mail-options.interface'; // should refer to mailOptions in the mailer folder
 import { getPasswordResetTemplate } from './templates/password-reset.template';
+import { getWelcomeTemplate } from './templates/welcome.template';
+import { getPaymentConfirmationTemplate, PaymentConfirmationData } from './templates/payment-confirmation.template';
 
 @Injectable()
 export class MailerService {
@@ -32,7 +36,9 @@ export class MailerService {
       console.log('✅ Email service is ready to send emails');
     } catch (error) {
       console.error('❌ Email service configuration error:', error);
-      console.log('📧 Email features will be disabled. Please check your SMTP configuration.');
+      console.log(
+        '📧 Email features will be disabled. Please check your SMTP configuration.',
+      );
     }
   }
 
@@ -51,7 +57,9 @@ export class MailerService {
     } catch (error) {
       console.error('Failed to send email:', error);
       // Don't throw error to prevent breaking the main flow
-      console.log('📧 Email sending failed, but continuing with main operation');
+      console.log(
+        '📧 Email sending failed, but continuing with main operation',
+      );
     }
   }
 
@@ -64,6 +72,28 @@ export class MailerService {
 
     await this.sendMail({
       to: email,
+      subject,
+      text,
+      html,
+    });
+  }
+
+  async sendWelcomeEmail(email: string) {
+    const { subject, text, html } = getWelcomeTemplate(email);
+
+    await this.sendMail({
+      to: email,
+      subject,
+      text,
+      html,
+    });
+  }
+
+  async sendPaymentConfirmationEmail(data: PaymentConfirmationData) {
+    const { subject, text, html } = getPaymentConfirmationTemplate(data);
+
+    await this.sendMail({
+      to: data.customerEmail,
       subject,
       text,
       html,
