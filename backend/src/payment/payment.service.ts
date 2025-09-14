@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable prettier/prettier */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
@@ -19,14 +22,37 @@ export class PaymentService {
   ) {}
 
   private getMpesaConfig() {
+    const consumerKey = this.configService.get<string>('MPESA_CONSUMER_KEY');
+    const consumerSecret = this.configService.get<string>('MPESA_CONSUMER_SECRET');
+    const shortcode = this.configService.get<string>('MPESA_SHORTCODE');
+    const passkey = this.configService.get<string>('MPESA_PASSKEY');
+    const stkUrl = this.configService.get<string>('MPESA_STK_URL');
+    const tokenUrl = this.configService.get<string>('MPESA_TOKEN_URL');
+    const callbackUrl = this.configService.get<string>('MPESA_CALLBACK_URL');
+
+    if (
+      !consumerKey ||
+      !consumerSecret ||
+      !shortcode ||
+      !passkey ||
+      !stkUrl ||
+      !tokenUrl ||
+      !callbackUrl
+    ) {
+      throw new HttpException(
+        'M-Pesa configuration is incomplete. Please check your environment variables.',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+
     return {
-      consumerKey: this.configService.get<string>('MPESA_CONSUMER_KEY'),
-      consumerSecret: this.configService.get<string>('MPESA_CONSUMER_SECRET'),
-      shortcode: this.configService.get<string>('MPESA_SHORTCODE'),
-      passkey: this.configService.get<string>('MPESA_PASSKEY'),
-      stkUrl: this.configService.get<string>('MPESA_STK_URL'),
-      tokenUrl: this.configService.get<string>('MPESA_TOKEN_URL'),
-      callbackUrl: this.configService.get<string>('MPESA_CALLBACK_URL'),
+      consumerKey,
+      consumerSecret,
+      shortcode,
+      passkey,
+      stkUrl,
+      tokenUrl,
+      callbackUrl,
     };
   }
 
@@ -34,11 +60,14 @@ export class PaymentService {
     const { consumerKey, consumerSecret, tokenUrl } = this.getMpesaConfig();
     const auth = Buffer.from(`${consumerKey}:${consumerSecret}`).toString('base64');
     try {
-      const response = await axios.get(tokenUrl, {
+      const response = await axios.post(`${tokenUrl}?grant_type=client_credentials`, {}, {
         headers: {
           Authorization: `Basic ${auth}`,
         },
       });
+      if (!response.data.access_token) {
+        throw new HttpException('Invalid access token response from M-Pesa', HttpStatus.INTERNAL_SERVER_ERROR);
+      }
       return response.data.access_token;
     } catch (error) {
       console.error('Failed to get M-Pesa access token:', error);
@@ -47,7 +76,14 @@ export class PaymentService {
   }
 
   getTimestamp(): string {
-    return new Date().toISOString().replace(/[:.]/g, '');
+    const now = new Date();
+    const year = now.getFullYear().toString();
+    const month = (now.getMonth() + 1).toString().padStart(2, '0');
+    const day = now.getDate().toString().padStart(2, '0');
+    const hours = now.getHours().toString().padStart(2, '0');
+    const minutes = now.getMinutes().toString().padStart(2, '0');
+    const seconds = now.getSeconds().toString().padStart(2, '0');
+    return `${year}${month}${day}${hours}${minutes}${seconds}`;
   }
 
   getPassword(shortcode: string, passkey: string, timestamp: string): string {
@@ -95,9 +131,10 @@ export class PaymentService {
       });
 
       // M-Pesa STK Push
-      const { shortcode, stkUrl, callbackUrl } = this.getMpesaConfig();
+      const mpesaConfig = this.getMpesaConfig();
+      const { shortcode, stkUrl, callbackUrl, passkey } = mpesaConfig;
       const timestamp = this.getTimestamp();
-      const password = this.getPassword(shortcode, this.configService.get<string>('MPESA_PASSKEY'), timestamp);
+      const password = this.getPassword(shortcode, passkey, timestamp);
       const token = await this.getAccessToken();
 
       const stkPayload = {
@@ -106,16 +143,17 @@ export class PaymentService {
         Timestamp: timestamp,
         TransactionType: 'CustomerPayBillOnline',
         Amount: Math.round(totalAmount),
-        PartyA: phoneNumber.replace(/^\+?254|0/, '254'),
+        PartyA: phoneNumber.replace(/^(0|\+254)/, '254'),
         PartyB: parseInt(shortcode),
-        PhoneNumber: phoneNumber.replace(/^\+?254|0/, '254'),
+        PhoneNumber: phoneNumber.replace(/^(0|\+254)/, '254'),
         CallBackURL: callbackUrl,
         AccountReference: 'IM Investments',
         TransactionDesc: `Payment for order ${order.id}`,
       };
 
+      let response;
       try {
-        const response = await axios.post(stkUrl, stkPayload, {
+        response = await axios.post(stkUrl, stkPayload, {
           headers: {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json',
