@@ -28,6 +28,15 @@ export class PaymentController {
     return this.paymentService.initiatePayment(userId, phoneNumber);
   }
 
+  @Post('callback')
+  async handleCallback(@Body() callbackData: any) {
+    const checkoutRequestId = callbackData.Body?.stkCallback?.CheckoutRequestID;
+    if (checkoutRequestId) {
+      await this.paymentService.handleCallback(checkoutRequestId, callbackData);
+    }
+    return { ResultCode: 0, ResultDesc: 'Accepted' };
+  }
+
   @UseGuards(JwtAuthGuard)
   @Get('status/:orderId')
   async checkPaymentStatus(@Param('orderId', ParseIntPipe) orderId: number) {

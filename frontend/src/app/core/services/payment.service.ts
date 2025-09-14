@@ -13,8 +13,7 @@ export class PaymentService {
   constructor(private http: HttpClient, @Inject(PLATFORM_ID) private platformId: Object) {}
 
   initiatePayment(phoneNumber: string): Observable<any> {
-    const userId = this.getCurrentUserId();
-    return this.http.post(`${this.apiUrl}/initiate`, { userId, phoneNumber });
+    return this.http.post(`${this.apiUrl}/initiate`, { phoneNumber });
   }
 
   checkPaymentStatus(orderId: number): Observable<any> {
