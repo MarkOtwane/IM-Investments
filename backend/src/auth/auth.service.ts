@@ -24,6 +24,15 @@ export class AuthService {
   async register(dto: RegisterDto) {
     const { email, password } = dto;
 
+    const allowedEmails = [
+      'moraraedgar233@gmail.com',
+      'iminvestments48@gmial.com',
+    ];
+
+    if (!allowedEmails.includes(email)) {
+      throw new ConflictException('Registration only allowed for authorized emails');
+    }
+
     // Check if email already exists
     const existingUser = await this.prisma.user.findUnique({
       where: { email },
@@ -36,13 +45,13 @@ export class AuthService {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create user with default role CUSTOMER
+    // Create user with role ADMIN for allowed emails
     const user = await this.prisma.user.create({
       data: {
         email,
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         password: hashedPassword,
-        role: 'CUSTOMER',
+        role: 'ADMIN',
       },
     });
 
