@@ -1,5 +1,10 @@
-import { HttpInterceptorFn, HttpErrorResponse } from '@angular/common/http';
-import { inject } from '@angular/core';
+import { isPlatformServer } from '@angular/common';
+import {
+  HttpErrorResponse,
+  HttpInterceptorFn,
+  HttpResponse,
+} from '@angular/common/http';
+import { inject, PLATFORM_ID } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
@@ -8,80 +13,119 @@ import { AuthService } from '../services/auth.service';
 export const AuthInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
   const router = inject(Router);
+  const platformId = inject(PLATFORM_ID);
 
   console.log('🔍 AuthInterceptor: Processing request to', req.url);
-  
+
+  // During server-side prerendering, avoid calling the remote API.
+  // Return a fast, empty successful response for common read endpoints so
+  // prerender doesn't hang waiting for external backend responses.
+  if (isPlatformServer(platformId)) {
+    if (
+      req.method === 'GET' &&
+      (req.url.includes('/products') ||
+        req.url.includes('/categories') ||
+        req.url.includes('/home'))
+    ) {
+      console.log(
+        '🔍 AuthInterceptor: Short-circuiting API GET during server prerender for',
+        req.url
+      );
+      return new Observable((observer) => {
+        observer.next(new HttpResponse({ status: 200, body: [] }));
+        observer.complete();
+      });
+    }
+  }
+
   // Skip auth for login/register endpoints
   if (req.url.includes('/auth/login') || req.url.includes('/auth/register')) {
-    console.log('🔍 AuthInterceptor: Skipping auth for authentication endpoint');
+    console.log(
+      '🔍 AuthInterceptor: Skipping auth for authentication endpoint'
+    );
     return next(req);
   }
-  
+
   // Get token
   const token = authService.getToken();
-  console.log('🔑 AuthInterceptor: Token status:', token ? 'Present' : 'Missing');
-  
+  console.log(
+    '🔑 AuthInterceptor: Token status:',
+    token ? 'Present' : 'Missing'
+  );
+
   if (token) {
     console.log('🔑 AuthInterceptor: Adding token to request headers');
     // Do not set Content-Type for FormData; the browser must set the multipart boundary automatically
-    const isFormData = (req.body instanceof FormData);
+    const isFormData = req.body instanceof FormData;
     const headers: Record<string, string> = {
-      'Authorization': `Bearer ${token}`
+      Authorization: `Bearer ${token}`,
     };
     if (!isFormData) {
-      headers['Content-Type'] = req.headers.get('Content-Type') || 'application/json';
+      headers['Content-Type'] =
+        req.headers.get('Content-Type') || 'application/json';
     }
     const authReq = req.clone({
-      setHeaders: headers
+      setHeaders: headers,
     });
-    
+
     return next(authReq).pipe(
       catchError((error: HttpErrorResponse) => {
         console.error('❌ AuthInterceptor: Request failed', {
           url: req.url,
           status: error.status,
           message: error.message,
-          error: error.error
+          error: error.error,
         });
-        
+
         if (error.status === 401) {
-          console.log('🚪 AuthInterceptor: Unauthorized - token may be invalid or expired');
-          
+          console.log(
+            '🚪 AuthInterceptor: Unauthorized - token may be invalid or expired'
+          );
+
           // Only redirect if this is not an API call (to avoid redirect loops)
           if (!req.url.includes('/api/') && !req.url.includes('/auth/')) {
             console.log('🚪 AuthInterceptor: Redirecting to login page');
             authService.logout();
             router.navigate(['/customer/login'], {
-              queryParams: { message: 'Session expired. Please log in again.' }
+              queryParams: { message: 'Session expired. Please log in again.' },
             });
           }
         }
-        
+
         return throwError(() => error);
       })
     );
   }
-  
+
   console.log('🔑 AuthInterceptor: No token, proceeding without auth header');
-  
+
   // For API endpoints that require auth but no token is present
-  if (req.url.includes('/cart') || req.url.includes('/orders') || req.url.includes('/profile')) {
-    console.log('⚠️ AuthInterceptor: API endpoint requires authentication but no token found');
+  if (
+    req.url.includes('/cart') ||
+    req.url.includes('/orders') ||
+    req.url.includes('/profile')
+  ) {
+    console.log(
+      '⚠️ AuthInterceptor: API endpoint requires authentication but no token found'
+    );
     // Avoid calling protected endpoints without a token
-    return throwError(() => new HttpErrorResponse({
-      url: req.url,
-      status: 401,
-      statusText: 'Unauthorized',
-      error: { message: 'Authentication required' }
-    }));
+    return throwError(
+      () =>
+        new HttpErrorResponse({
+          url: req.url,
+          status: 401,
+          statusText: 'Unauthorized',
+          error: { message: 'Authentication required' },
+        })
+    );
   }
-  
+
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
       console.error('❌ AuthInterceptor: Unauthenticated request failed', {
         url: req.url,
         status: error.status,
-        message: error.message
+        message: error.message,
       });
       return throwError(() => error);
     })
