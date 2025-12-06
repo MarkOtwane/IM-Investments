@@ -44,6 +44,11 @@ export class MailerService {
   }
 
   private async testEmailConfiguration() {
+    if (!this.transporter) {
+      console.log('SMTP transporter not configured, skipping verification');
+      return;
+    }
+
     try {
       await this.transporter.verify();
       console.log('✅ Email service is ready to send emails');
