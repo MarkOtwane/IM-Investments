@@ -2,32 +2,45 @@
 /* eslint-disable prettier/prettier */
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import axios from 'axios';
 import * as nodemailer from 'nodemailer';
 import { MailOptions } from './interface/mail-options.interface'; // should refer to mailOptions in the mailer folder
 import { getPasswordResetTemplate } from './templates/password-reset.template';
+import {
+  getPaymentConfirmationTemplate,
+  PaymentConfirmationData,
+} from './templates/payment-confirmation.template';
 import { getWelcomeTemplate } from './templates/welcome.template';
-import { getPaymentConfirmationTemplate, PaymentConfirmationData } from './templates/payment-confirmation.template';
 
 @Injectable()
 export class MailerService {
-  private transporter: nodemailer.Transporter;
+  private transporter: nodemailer.Transporter | null = null;
+  private provider: string;
 
   constructor(private configService: ConfigService) {
-    this.transporter = nodemailer.createTransport({
-      host: this.configService.get<string>('SMTP_HOST'),
-      port: this.configService.get<number>('SMTP_PORT'),
-      secure: false, // Use STARTTLS
-      auth: {
-        user: this.configService.get<string>('SMTP_USER'),
-        pass: this.configService.get<string>('SMTP_PASS'),
-      },
-      tls: {
-        rejectUnauthorized: false, // For development
-      },
-    });
+    this.provider = this.configService.get<string>('MAILER_PROVIDER') ?? 'smtp';
 
-    // Test email configuration on startup
-    this.testEmailConfiguration();
+    if (this.provider === 'smtp') {
+      this.transporter = nodemailer.createTransport({
+        host: this.configService.get<string>('SMTP_HOST'),
+        port: this.configService.get<number>('SMTP_PORT'),
+        secure: false, // Use STARTTLS
+        auth: {
+          user: this.configService.get<string>('SMTP_USER'),
+          pass: this.configService.get<string>('SMTP_PASS'),
+        },
+        tls: {
+          rejectUnauthorized: false, // For development
+        },
+      });
+
+      // Test email configuration on startup
+      this.testEmailConfiguration();
+    } else {
+      // If using a provider like Brevo we won't initialize nodemailer transporter
+      this.transporter = null;
+      console.log(`Using mailer provider: ${this.provider}`);
+    }
   }
 
   private async testEmailConfiguration() {
@@ -43,6 +56,17 @@ export class MailerService {
   }
 
   async sendMail(options: MailOptions) {
+    if (this.provider === 'brevo') {
+      await this.sendWithBrevo(options);
+      return;
+    }
+
+    // default to smtp
+    if (!this.transporter) {
+      console.error('SMTP transporter not configured');
+      return;
+    }
+
     const mailOptions: nodemailer.SendMailOptions = {
       from: this.configService.get<string>('SMTP_FROM'),
       to: options.to,
@@ -55,10 +79,69 @@ export class MailerService {
       await this.transporter.sendMail(mailOptions);
       console.log('✅ Email sent successfully to:', options.to);
     } catch (error) {
-      console.error('Failed to send email:', error);
-      // Don't throw error to prevent breaking the main flow
+      console.error('Failed to send email via SMTP:', error);
       console.log(
         '📧 Email sending failed, but continuing with main operation',
+      );
+    }
+  }
+
+  /**
+   * Resend an email using the configured provider. This is a simple wrapper
+   * around `sendMail` intended for retry/resend flows.
+   */
+  async resendMail(options: MailOptions) {
+    console.log('Attempting to resend email to', options.to);
+    await this.sendMail(options);
+  }
+
+  private async sendWithBrevo(options: MailOptions) {
+    const apiKey = this.configService.get<string>('BREVO_API_KEY');
+    const senderEmail =
+      this.configService.get<string>('BREVO_SENDER') ??
+      this.configService.get<string>('SMTP_FROM');
+    const senderName =
+      this.configService.get<string>('BREVO_SENDER_NAME') ?? '';
+
+    if (!apiKey) {
+      console.error('BREVO_API_KEY not configured');
+      return;
+    }
+
+    const payload = {
+      sender: {
+        name: senderName,
+        email: senderEmail,
+      },
+      to: [{ email: options.to }],
+      subject: options.subject,
+      htmlContent: options.html,
+      textContent: options.text,
+    } as any;
+
+    try {
+      const res = await axios.post(
+        'https://api.brevo.com/v3/smtp/email',
+        payload,
+        {
+          headers: {
+            accept: 'application/json',
+            'content-type': 'application/json',
+            'api-key': apiKey,
+          },
+        },
+      );
+
+      console.log(
+        '✅ Email sent via Brevo to:',
+        options.to,
+        'responseId:',
+        res.data?.messageId ?? res.data?.id ?? 'n/a',
+      );
+    } catch (error) {
+      console.error(
+        'Failed to send email via Brevo:',
+        error?.response?.data ?? error.message ?? error,
       );
     }
   }
