@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -17,7 +19,9 @@ export class ProductsService {
       });
 
       if (!category) {
-        throw new NotFoundException(`Category with ID ${createProductDto.categoryId} not found`);
+        throw new NotFoundException(
+          `Category with ID ${createProductDto.categoryId} not found`,
+        );
       }
 
       const product = await this.prisma.product.create({
@@ -27,7 +31,9 @@ export class ProductsService {
           price: createProductDto.price,
           stock: createProductDto.stock,
           categoryId: createProductDto.categoryId,
-          imageUrl: createProductDto.imageUrl || 'https://images.pexels.com/photos/4041392/pexels-photo-4041392.jpeg?auto=compress&cs=tinysrgb&w=300&h=200&fit=crop',
+          imageUrl:
+            createProductDto.imageUrl ||
+            'https://images.pexels.com/photos/4041392/pexels-photo-4041392.jpeg?auto=compress&cs=tinysrgb&w=300&h=200&fit=crop',
         },
         include: {
           category: true,
@@ -98,7 +104,9 @@ export class ProductsService {
       });
 
       if (!category) {
-        throw new NotFoundException(`Category with ID ${updateProductDto.categoryId} not found`);
+        throw new NotFoundException(
+          `Category with ID ${updateProductDto.categoryId} not found`,
+        );
       }
     }
 
