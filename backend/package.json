@@ -8,7 +8,6 @@
   "scripts": {
     "prebuild": "rimraf dist && mkdir -p dist",
     "build": "npx prisma generate && tsc -p tsconfig.build.json",
-    "postbuild": "npx prisma db push --accept-data-loss || true",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "ts-node -r tsconfig-paths/register src/main.ts",
     "start:dev": "ts-node-dev -r tsconfig-paths/register --respawn --transpile-only src/main.ts",
