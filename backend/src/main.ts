@@ -40,6 +40,8 @@ async function bootstrap(): Promise<void> {
       'http://localhost:3000',
       'https://im-investments.vercel.app',
       'https://im-investments.onrender.com',
+      'https://im-investments-pwojvu30m-parcel-pilot.vercel.app',
+      /\.vercel\.app$/,
     ],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
